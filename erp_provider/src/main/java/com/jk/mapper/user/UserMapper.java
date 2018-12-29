@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface UserMapper {
 
+    //
     List<User> queryUserList(Map<String, Object> map);
 }
