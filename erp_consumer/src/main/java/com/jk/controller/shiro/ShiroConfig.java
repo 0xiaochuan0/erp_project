@@ -55,6 +55,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/highCharts/**", "anon");
         filterChainDefinitionMap.put("/images/**", "anon");
+        filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/uploadify/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         // 放过登录页面拦截

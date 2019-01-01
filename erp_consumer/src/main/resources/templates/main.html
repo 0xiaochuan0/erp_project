@@ -61,7 +61,13 @@
 
             </li>
         </ul>
+
+        <!-- 选项卡下内容 -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home"></div>
+        </div>
     </div>
+
 </div>
 </body>
 <script>
@@ -89,7 +95,7 @@
                         $.addtabs.add({
                             id:node.id,
                             title:node.text,
-                            url:node.href
+                            url:node.url
                         });
                         //alert(node.id);
                     }
@@ -106,7 +112,7 @@
         $.addtabs.add({
             id:7,
             title:'系统首页',
-            url:'###'
+            url:'../temp/home'
         });
     }
 </script>
