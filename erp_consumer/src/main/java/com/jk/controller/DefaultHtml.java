@@ -24,7 +24,7 @@ public class DefaultHtml extends WebMvcConfigurerAdapter{
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
 		// login页面在 templates 文件夹下
-        registry.addViewController("/").setViewName("login");
+        registry.addViewController("/").setViewName("/page/toLogin");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
         super.addViewControllers(registry);
     }
