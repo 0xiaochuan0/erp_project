@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.indent.IndentMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.indent.Indent" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="consumer" property="consumer" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="DECIMAL" />
+    <result column="pay_id" property="payId" jdbcType="INTEGER" />
+    <result column="from_id" property="fromId" jdbcType="INTEGER" />
+    <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+    <result column="goods" property="goods" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, creat_time, consumer, money, pay_id, from_id, pay_status, goods
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from indent
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from indent
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.model.indent.Indent" >
+    insert into indent (id, creat_time, consumer, 
+      money, pay_id, from_id, 
+      pay_status, goods)
+    values (#{id,jdbcType=INTEGER}, #{creatTime,jdbcType=TIMESTAMP}, #{consumer,jdbcType=VARCHAR}, 
+      #{money,jdbcType=DECIMAL}, #{payId,jdbcType=INTEGER}, #{fromId,jdbcType=INTEGER}, 
+      #{payStatus,jdbcType=INTEGER}, #{goods,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jk.model.indent.Indent" >
+    insert into indent
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="creatTime != null" >
+        creat_time,
+      </if>
+      <if test="consumer != null" >
+        consumer,
+      </if>
+      <if test="money != null" >
+        money,
+      </if>
+      <if test="payId != null" >
+        pay_id,
+      </if>
+      <if test="fromId != null" >
+        from_id,
+      </if>
+      <if test="payStatus != null" >
+        pay_status,
+      </if>
+      <if test="goods != null" >
+        goods,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="consumer != null" >
+        #{consumer,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="payId != null" >
+        #{payId,jdbcType=INTEGER},
+      </if>
+      <if test="fromId != null" >
+        #{fromId,jdbcType=INTEGER},
+      </if>
+      <if test="payStatus != null" >
+        #{payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="goods != null" >
+        #{goods,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.indent.Indent" >
+    update indent
+    <set >
+      <if test="creatTime != null" >
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="consumer != null" >
+        consumer = #{consumer,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        money = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="payId != null" >
+        pay_id = #{payId,jdbcType=INTEGER},
+      </if>
+      <if test="fromId != null" >
+        from_id = #{fromId,jdbcType=INTEGER},
+      </if>
+      <if test="payStatus != null" >
+        pay_status = #{payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="goods != null" >
+        goods = #{goods,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.indent.Indent" >
+    update indent
+    set creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      consumer = #{consumer,jdbcType=VARCHAR},
+      money = #{money,jdbcType=DECIMAL},
+      pay_id = #{payId,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=INTEGER},
+      pay_status = #{payStatus,jdbcType=INTEGER},
+      goods = #{goods,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 年销售 -->
+  <select id="queryYear" resultType="java.util.LinkedHashMap" >
+    select
+    count(id) 销售数量,
+    DATE_FORMAT(creat_time,'%Y') 年份
+    from indent
+    where DATE_FORMAT(creat_time,'%Y')&gt;='2010' and DATE_FORMAT(creat_time,'%Y')&lt;='2020'
+    group by DATE_FORMAT(creat_time,'%Y')
+  </select>
+  <!-- 月财务 -->
+  <select id="queryFinance" resultType="com.jk.model.indent.Indent" >
+    select
+    sum(money) money
+    from indent
+    where DATE_FORMAT(creat_time,'%Y%m')&gt;='201801' and DATE_FORMAT(creat_time,'%Y%m')&lt;='201812'
+    group by DATE_FORMAT(creat_time,'%Y%m')
+  </select>
+</mapper>
