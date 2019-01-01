@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap-treeview/bootstrap-treeview.min.css"/>
+    <link rel="stylesheet" href="../bootStrap-addTabs/bootstrap.addtabs.css"/>
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <script src="../bootstrap-treeview/bootstrap-treeview.min.js"></script>
+    <script src="../bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+</head>
+<style>
+    .list-group-item{
+        height: 50px;
+        font-size: 18px;
+    }
+    .navbar-inverse {
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+    }
+
+
+</style>
+<body>
+
+<!-- 导航栏 -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="navbar navbar-inverse" role="navigation" style="margin: auto;padding-right: 0px;">
+            <div class="container-fluid" style="float: left;">
+                <div class="navbar-header">
+                    <font class="navbar-brand">金科集团ERP系统</font>
+                </div>
+            </div>
+            <div class="navbar-right navbar-header">
+                <!--<img src="../imgs/loginOut.png" height="39" width="114"/>-->
+                <ul class="nav navbar-nav " >
+                    <li><a href="#" class="navbar-brand">用户：高圆圆</a></li>
+                    <li><a href="#" class="navbar-brand">退出系统</a></li>
+                    <li><a href="#" class="navbar-brand">&nbsp;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 左侧树 -->
+<div class="row">
+    <div class="col-md-2">
+        <div style="height:100%;background-color: #272727;">
+            <div id="myTree"></div>
+        </div>
+    </div>
+
+    <div class="col-md-10">
+        <ul class="nav nav-tabs" id="tablist">
+            <li role="presentation" class="active">
+
+            </li>
+        </ul>
+
+        <!-- 选项卡下内容 -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+    $(function () {
+        getTree();
+        getTab();
+    })
+
+    function getTree(){
+        $.ajax({
+            type: "Post",
+            url: "../tree/getTreeAll",
+            dataType: "json",
+            success: function (result) {
+                $('#myTree').treeview({
+                    data: result,         // 数据源
+                    highlightSelected: true,    //是否高亮选中
+                    showBorder:false,
+
+                    color:'#d0d0d0',
+                    backColor:'#272727',
+                    onhoverColor:'#4f4f4f',
+                    onNodeSelected: function (event, node) {
+                        $.addtabs({iframeHeight: 650});
+                        $.addtabs.add({
+                            id:node.id,
+                            title:node.text,
+                            url:node.url
+                        });
+                        //alert(node.id);
+                    }
+                });
+            },
+            error: function () {
+                alert("树形结构加载失败！")
+            }
+        });
+    }
+
+    function getTab() {
+        $.addtabs({iframeHeight: 650});
+        $.addtabs.add({
+            id:7,
+            title:'系统首页',
+            url:'../temp/home'
+        });
+    }
+</script>
+</html>

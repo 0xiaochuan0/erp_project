@@ -1,28 +1,30 @@
 package com.jk.service.impl.user;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.jk.model.user.User;
-import com.jk.mapper.user.UserMapper;
+import com.jk.mapper.user.UserBeanMapper;
+import com.jk.model.user.UserBean;
 import com.jk.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 @Service(version = "1.0.0")
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserMapper mapper;
+    private UserBeanMapper userBeanMapper;
 
     @Override
-    public List<User> queryUserList(Integer page, Integer rows) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("start",(page - 1)*rows);
-        map.put("end",page * rows);
-        List<User> list = mapper.queryUserList(map);
+    public List<String> queryUserPowerByUserId(UserBean userBean) {
+        return userBeanMapper.queryUserPowerByUserId(userBean);
+    }
 
-        return list;
+    @Override
+    public UserBean queryUserInfoByLoginNumber(String username) {
+        return userBeanMapper.queryUserInfoByLoginNumber(username);
+    }
+
+    @Override
+    public void updateUserPassword(UserBean userBean) {
+        userBeanMapper.updateUserPassword(userBean);
     }
 }
