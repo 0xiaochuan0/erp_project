@@ -15,6 +15,11 @@ public class UserController {
     @Reference(version = "1.0.0")
     private UserService userService;
 
+    @RequestMapping("toYear")
+    public String toYear(){
+
+        return "year";
+    }
     @RequestMapping("queryList")
     public List<User> queryUserList(Integer page, Integer rows){
         List<User> list = userService.queryUserList(page, rows);

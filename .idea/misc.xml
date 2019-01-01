@@ -5,12 +5,16 @@
     <file type="web" url="file://$PROJECT_DIR$/erp_consumer" />
     <file type="web" url="file://$PROJECT_DIR$/erp_provider" />
   </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/erp_provider/pom.xml" />
         <option value="$PROJECT_DIR$/erp_consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/erp_poi/pom.xml" />
       </list>
     </option>
   </component>
