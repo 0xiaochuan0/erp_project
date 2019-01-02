@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+
+</head>
+<script src="../jquery-1.9.1.min.js"></script>
+ <script type="text/javascript" src="../highCharts/code/highcharts.js"></script>
+<script type="text/javascript" src="../highCharts/code/modules/series-label.js"></script>
+<script  type="text/javascript" src="../highCharts/code/modules/exporting.js"></script>
+<script  type="text/javascript" src="../highCharts/code/modules/export-data.js"></script>
+<style type="text/css">
+#container {
+	min-width: 310px;
+	max-width: 800px;
+	height: 400px;
+	margin: 0 auto
+}
+		</style>
+<body>
+     <div id="container"></div>
+     <script type="text/javascript">
+
+    $(function(){
+    	$.ajax({
+    		url:"../indent/queryYear",
+    		dataType:"json",
+    		type:"post",
+    		success:function(data){
+    			var chart = Highcharts.chart('container',{
+        		    chart: {
+        		        type: 'pie'
+        		    },
+        		    title: {
+        		        text: '近十年销售数量统计'
+        		    },
+        		    subtitle: {
+        		        text: '数据来源: 销售统计数据库'
+        		    },
+        		    tooltip: {
+    	    			pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    	    		},
+    	    		plotOptions: {
+    	    			pie: {
+    	    				allowPointSelect: true,
+    	    				cursor: 'pointer',
+    	    				dataLabels: {
+    	    					enabled: true,
+    	    					format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+    	    					
+    	    				}
+    	    			}
+    	    		},
+        		    series: [{
+	    	    			name: '销售数量',
+	    	    			colorByPoint: true,
+	    	    			data:data
+	    	    		}]
+        		});	
+        			
+	        }
+    })
+    })
+
+</script>
+</body>
+
+</html>
+<SCRIPT Language="VBScript">
+<!--
