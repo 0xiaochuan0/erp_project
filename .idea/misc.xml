@@ -12,7 +12,6 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/erp_provider/pom.xml" />
         <option value="$PROJECT_DIR$/erp_consumer/pom.xml" />
         <option value="$PROJECT_DIR$/erp_poi/pom.xml" />
       </list>
