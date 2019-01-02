@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+</head>
+<script src="../jquery-1.9.1.min.js"></script>
+ <script type="text/javascript" src="../highcharts/code/highcharts.js"></script>
+<script type="text/javascript" src="../highcharts/code/modules/series-label.js"></script>
+<script  type="text/javascript" src="../highcharts/code/modules/exporting.js"></script>
+<script  type="text/javascript" src="../highcharts/code/modules/export-data.js"></script>
+<style type="text/css">
+#container {
+	min-width: 310px;
+	max-width: 800px;
+	height: 400px;
+	margin: 0 auto
+}
+		</style>
+<body>
+     <div id="container"></div>
+     <script type="text/javascript">
+
+    $(function(){
+    	/*$.ajax({
+    		url:"../indent/queryFinance",
+    		dataType:"json",
+    		type:"post",
+    		success:function(data){
+    			var chart = Highcharts.chart('container',{
+        		    chart: {
+        		        type: 'bar'
+        		    },
+        		    title: {
+        		        text: '统计2019年每月金额'
+        		    },
+        		    subtitle: {
+        		        text: '数据来源: 销售统计数据库'
+        		    },
+        		    tooltip: {
+    	    			pointFormat: '{series.name}: <b>{point.y}</b>'
+    	    		},
+    	    		 plotOptions: {
+    	    			bar: {
+    	    				allowPointSelect: true,
+    	    				cursor: 'pointer',
+    	    				dataLabels: {
+    	    					enabled: true,
+    	    					format: '<b>{point.name}月</b>: {point.y}元'
+    	    					
+    	    				}
+    	    			}
+    	    		},
+        		    series: [{
+	    	    			name: '金额',
+	    	    			colorByPoint: true,
+	    	    			data:data
+	    	    		}]
+        		});	
+        			
+	        }
+    })*/
+
+        $.ajax({
+            url:"../indent/queryFinance",
+            dataType:"json",
+            type:"post",
+            success:function(data){
+                var chart = Highcharts.chart('container',{
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: '统计2018年每月金额'
+                    },
+                    subtitle: {
+                        text: '数据来源: 销售统计数据库'
+                    },
+                    xAxis: {
+                        categories: [
+                            '一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'
+                        ],
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '金额'
+                        }
+                    },
+                    tooltip: {
+                        // head + 每个 point + footer 拼接成完整的 table
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            borderWidth: 0
+                        }
+                    },
+                    series: data
+                });
+            },error:function(e){
+                alert("网络连接失败，请您稍后再试！");
+            }
+        });
+    })
+
+</script>
+</body>
+
+</html>
+<SCRIPT Language="VBScript">
+<!--

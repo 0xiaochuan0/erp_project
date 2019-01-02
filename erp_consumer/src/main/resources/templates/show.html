@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+    <script type="text/javascript"  src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-treeview/bootstrap-treeview.min.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <script type="text/javascript"  src="../bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript"  src="../bootstrap-table/bootstrap-table.js"></script>
+    <script type="text/javascript" src="../bootstrap-bootbox/bootbox.js"></script>
+</head>
+<body>
+<div class="content-head mgb10" id="search">
+    <form>
+        <div>
+            <label>订单号:</label>
+            <input type="text"  id="searchId" placeholder="请输入单据号"/>
+
+
+            <label >用户账号：</label>
+            <input type="text" id="searchConsumer" placeholder="请输入用户账号"/>
+
+
+            <label  class="date-label">提交时间：</label>
+                <input type="date" id="startData" /> --
+                <input type="date" id="endData" />
+        </div>
+        <div>
+            <label  class="date-label">订单状态：</label>
+            <select id="searchStatus">
+                <option value="-1">请选择</option>
+                <option value="1">13/no 8100</option>
+                <option value="2">其他</option>
+            </select>
+            <label  class="date-label">订单来源：</label>
+            <select id="searchFrom" >
+                <option value="-1">请选择</option>
+                <option value="1">APP订单</option>
+                <option value="2">PC端</option>
+                <option value="3">微信端</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <a href="javascript:setMyTable();" id="searchware" class="btn btn-default btn-sm"><i class="fa fa-search"></i>查 询</a>
+        </div>
+
+        <div class="form-group">
+            <a href="javascript:expoprtMyTable();"  class="btn btn-default btn-sm"><i class="fa fa-search"></i>导出</a>
+        </div>
+
+
+
+  </form>
+    <form action="/indents/importExcel" method="post" enctype="multipart/form-data" >
+        <input type="file" name="file"/>
+        <input type="submit" value="导入excel"/>
+    </form>
+</div>
+    <div class="table" id="myTable" style="width: 1000px;"></div>
+</body>
+<script>
+    $(function(){
+        setMyTable();
+    })
+
+    function expoprtMyTable(){
+      location.href="../indents/export";
+    }
+
+    function setMyTable(){
+        $('#myTable').bootstrapTable('destroy');
+        $('#myTable').bootstrapTable({
+            toolbar:'#search',
+            url:'../indents/query',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[3, 6, 10, 15],//分页组件
+            pageNumber:1,
+            pageSize:3,//默认每页条数
+            //search:true,//是否显示搜索框
+            //searchText:'试试',//初始化搜索文字
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            striped:true,
+            queryParams:function(){
+                return {
+                    page: this.pageNumber,
+                    rows: this.pageSize,
+                    id:$('#searchId').val(),
+                    startDate:$('#startData').val(),
+                    endDate:$('#endData').val(),
+                    consumer:$('#searchConsumer').val(),
+                    payStatus:$('#searchStatus').val(),
+                    fromId:$('#searchFrom').val()
+                };
+            },
+            columns:[
+                {checkbox:true},
+                {field:'id',title:'订单编号',width:100},
+                {field:'creatTime',title:'提交时间',width:100},
+                {field:'consumer',title:'用户账号',width:100},
+                {field:'money',title:'订单金额',width:100},
+                {field:'payId',title:'支付方式',width:100,
+                    formatter:function(value,row,index){
+                        if(value==1){
+                            return "13/no 8100";
+                        }else {
+                            return "其他";
+                        }
+                    }},
+                {field:'fromId',title:'订单来源',width:100,
+                    formatter:function(value,row,index){
+                        if(value==1){
+                            return "APP订单";
+                        }else if(value==2){
+                            return "PC端";
+                        }else {
+                            return "微信端";
+                        }
+                    }},
+                {field:'payStatus',title:'订单状态',width:100},
+                {field:'111',title:'操作',width:100, formatter:function(value,row,index){
+                        return "查看 | 关闭";
+                    }}
+            ]
+        });
+    }
+</script>
+</html>
