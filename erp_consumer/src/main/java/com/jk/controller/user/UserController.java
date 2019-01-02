@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.jk.model.user.UserBean;
 import com.jk.service.user.UserService;
 import com.jk.util.UploadifyUtil;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,5 +32,11 @@ public class UserController {
             return false;
         }
         return true;
+    }
+
+    @RequestMapping("getInfo")
+    public UserBean getInfo(){
+        UserBean userInfo = (UserBean) SecurityUtils.getSubject().getPrincipal();
+        return userInfo;
     }
 }
