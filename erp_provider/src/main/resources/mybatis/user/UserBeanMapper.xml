@@ -26,7 +26,7 @@
   </select>
 
   <select id="queryUserPowerByUserId" resultType="string">
-    select * from t_user_role ur,t_role_power rp,t_power p where
+    select p.power from t_user_role ur,t_role_power rp,t_power p where
     ur.role_id = rp.role_id and rp.power_id = p.id and ur.user_id = #{userBean.id}
     and p.type = 'power'
   </select>
