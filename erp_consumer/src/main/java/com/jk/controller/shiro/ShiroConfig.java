@@ -70,7 +70,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSuccessUrl("/temp/main");
         // 未授权界面;
         //shiroFilterFactoryBean.setUnauthorizedUrl("/403.html");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/page/toError");
+        shiroFilterFactoryBean.setUnauthorizedUrl("user/error");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         // 最终返回过滤器链
         return shiroFilterFactoryBean;
@@ -130,7 +130,7 @@ public class ShiroConfig {
     public SimpleMappingExceptionResolver resolver() {
         SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
         Properties properties = new Properties();
-        properties.setProperty("org.apache.shiro.authz.UnauthorizedException", "/page/toError");
+        properties.setProperty("org.apache.shiro.authz.UnauthorizedException", "user/error");
         resolver.setExceptionMappings(properties);
         return resolver;
     }
