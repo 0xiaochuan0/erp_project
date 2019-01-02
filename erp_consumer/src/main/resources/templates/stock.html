@@ -13,13 +13,62 @@
     <script type="text/javascript" src="../bootstrap-bootbox/bootbox.js"></script>
 </head>
 <body>
+<div id="search">
+    <form class="form-horizontal" role="form">
+        <fieldset>
+            <div class="form-group" style="float: left">
+                <label class="col-sm-2 control-label">供应商:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="indentId" placeholder="请输入供应商名称" />
+                </div>
+                <label class="col-sm-4 control-label">采购人：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="123" placeholder="请输入采购发起人姓名" />
+                </div>
+            </div>
+
+            <div class="form-group" style="float: left">
+                <label class="col-sm-5 control-label">创建时间：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="inboundDate" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div style="margin-left: -10px">
+                    <label class="col-sm-1 control-label">订单状态：</label>
+                    <div class="col-sm-1">
+                        <select id="state" class="form-control">
+                            <option value="-1">全部</option>
+                            <option value="1">未入库</option>
+                            <option value="2">已入库</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <fieldset>
+        <div style="margin-left: 1000px;float: left">
+            <a href="javascript:setMyTable();" id="searchware" class="btn btn-primary"><i class="fa fa-search"></i>查 询</a>
+        </div>
+    </fieldset>
+</div>
 <div class="table" id="myTable" style="width: 1000px;"></div>
 </body>
 <script>
     $(function(){
         setMyTable();
     })
-
+    //日期插件
+    $("#inboundDate").datetimepicker({
+        format: 'yyyy-mm-dd',//显示格式
+        todayHighlight: 1,//今天高亮
+        minView: "month",//设置只显示到月份
+        startView:2,
+        forceParse: 0,
+        showMeridian: 1,
+        autoclose: 1//选择后自动关闭
+    });
     function setMyTable(){
         $('#myTable').bootstrapTable({
             toolbar:'#search',
@@ -39,31 +88,35 @@
             clickToSelect: true, //是否启用点击选中行
             sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
             striped:true,
+            queryParams:function(){
+                return {
+                    page: this.pageNumber,
+                    rows: this.pageSize,
+                    indentId:$('#indentId').val(),
+                    inboundDate:$('#inboundDate').val(),
+                    state:$('#state').val()
+                };
+            },
             columns:[
                 {checkbox:true},
-                {field:'inboundDate',title:'入库日期',width:100},
-                {field:'id',title:'入库单编号',width:100},
-                {field:'indentId',title:'采购单编号',width:100},
-                {field:'state',title:'入库状态',width:100,
+                {field:'returnDate',title:'出库日期',width:100},
+                {field:'salesReturnId',title:'订单编号',width:100},
+                {field:'type',title:'配送方式',width:100,
                     formatter:function(value,row,index){
                         if(value==1){
-                            return "未入库";
+                            return "自配送";
+                        }else if(value==2){
+                            return "第三方物流";
                         }else {
-                            return "已入库";
+                            return "门店自提";
                         }
                     }},
-                {field:'type',title:'入库类型',width:100,
-                    formatter:function(value,row,index){
-                        if(value==1){
-                            return "一般入库";
-                        }else {
-                            return "调拨入库";
-                        }
-                    }},
-                {field:'indentId',title:'供应商编号',width:100},
-                {field:'warehouseId',title:'入货仓库',width:100},
-                {field:'indentId',title:'收货员',width:100},
+                {field:'salesReturnId',title:'收货人',width:100},
+                {field:'salesReturnId',title:'收货人联系方式',width:100},
+                {field:'salesReturnId',title:'配送方式',width:100},
+                {field:'warehouseId',title:'出货仓库',width:100},
                 {field:'warehouseId',title:'仓管员',width:100},
+                {field:'salesReturnId',title:'收货员',width:100},
                 {field:'123',title:'操作',width:100, formatter:function(value,row,index){
                         return "查看 | 关闭";
                     }}

@@ -1,6 +1,7 @@
 package com.jk.mapper.warehouse;
 
-import com.jk.model.indents.Indents;
+
+
 import com.jk.model.warehouse.WarehouseManage;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public interface WarehouseManageMapper {
 
     int updateByPrimaryKey(WarehouseManage record);
 
-    List<Indents> queryList(Map<String, Object> map);
+    List<WarehouseManage> queryList(Map<String, Object> map);
+
 
     Integer queryCount(Map<String, Object> map);
 }
