@@ -13,9 +13,19 @@ public class Tree implements Serializable {
 
     private Boolean selectable;
 
+    private boolean leaf;
+
     private String url;
 
     private List<Tree> nodes;
+
+    public boolean isLeaf() {
+        return leaf;
+    }
+
+    public void setLeaf(boolean leaf) {
+        this.leaf = leaf;
+    }
 
     public Boolean getSelectable() {
         return selectable;
