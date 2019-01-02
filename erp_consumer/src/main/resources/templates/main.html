@@ -38,8 +38,8 @@
             <div class="navbar-right navbar-header">
                 <!--<img src="../imgs/loginOut.png" height="39" width="114"/>-->
                 <ul class="nav navbar-nav " >
-                    <li><a href="#" class="navbar-brand">用户：高圆圆</a></li>
-                    <li><a href="#" class="navbar-brand">退出系统</a></li>
+                    <li id="userName"><a href="#" class="navbar-brand">用户：高圆圆</a></li>
+                    <li><a href="../page/logout" class="navbar-brand">退出系统</a></li>
                     <li><a href="#" class="navbar-brand">&nbsp;</a></li>
                 </ul>
             </div>
@@ -74,6 +74,7 @@
     $(function () {
         getTree();
         getTab();
+        setUserInfo();
     })
 
     function getTree(){
@@ -114,6 +115,32 @@
             title:'系统首页',
             url:'../temp/home'
         });
+    }
+
+    function getUserTab() {
+        $.addtabs({iframeHeight: 650});
+        $.addtabs.add({
+            id:8,
+            title:'个人信息',
+            url:'../page/toPersonalInfo'
+        });
+    }
+
+    function setUserInfo() {
+        $.ajax({
+            type: "post",
+            url: "../user/getInfo",
+            dataType: "json",
+            success: function (data) {
+                if(data.name != null){
+                    var html = '<a href="javascript:getUserTab();" class="navbar-brand">用户：'+data.name+'</a>';
+                    $('#userName').html(html);
+                }
+            },
+            error: function () {
+
+            }
+        })
     }
 </script>
 </html>

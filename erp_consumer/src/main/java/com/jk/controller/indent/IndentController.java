@@ -12,10 +12,10 @@ package com.jk.controller.indent;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.jk.service.indent.IIndentService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈indent〉
  *
  * @author Divine
@@ -37,14 +37,18 @@ public class IndentController {
     @Reference(version = "1.0.0")
     private IIndentService indentService;
 
+    @RequiresPermissions("indent:xiaoshou")
     @RequestMapping("toYear")
     public String toYear(){
         return "year";
     }
+
+    @RequiresPermissions("indent:caiwu")
     @RequestMapping("toFinance")
     public String toFinance(){
         return "finance";
     }
+
     @RequestMapping("queryYear")
     @ResponseBody
     public List<Map<String,Object>> queryYear(){

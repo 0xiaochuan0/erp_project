@@ -9,9 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.print.Book;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,12 +37,15 @@ public class IndentsController {
     @Reference(version = "1.0.0")
     private IndentsService indentsService;
 
+
     @RequestMapping("query")
     @ResponseBody
     public ResultPage queryList(Integer page, Integer rows,Indents indents){
         ResultPage resultPage = indentsService.queryList(page, rows,indents);
         return resultPage;
     }
+
+    @RequiresPermissions("indent:query")
     @RequestMapping("toShow")
     public String  toShow(){
         return "show";
@@ -72,7 +72,6 @@ public class IndentsController {
             object[4]=book.getPayId();
             object[5]=book.getFromId();
             object[6]=book.getPayStatus();
-            object[7]=book.getGoods();
             dataList.add(object);
         }
         ExportExcel expoet=new ExportExcel(title, rowName, dataList, response);
@@ -141,9 +140,7 @@ public class IndentsController {
                         if(!"".equals(row.getCell(6)) && row.getCell(6)!=null){
                             book.setPayStatus(Integer.parseInt(this.getCellValue(row.getCell(6))));
                         }
-                        if(!"".equals(row.getCell(7)) && row.getCell(7)!=null){
-                            book.setGoods(this.getCellValue(row.getCell(7)));
-                        }
+
                         //把book对象放到list集合中去
                         list.add(book);
                     }

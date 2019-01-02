@@ -68,6 +68,10 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setLoginUrl("/page/login");
         // 登录成功跳转到登录成功页面
         shiroFilterFactoryBean.setSuccessUrl("/temp/main");
+        //解决登录成功后不发跳转到指定页面的问题
+        Map map = new LinkedHashMap();
+        map.put("authc", new MyFormAuthenticationFilter());
+        shiroFilterFactoryBean.setFilters(map);
         // 未授权界面;
         //shiroFilterFactoryBean.setUnauthorizedUrl("/403.html");
         shiroFilterFactoryBean.setUnauthorizedUrl("/page/toError");
