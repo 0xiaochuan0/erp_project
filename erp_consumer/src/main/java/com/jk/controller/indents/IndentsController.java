@@ -1,6 +1,7 @@
 package com.jk.controller.indents;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.jk.model.indents.Goods;
 import com.jk.model.indents.Indents;
 import com.jk.service.indents.IndentsService;
 import com.jk.utils.ResultPage;
@@ -232,9 +233,91 @@ public class IndentsController {
         out.flush();
         out.close();
     }
+    @RequestMapping("delIndentsByIds")
+    @ResponseBody
+    public Boolean  delIndentsByIds(Integer[] ids){
+        try {
+            indentsService.delIndentsByIds(ids);
 
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
+   @RequestMapping("queryGoodsByName")
+   @ResponseBody
+    public Goods queryGoodsByName(String name) {
+         return indentsService.queryGoodsByName(name);
+   }
+    @RequestMapping("updateIndentsPayStatus")
+    @ResponseBody
+    public Boolean updateIndentsPayStatus(Integer[] ids){
+        try {
+            indentsService.updateIndentsPayStatus(ids);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    @RequestMapping("toConfirm")
+    public String toConfirm(){
+        return "confirm";
+    }
+    @RequestMapping("updateIndentsToConfirm")
+    @ResponseBody
+    public Boolean updateIndentsToConfirm(Integer[] ids){
+        try {
+            indentsService.updateIndentsToConfirm(ids);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    @RequestMapping("toReturn")
+    public String toReturn(){
+        return "return";
+    }
+    @RequestMapping("exportReturn")
+    @ResponseBody
+    public void  exportIndents(HttpServletResponse response) {
+        String   title="订单";
 
+        String[]  rowName= {"订单编号","用户帐号","提交时间","订单金额","联系人","申请状态","处理时间"};
 
+        List<Object[]> dataList=new ArrayList<Object[]>();
 
+        List<Indents>  list=indentsService.showIndents();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (Indents book : list) {
+
+            Object[] object=new Object[rowName.length];
+            object[0]=book.getId();
+            object[1]=book.getConsumer();
+            object[2]=book.getCreatTime();
+            object[3]=book.getMoney();
+            object[4]=book.getConsignee();
+            object[5]=book.getPayStatus();
+            object[6]=book.getDispose_time();
+            dataList.add(object);
+        }
+        ExportExcel expoet=new ExportExcel(title, rowName, dataList, response);
+        try {
+            expoet.export();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    @RequestMapping("toView")
+    public String toView(){
+        return "view";
+    }
+    @RequestMapping("toBread")
+    public String toBread(){
+        return "bread";
+    }
 }

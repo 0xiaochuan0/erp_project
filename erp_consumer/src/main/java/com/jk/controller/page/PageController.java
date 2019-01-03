@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("page")
 public class PageController {
-
     @RequestMapping("toLogin")
     String toLogin(){
         return "user/login";
     }
+
     @RequestMapping("login")
     String login(HttpServletRequest request, Model model){
         String attribute = (String) request.getAttribute("shiroLoginFailure");
@@ -44,5 +44,15 @@ public class PageController {
         System.out.println(userInfo);
         mm.put("user",userInfo);
         return "user/personalInfo";
+    }
+
+    @RequestMapping("toUserPage")
+    String toUserPage(){
+        return "user/userPage";
+    }
+
+    @RequestMapping("toEditUser")
+    String toEditUser(){
+        return "user/editUser";
     }
 }

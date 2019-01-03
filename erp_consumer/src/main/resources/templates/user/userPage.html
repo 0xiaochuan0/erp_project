@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
+    <script src="../bootstrap3/js/bootstrap.min.js"></script>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script src="../bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+</head>
+<body>
+    <div class="row" style="margin-top: 20px;height: 34px">
+        <div class="col-md-1" style="height: 34px;line-height: 34px;text-align: right">
+            员工账号
+        </div>
+        <div class="col-md-2">
+            <input class="form-control" type="text" id="accountInput" placeholder="输入员工账号"/>
+        </div>
+        <div class="col-md-1" style="height: 34px;line-height: 34px;text-align: right">
+            员工姓名
+        </div>
+        <div class="col-md-2">
+            <input class="form-control" type="text" id="nameInput"/>
+        </div>
+        <div class="col-md-1" style="height: 34px;line-height: 34px;text-align: right" placeholder="输入员工姓名">
+            员工职位
+        </div>
+        <div class="col-md-2">
+            <select class="form-control" id="jobSelect"></select>
+        </div>
+        <div class="col-md-1" style="height: 34px;line-height: 34px;text-align: right">
+            员工状态
+        </div>
+        <div class="col-md-2">
+            <select class="form-control" id="statusSelect">
+                <option value="0">请选择状态</option>
+                <option value="1">在职</option>
+                <option value="2">离职</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;height: 34px">
+        <div class="col-md-1" style="height: 34px;line-height: 34px;text-align: right">
+            添加时间
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control date" id="startTime" placeholder="开始时间"/>
+                <i class="glyphicon glyphicon-calendar input-group-addon"></i>
+                <input type="text" class="form-control date" id="endTime" placeholder="结束时间"/>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="btn btn-success">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
+            </div>
+
+            <div class="btn btn-info" style="margin-left: 10px">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px">
+        <div class="col-md-12">
+            <div class="table"></div>
+        </div>
+    </div>
+    <script>
+        /*<![CDATA[*/
+        $(function () {
+            initUserTable();
+            initJob();
+            $('.date').datetimepicker({
+                language: 'zh-CN',//显示中文
+                format: 'yyyy-mm-dd',//显示格式 hh:ii:ss
+                minView: "month",//设置只显示到月份
+                initialDate: new Date(),//初始化当前日期
+                autoclose: true,//选中自动关闭
+                todayBtn: true//显示今日按钮
+            });
+        })
+
+        /*搜索*/
+        $(".btn-success").click(function () {
+            initUserTable();
+        })
+
+        var res;
+        function createAddContent(url){
+            $.ajax({
+                url:url,
+                async:false,
+                success:function(data){
+                    res = data;
+                }
+            });
+            return res;
+        }
+
+        /*添加*/
+        $(".btn-info").click(function () {
+            bootbox.dialog({
+                size:'big',
+                title:'<center>添加新员工</center>',
+                message: createAddContent("../page/toEditUser"),
+                closeButton: true,
+                buttons : {
+                    "success" : {
+                        "label" : "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>&nbsp;&nbsp;保存",
+                        "className" : "btn-lg btn-success",
+                        "algin" : "center",
+                        "callback" : function() {
+                            $.ajax({
+                                url:'../user/saveUser',
+                                type:'post',
+                                data:$("#editUserForm").serialize(),
+                                dataType:'json',
+                                success:function (result) {
+                                    if (result) {
+                                        location.reload();
+                                    } else {
+                                        bootbox.alert({
+                                            size: "small",//small 小    big 中    large 大
+                                            title: "<center>提示</center>",
+                                            message: "<font size='4px' color='#ff6699'>添加失败</font>",
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    },
+                }
+            });
+            initDept();
+        })
+
+        /*修改*/
+        function updatUser(id) {
+            bootbox.dialog({
+                size:'big',
+                title:'<center>修改员工信息</center>',
+                message: createAddContent("../page/toEditUser"),
+                closeButton: true,
+                buttons : {
+                    "success" : {
+                        "label" : "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>&nbsp;&nbsp;保存",
+                        "className" : "btn-lg btn-success",
+                        "algin" : "center",
+                        "callback" : function() {
+                            $.ajax({
+                                url:'../user/saveUser',
+                                type:'post',
+                                data:$("#editUserForm").serialize(),
+                                dataType:'json',
+                                success:function (result) {
+                                    if (result) {
+                                        location.reload();
+                                    } else {
+                                        bootbox.alert({
+                                            size: "small",//small 小    big 中    large 大
+                                            title: "<center>提示</center>",
+                                            message: "<font size='4px' color='#ff6699'>修改失败</font>",
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    },
+                }
+            });
+
+            initDept();
+            initJobs();
+
+            $.ajax({
+                url:'../user/queryUserInfoById',
+                type:'post',
+                data:{
+                    id:id
+                },
+                dataType:'json',
+                success:function (result) {
+                    $("input[name='id']").val(result.id);
+                    $("input[name='status']").val(result.status);
+                    $("input[name='pwd']").val(result.pwd);
+                    $("input[name='name']").val(result.name);
+                    $("input[name='account']").val(result.account);
+                    $("input[type=radio][name=sex][value="+result.sex+"]").attr("checked",'checked');
+                    $("input[name='phone']").val(result.phone);
+                    $("input[name='email']").val(result.email);
+                    alert($("#deptIdSelect").find("option[value='"+result.deptId+"']"));
+                    $("#deptIdSelect").val(result.deptId);
+                    $("#postSelect").val(result.post);
+                    //$("#deptIdSelect").find("option[value='"+result.deptId+"']").attr('selected','selected');
+                    /*$("select[name='post']").find("option[value='"+result.post+"']").prop("selected",true);*/
+                }
+            })
+        }
+
+        function initDept() {
+            $.ajax({
+                url:'../user/queryDeptAll',
+                type:'post',
+                data:{},
+                dataType:'json',
+                success:function (result) {
+                    var html = '<option value="0"></option>';
+                    for (var i = 0; i < result.length ; i++) {
+                        html += '<option value="'+result[i].id+'">'+result[i].userName+'</option>';
+                    }
+                    $("select[name='deptId']").html(html);
+                }
+            })
+        }
+
+        function selectJob() {
+            $.ajax({
+                url:'../user/queryJobByDeptId',
+                type:'post',
+                data:{
+                    pid:$("select[name='deptId']").val(),
+                },
+                dataType:'json',
+                success:function (result) {
+                    var html = '<option value="0"></option>';
+                    for (var i = 0; i < result.length ; i++) {
+                        html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                    }
+                    $("select[name='post']").html(html);
+                }
+            })
+        }
+
+        function initJob() {
+            $.ajax({
+                url:'../user/queryJobAll',
+                type:'post',
+                data:{},
+                dataType:'json',
+                success:function (result) {
+                    var html = '<option value="0">请选择员工职位</option>';
+                    for (var i = 0; i < result.length; i++) {
+                        html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                    }
+                    $("#jobSelect").html(html);
+                }
+            })
+        }
+
+        function initJobs() {
+            $.ajax({
+                url:'../user/queryJobAll',
+                type:'post',
+                data:{},
+                dataType:'json',
+                success:function (result) {
+                    var html = '<option value="0">请选择员工职位</option>';
+                    for (var i = 0; i < result.length; i++) {
+                        html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                    }
+                    $("select[name='post']").html(html);
+                }
+            })
+        }
+
+        function initUserTable(){
+            $('.table').bootstrapTable('destroy');
+            $('.table').bootstrapTable({
+                //toolbar:'#userToolbar',
+                url:'../user/queryUserPage',//获取数据地址
+                pagination:true, //是否展示分页
+                pageList:[5, 10, 20, 50],//分页组件
+                pageNumber:1,
+                pageSize:5,//默认每页条数
+                //search:true,//是否显示搜索框
+                //searchText:'试试',//初始化搜索文字
+                showColumns:false,//是否显示 内容列下拉框
+                showToggle:false,//是否显示 切换试图（table/card）按钮
+                showPaginationSwitch:false,//是否显示 数据条数选择框
+                showRefresh:false,//是否显示刷新按钮
+                detailView:false,//设置为 true 可以显示详细页面模式。
+                showFooter:false,//是否显示列脚
+                clickToSelect: true, //是否启用点击选中行
+                sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+                striped:true,
+                queryParams:function(){
+                    return {
+                        page: this.pageNumber,
+                        rows: this.pageSize,
+                        account:$("#accountInput").val(),
+                        name:$("#nameInput").val(),
+                        post:$("#jobSelect").val(),
+                        status:$("#statusSelect").val(),
+                        startTime:$("#startTime").val(),
+                        endTime:$("#endTime").val(),
+                    };
+                },
+                columns:[
+                    {checkbox:true},
+                    {field:'id',title:'员工编号',align:'center',width:150},
+                    {field:'name',title:'员工姓名',align:'center',width:150},
+                    {field:'account',title:'员工账号',align:'center',width:150},
+                    {field:'depName',title:'所在部门',align:'center',width:150},
+                    {field:'jobName',title:'员工职位',align:'center',width:150},
+                    {field:'phone',title:'手机号',align:'center',width:150},
+                    {field:'status',title:'员工状态',align:'center',width:150,
+                        formatter:function (value, row, index) {
+                            return value == 1? '<input type="button" class="btn btn-primary" value="在职"/>':(value == 2? '<input type="button" class="btn" value="离职"/>':'');
+                        }
+                    },
+                    {field:'entryTime',title:'添加时间',align:'center',width:150},
+                    {field:'operation',title:'操作',align:'center',width:150,
+                        formatter:function(value,row,index){
+                            return '<input type="button" class="btn btn-warning" value="编辑" onclick="updatUser('+row.id+')"/>';
+                        }
+                    },
+                ]
+            });
+        }
+        /*]]> */
+    </script>
+</body>
+</html>
