@@ -17,20 +17,87 @@
     <result column="head_img" property="headImg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, account, pwd, phone, status, sex, dept_id, post, email, entry_time, age, 
-    head_img
+    id, name, account, pwd, phone, status, sex, dept_id deptId, post, email, entry_time entryTime, age,
+    head_img headImg
   </sql>
 
+  <!-- 登陆查询账号密码 -->
   <select id="queryUserInfoByLoginNumber" resultType="com.jk.model.user.UserBean" >
     select id,account,pwd,phone,name from t_user where account = #{username}
   </select>
 
+  <!-- 查询权限 -->
   <select id="queryUserPowerByUserId" resultType="string">
     select p.power from t_user_role ur,t_role_power rp,t_power p where
     ur.role_id = rp.role_id and rp.power_id = p.id and ur.user_id = #{userBean.id}
     and p.type = 'power'
   </select>
 
+  <!-- 查询用户总条数 -->
+  <select id="queryUserCount" resultType="int">
+    select count(*) from t_user u,t_dept d,t_job j where u.dept_id = d.id and u.post = j.id
+    <if test="userBean.name != null and userBean.name != ''">
+      and u.name like '%${userBean.name}%'
+    </if>
+    <if test="userBean.account != null and userBean.account != ''">
+      and u.account like '%${userBean.account}%'
+    </if>
+    <if test="userBean.post != null and userBean.post != 0 ">
+      and u.post = #{userBean.post}
+    </if>
+    <if test="userBean.status != null and userBean.status != 0 ">
+      and u.status = #{userBean.status}
+    </if>
+    <if test="userBean.startTime != null">
+      and u.entry_time &gt; #{userBean.startTime}
+    </if>
+    <if test="userBean.endTime != null">
+      and u.entry_time &lt; #{userBean.endTime}
+    </if>
+  </select>
+
+  <!-- 查询用户 带分页 -->
+  <select id="queryUserList" resultType="com.jk.model.user.UserBean">
+    select u.id, u.name, u.account, u.pwd, u.phone, u.status, u.sex, u.dept_id deptId, u.post,
+    u.email, u.entry_time entryTime, u.age, u.head_img headImg,d.name depName,j.name jobName
+    from t_user u,t_dept d,t_job j where u.dept_id = d.id and u.post = j.id
+    <if test="userBean.name != null and userBean.name != ''">
+      and u.name like '%${userBean.name}%'
+    </if>
+    <if test="userBean.account != null and userBean.account != ''">
+      and u.account like '%${userBean.account}%'
+    </if>
+    <if test="userBean.post != null and userBean.post != 0 ">
+      and u.post = #{userBean.post}
+    </if>
+    <if test="userBean.status != null and userBean.status != 0 ">
+      and u.status = #{userBean.status}
+    </if>
+    <if test="userBean.startTime != null">
+      and u.entry_time &gt; #{userBean.startTime}
+    </if>
+    <if test="userBean.endTime != null">
+      and u.entry_time &lt; #{userBean.endTime}
+    </if>
+    limit #{userBean.startIndex},#{userBean.rows}
+  </select>
+
+  <!-- 查询职位 -->
+  <select id="queryJobAll" resultType="com.jk.model.job.JobBean">
+    select * from t_job
+  </select>
+
+  <!-- 查询部门 -->
+  <select id="queryDeptAll" resultType="com.jk.model.dept.DeptBean">
+    select d.id, u.name userName from t_dept d,t_user u where d.user_id = u.id
+  </select>
+
+  <!-- 根据pid查询职位 -->
+  <select id="queryJobByDeptId" resultType="com.jk.model.job.JobBean">
+    select * from t_job where pid = #{jobBean.pid}
+  </select>
+
+  <!-- 修改密码  -->
   <update id="updateUserPassword">
     update t_user set head_img = #{userBean.headImg},
                       phone = #{userBean.phone},
@@ -54,132 +121,134 @@
       #{email,jdbcType=VARCHAR}, #{entryTime,jdbcType=TIMESTAMP}, #{age,jdbcType=INTEGER}, 
       #{headImg,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.jk.model.user.UserBean" >
+
+  <!-- 添加用户 -->
+  <insert id="saveUser">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="name != null" >
+      <if test="userBean.name != null and userBean.name != ''" >
         name,
       </if>
-      <if test="account != null" >
+      <if test="userBean.account != null and userBean.account != ''" >
         account,
       </if>
-      <if test="pwd != null" >
+      <if test="userBean.pwd != null and userBean.pwd != ''" >
         pwd,
       </if>
-      <if test="phone != null" >
+      <if test="userBean.phone != null and userBean.phone != ''" >
         phone,
       </if>
-      <if test="status != null" >
+      <if test="userBean.status != null" >
         status,
       </if>
-      <if test="sex != null" >
+      <if test="userBean.sex != null" >
         sex,
       </if>
-      <if test="deptId != null" >
+      <if test="userBean.deptId != null" >
         dept_id,
       </if>
-      <if test="post != null" >
+      <if test="userBean.post != null" >
         post,
       </if>
-      <if test="email != null" >
+      <if test="userBean.email != null and userBean.email != ''" >
         email,
       </if>
-      <if test="entryTime != null" >
+      <if test="userBean.entryTime != null" >
         entry_time,
       </if>
-      <if test="age != null" >
+      <if test="userBean.age != null" >
         age,
       </if>
-      <if test="headImg != null" >
+      <if test="userBean.headImg != null and userBean.headImg != '' " >
         head_img,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+      <if test="userBean.name != null and userBean.name != ''" >
+        #{userBean.name},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="userBean.account != null and userBean.account != ''" >
+        #{userBean.account},
       </if>
-      <if test="account != null" >
-        #{account,jdbcType=VARCHAR},
+      <if test="userBean.pwd != null and userBean.pwd != ''" >
+        #{userBean.pwd},
       </if>
-      <if test="pwd != null" >
-        #{pwd,jdbcType=VARCHAR},
+      <if test="userBean.phone != null and userBean.phone != ''" >
+        #{userBean.phone},
       </if>
-      <if test="phone != null" >
-        #{phone,jdbcType=VARCHAR},
+      <if test="userBean.status != null" >
+        #{userBean.status},
       </if>
-      <if test="status != null" >
-        #{status,jdbcType=INTEGER},
+      <if test="userBean.sex != null" >
+        #{userBean.sex},
       </if>
-      <if test="sex != null" >
-        #{sex,jdbcType=INTEGER},
+      <if test="userBean.deptId != null" >
+        #{userBean.deptId},
       </if>
-      <if test="deptId != null" >
-        #{deptId,jdbcType=INTEGER},
+      <if test="userBean.post != null" >
+        #{userBean.post},
       </if>
-      <if test="post != null" >
-        #{post,jdbcType=VARCHAR},
+      <if test="userBean.email != null and userBean.email != ''" >
+        #{userBean.email},
       </if>
-      <if test="email != null" >
-        #{email,jdbcType=VARCHAR},
+      <if test="userBean.entryTime != null" >
+        #{userBean.entryTime},
       </if>
-      <if test="entryTime != null" >
-        #{entryTime,jdbcType=TIMESTAMP},
+      <if test="userBean.age != null" >
+        #{userBean.age},
       </if>
-      <if test="age != null" >
-        #{age,jdbcType=INTEGER},
-      </if>
-      <if test="headImg != null" >
-        #{headImg,jdbcType=VARCHAR},
+      <if test="userBean.headImg != null and userBean.headImg != ''" >
+        #{userBean.headImg},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.user.UserBean" >
+
+  <select id="queryUserInfoById" resultType="com.jk.model.user.UserBean">
+    select id, name, account, pwd, phone, status, sex, dept_id deptId, post, email,
+    entry_time entryTime, age, head_img headImg from t_user where id = #{userBean.id}
+  </select>
+
+  <update id="updateUser">
     update t_user
     <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+      <if test="userBean.name != null and userBean.name != ''" >
+        name = #{userBean.name},
       </if>
-      <if test="account != null" >
-        account = #{account,jdbcType=VARCHAR},
+      <if test="userBean.account != null and userBean.account != ''" >
+        account = #{userBean.account},
       </if>
-      <if test="pwd != null" >
-        pwd = #{pwd,jdbcType=VARCHAR},
+      <if test="userBean.pwd != null and userBean.pwd != ''" >
+        pwd = #{userBean.pwd},
       </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=VARCHAR},
+      <if test="userBean.phone != null and userBean.phone != ''" >
+        phone = #{userBean.phone},
       </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=INTEGER},
+      <if test="userBean.status != null" >
+        status = #{userBean.status},
       </if>
-      <if test="sex != null" >
-        sex = #{sex,jdbcType=INTEGER},
+      <if test="userBean.sex != null" >
+        sex = #{userBean.sex},
       </if>
-      <if test="deptId != null" >
-        dept_id = #{deptId,jdbcType=INTEGER},
+      <if test="userBean.deptId != null" >
+        dept_id = #{userBean.deptId},
       </if>
-      <if test="post != null" >
-        post = #{post,jdbcType=VARCHAR},
+      <if test="userBean.post != null" >
+        post = #{userBean.post},
       </if>
-      <if test="email != null" >
-        email = #{email,jdbcType=VARCHAR},
+      <if test="userBean.email != null and userBean.email != ''" >
+        email = #{userBean.email},
       </if>
-      <if test="entryTime != null" >
-        entry_time = #{entryTime,jdbcType=TIMESTAMP},
+      <if test="userBean.entryTime != null" >
+        entry_time = #{userBean.entryTime},
       </if>
-      <if test="age != null" >
-        age = #{age,jdbcType=INTEGER},
+      <if test="userBean.age != null" >
+        age = #{userBean.age},
       </if>
-      <if test="headImg != null" >
-        head_img = #{headImg,jdbcType=VARCHAR},
+      <if test="userBean.headImg != null and userBean.headImg != ''" >
+        head_img = #{userBean.headImg},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{userBean.id}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.jk.model.user.UserBean" >
     update t_user
