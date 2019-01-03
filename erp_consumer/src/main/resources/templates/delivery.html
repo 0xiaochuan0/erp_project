@@ -51,29 +51,24 @@
             striped:true,
             columns:[
                 {checkbox:true},
-                {field:'inboundDate',title:'入库日期',width:100},
-                {field:'id',title:'入库单编号',width:100},
-                {field:'indentId',title:'采购单编号',width:100},
-                {field:'state',title:'入库状态',width:100,
+                {field:'returnDate',title:'出库日期',width:100},
+                {field:'salesReturnId',title:'订单编号',width:100},
+                {field:'type',title:'配送方式',width:100,
                     formatter:function(value,row,index){
                         if(value==1){
-                            return "未入库";
+                            return "自配送";
+                        }else if(value==2){
+                            return "第三方物流";
                         }else {
-                            return "已入库";
+                            return "门店自提";
                         }
                     }},
-                {field:'type',title:'入库类型',width:100,
-                    formatter:function(value,row,index){
-                        if(value==1){
-                            return "一般入库";
-                        }else {
-                            return "调拨入库";
-                        }
-                    }},
-                {field:'indentId',title:'供应商编号',width:100},
-                {field:'warehouseId',title:'入货仓库',width:100},
-                {field:'indentId',title:'收货员',width:100},
+                {field:'salesReturnId',title:'收货人',width:100},
+                {field:'salesReturnId',title:'收货人联系方式',width:100},
+                {field:'salesReturnId',title:'配送方式',width:100},
+                {field:'warehouseId',title:'出货仓库',width:100},
                 {field:'warehouseId',title:'仓管员',width:100},
+                {field:'salesReturnId',title:'收货员',width:100},
                 {field:'123',title:'操作',width:100, formatter:function(value,row,index){
                         return "查看 | 关闭";
                     }}
