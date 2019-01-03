@@ -28,7 +28,7 @@ public class ShiroConfig {
 
     /**
      * shiro 的过滤器链
-     *       shiro的核心总入口
+     *      *       shiro的核心总入口
      *
      * */
     @Bean

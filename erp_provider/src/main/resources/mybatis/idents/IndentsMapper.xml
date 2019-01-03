@@ -10,6 +10,10 @@
     <result column="from_id" property="fromId" jdbcType="INTEGER" />
     <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
     <result column="goods" property="goods" jdbcType="VARCHAR" />
+    <result column="consignee" property="consignee" jdbcType="TIMESTAMP" />
+    <result column="confirm_time" property="confirm_time" jdbcType="VARCHAR" />
+    <result column="receiving_time" property="receiving_time" jdbcType="VARCHAR" />
+    <result column="dispose_time" property="dispose_time" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, creat_time, consumer, money, pay_id, from_id, pay_status, goods
@@ -161,7 +165,6 @@
 
   <select id="showIndents" resultMap="BaseResultMap">
     select * from  indent
-
   </select>
   <insert id="insertMany"  parameterType="list">
     insert   into  indent (creat_time, consumer,
@@ -171,6 +174,31 @@
      (#{item.creatTime},#{item.consumer},#{item.money},#{item.payId},#{item.fromId},#{item.payStatus},#{item.goods})
     </foreach>
   </insert>
-
-
+  <delete id="delIndentsByIds" parameterType="java.lang.Integer">
+    delete from indent where id in
+    (
+      <foreach collection="array" item="item" index="index" separator=",">
+        #{item}
+      </foreach>
+    )
+  </delete>
+  <select id="queryGoodsByName" parameterType="java.lang.String" resultType="com.jk.model.indents.Goods">
+    select * from t_goods t where t.name =#{name}
+  </select>
+  <update id="updateIndentsPayStatus" parameterType="java.lang.Integer">
+    update indent set pay_status = 3 where id in
+    (
+    <foreach collection="array" item="item" index="index" separator=",">
+      #{item}
+    </foreach>
+    )
+  </update>
+  <update id="updateIndentsToConfirm" parameterType="java.lang.Integer">
+    update indent set pay_status = 5 where id in
+    (
+    <foreach collection="array" item="item" index="index" separator=",">
+      #{item}
+    </foreach>
+    )
+  </update>
 </mapper>

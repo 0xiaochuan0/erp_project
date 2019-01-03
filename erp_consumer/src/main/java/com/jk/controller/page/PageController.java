@@ -46,4 +46,14 @@ public class PageController {
         mm.put("user",userInfo);
         return "user/personalInfo";
     }
+
+    @RequestMapping("toUserPage")
+    String toUserPage(){
+        return "user/userPage";
+    }
+
+    @RequestMapping("toEditUser")
+    String toEditUser(){
+        return "user/editUser";
+    }
 }
