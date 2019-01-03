@@ -85,7 +85,7 @@
         </div>
         <div style="margin-left:30px">
             <button onclick="delMany()" class="btn btn-primary">删除选中</button>
-            <button id="btn_edit" class="btn btn-primary">新增</button>
+            <button onclick="updateIndentsPayStatus()" class="btn btn-primary">批量出货</button>
         </div>
     </fieldset>
 </div>
@@ -122,18 +122,20 @@
 </body>
 <script>
     /* <![CDATA[ */
-    $("#btn_edit").click(function () {
-        var arrselections = $("#myTable").bootstrapTable('getSelections');
-        if (arrselections.length > 1) {
-            alert('只能选择一行进行查看');
-            return;
-        }
-        if (arrselections.length <= 0) {
-            alert('请选择有效数据');
-            return;
-        }
-        $('#myModal').modal();
-    });
+    // $("#btn_edit").click(function () {
+    //     var arrselections = $("#myTable").bootstrapTable('getSelections');
+    //     if (arrselections.length > 1) {
+    //         alert('只能选择一行进行查看');
+    //         return;
+    //     }
+    //     if (arrselections.length <= 0) {
+    //         alert('请选择有效数据');
+    //         return;
+    //     }
+    //     $("#myModal").modal({
+    //         remote: "../indents/queryGoodsByName?name="+goods,
+    //     });
+    // });
     /* ]]> */
     //日期插件
     $("#startData").datetimepicker({
@@ -232,14 +234,40 @@
                     }},
                 /* <![CDATA[ */
                 {field:'111',title:'操作',width:100, formatter:function(value,row,index){
-                        return "<a href='#' onclick='delOne("+row.id+")'>删除</a> | <a onclick='updateIndents("+row.goods+")'>查看</a>";
+                        return "<a href='#' onclick='delOne("+row.id+")'>删除</a> | <a onclick='queryIndents("+row.goods+")'>查看</a>";
                     }}
                 /* ]]> */
             ]
         });
     }
+    /* <![CDATA[ */
+     function queryIndents(goods) {
+        alert(goods);
+            var arrselections = $("#myTable").bootstrapTable('getSelections');
+            if (arrselections.length > 1) {
+                alert('只能选择一行进行查看');
+                return;
+            } else {
+                $.ajax({
+                    url:"../indents/queryGoodsByName",
+                    type:'post',
+                    data:{
+                        name:goods
+                    },
+                    dataType:'json',
+                    success:function(data){
+                        $("#txt_departmentname").val(data.id);
+                        $("#txt_parentdepartment").val(data.name);
+                        $("#txt_departmentlevel").val(data.price);
+                    }
+                })
 
-
+                $("#myModal").modal({
+                    //remote: "../indents/queryGoodsByName?name="+goods,
+                });
+            }
+    }
+    /* ]]> */
     //批量删除
     /* <![CDATA[ */
 
@@ -264,7 +292,7 @@
             dataType:'json',
             success:function(data){
                 if (data) {
-                    $("#myTable").bootstrapTable('load', json);
+                    $("#myTable").bootstrapTable('refresh',opt);
                 }else{
                     alert("删除失败");
                 }
@@ -283,12 +311,50 @@
             dataType:'json',
             success:function(data){
                 if (data) {
-                    $("#myTable").bootstrapTable('load', json);
+                   location.reload();
                 }else{
                     alert("删除失败");
                 }
             }
         })
+    }
+    /* ]]> */
+    /* <![CDATA[ */
+    //批量出货改变状态
+    function updateIndentsPayStatus(){
+        var arr = $("#myTable").bootstrapTable('getSelections');
+        if(arr.length == 0){
+            alert('请选择需要出货的数据');
+            return;
+        }
+
+        var ids = ""
+        for (var i = 0; i < arr.length; i++) {
+            if(arr[i].payStatus==3){
+                alert("请查看订单状态");
+                return;
+            }
+            ids += ids == "" ? arr[i].id : ","+arr[i].id
+        }
+        alert(ids);
+        $.ajax({
+            url:'../indents/updateIndentsPayStatus',
+            type:'post',
+            data:{
+                ids:ids
+            },
+            dataType:'json',
+            success:function(data){
+                if (data) {
+                    $("#myTable").bootstrapTable("refresh", {
+                        silent: true //静态刷新
+                    });
+                }else{
+                    alert("出货失败");
+                }
+            }
+        })
+
     }
     /* ]]> */
 </script>

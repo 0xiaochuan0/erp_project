@@ -171,6 +171,23 @@
      (#{item.creatTime},#{item.consumer},#{item.money},#{item.payId},#{item.fromId},#{item.payStatus},#{item.goods})
     </foreach>
   </insert>
-
-
+  <delete id="delIndentsByIds" parameterType="java.lang.Integer">
+    delete from indent where id in
+    (
+      <foreach collection="array" item="item" index="index" separator=",">
+        #{item}
+      </foreach>
+    )
+  </delete>
+  <select id="queryGoodsByName" parameterType="java.lang.String" resultType="com.jk.model.indents.Goods">
+    select * from t_goods t where t.name =#{name}
+  </select>
+  <update id="updateIndentsPayStatus" parameterType="java.lang.Integer">
+    update indent set pay_status = 3 where id in
+    (
+    <foreach collection="array" item="item" index="index" separator=",">
+      #{item}
+    </foreach>
+    )
+  </update>
 </mapper>
