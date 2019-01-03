@@ -113,7 +113,7 @@
                 'removeCompleted' : true,
                 'removeTimeout' : 1,
                 //上传文件的个数
-                'uploadLimit' : 1,
+                'uploadLimit' : 10,
                 'fileTypeExts' : '*.jpg;*.jpge;*.gif;*.png',
                 'fileSizeLimit' : '2MB',
                 //给div的进度条加背景 不可忽略
@@ -127,7 +127,7 @@
                     1.根据图片路径 通过img标签回显图片
                     2.将图片路径 放到隐藏域中  保存用户数据时  直接添加到数据库
                     */
-                    $("#showImg").attr("src","../"+data);
+                    $("#showImg").attr("src",data);
                     $("#userp").val(data);
                 }
             });

@@ -1,5 +1,6 @@
 package com.jk.service.indents;
 
+import com.jk.model.indents.Goods;
 import com.jk.model.indents.Indents;
 import com.jk.utils.ResultPage;
 
@@ -18,4 +19,10 @@ public interface IndentsService {
     List<Indents> showIndents();
 
     void insertMany(List<Indents> list);
+
+    void delIndentsByIds(Integer[] ids);
+
+    Goods queryGoodsByName(String name);
+
+    void updateIndentsPayStatus(Integer[] ids);
 }

@@ -1,6 +1,7 @@
 package com.jk.mapper.indents;
 
 
+import com.jk.model.indents.Goods;
 import com.jk.model.indents.Indents;
 
 import java.util.List;
@@ -27,4 +28,10 @@ public interface IndentsMapper {
     List<Indents> showIndents();
 
     void insertMany(List<Indents> list);
+
+    void delIndentsByIds(Integer[] ids);
+
+    Goods queryGoodsByName(String name);
+
+    void updateIndentsPayStatus(Integer[] ids);
 }

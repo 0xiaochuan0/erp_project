@@ -1,6 +1,7 @@
 package com.jk.controller.indents;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.jk.model.indents.Goods;
 import com.jk.model.indents.Indents;
 import com.jk.service.indents.IndentsService;
 import com.jk.utils.ResultPage;
@@ -232,9 +233,32 @@ public class IndentsController {
         out.flush();
         out.close();
     }
+    @RequestMapping("delIndentsByIds")
+    @ResponseBody
+    public Boolean  delIndentsByIds(Integer[] ids){
+        try {
+            indentsService.delIndentsByIds(ids);
 
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
-
-
+   @RequestMapping("queryGoodsByName")
+   @ResponseBody
+    public Goods queryGoodsByName(String name) {
+         return indentsService.queryGoodsByName(name);
+   }
+    @RequestMapping("updateIndentsPayStatus")
+    @ResponseBody
+    public void updateIndentsPayStatus(Integer[] ids){
+        try {
+            indentsService.updateIndentsPayStatus(ids);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 }
