@@ -7,6 +7,7 @@ import com.jk.model.job.JobBean;
 import com.jk.model.user.UserBean;
 import com.jk.service.user.UserService;
 import com.jk.util.UploadifyUtil;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,5 +73,11 @@ public class UserController {
     @RequestMapping("queryUserInfoById")
     public UserBean queryUserInfoById(UserBean userBean){
         return userService.queryUserInfoById(userBean);
+    }
+
+    @RequestMapping("getInfo")
+    public UserBean getInfo(){
+        UserBean userInfo = (UserBean) SecurityUtils.getSubject().getPrincipal();
+        return userInfo;
     }
 }

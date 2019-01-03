@@ -2,6 +2,7 @@ package com.jk.service.impl.indents;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.jk.mapper.indents.IndentsMapper;
+import com.jk.model.indents.Goods;
 import com.jk.model.indents.Indents;
 import com.jk.service.indents.IndentsService;
 import com.jk.utils.ResultPage;
@@ -50,5 +51,20 @@ public class IndentsServiceImpl implements IndentsService {
     @Override
     public void insertMany(List<Indents> list) {
         indentsMapper.insertMany(list);
+    }
+
+    @Override
+    public void delIndentsByIds(Integer[] ids) {
+        indentsMapper.delIndentsByIds(ids);
+    }
+
+    @Override
+    public Goods queryGoodsByName(String name) {
+        return indentsMapper.queryGoodsByName(name);
+    }
+
+    @Override
+    public void updateIndentsPayStatus(Integer[] ids) {
+        indentsMapper.updateIndentsPayStatus(ids);
     }
 }
