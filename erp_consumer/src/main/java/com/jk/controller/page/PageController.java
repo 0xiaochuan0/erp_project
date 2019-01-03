@@ -10,18 +10,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("page")
 public class PageController {
-
     @RequestMapping("toLogin")
     String toLogin(){
         return "user/login";
     }
+
     @RequestMapping("login")
     String login(HttpServletRequest request, Model model){
         String attribute = (String) request.getAttribute("shiroLoginFailure");
@@ -48,4 +47,13 @@ public class PageController {
         return "user/personalInfo";
     }
 
+    @RequestMapping("toUserPage")
+    String toUserPage(){
+        return "user/userPage";
+    }
+
+    @RequestMapping("toEditUser")
+    String toEditUser(){
+        return "user/editUser";
+    }
 }
