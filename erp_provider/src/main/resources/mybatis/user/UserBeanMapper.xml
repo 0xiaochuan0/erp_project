@@ -15,6 +15,7 @@
     <result column="entry_time" property="entryTime" jdbcType="TIMESTAMP" />
     <result column="age" property="age" jdbcType="INTEGER" />
     <result column="head_img" property="headImg" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List" >
     id, name, account, pwd, phone, status, sex, dept_id, post, email, entry_time, age, 
@@ -28,7 +29,6 @@
   <select id="queryUserPowerByUserId" resultType="string">
     select p.power from t_user_role ur,t_role_power rp,t_power p where
     ur.role_id = rp.role_id and rp.power_id = p.id and ur.user_id = #{userBean.id}
-    and p.type = 'power'
   </select>
 
   <update id="updateUserPassword">
