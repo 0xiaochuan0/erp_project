@@ -37,7 +37,7 @@ public class WarehouseManageController {
     @RequiresPermissions("indent:query")
     @RequestMapping("toStock")
     public String  toStock(){
-        return "stock";
+        return "warehouse/stock";
     }
 
     @RequestMapping("queryStock")
@@ -46,4 +46,15 @@ public class WarehouseManageController {
         ResultPage resultPage = warehouseManageService.queryListStock(page, rows,warehouseManage);
         return resultPage;
     }
+    @RequestMapping("inStorage")
+    @ResponseBody
+    public Boolean inStorage(Integer id) {
+        try {
+            warehouseManageService.inStorage(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }

@@ -36,7 +36,7 @@ public class WarehouseDeliveryController {
     @RequiresPermissions("indent:query")
     @RequestMapping("toDelivery")
     public String  toDelivery(){
-        return "delivery";
+        return "warehouse/delivery";
     }
 
     @RequestMapping("queryDelivery")
@@ -44,5 +44,15 @@ public class WarehouseDeliveryController {
     public ResultPage queryDelivery(Integer page, Integer rows, WarehouseDelivery warehouseDelivery){
         ResultPage resultPage = warehouseDeliveryService.queryDelivery(page, rows,warehouseDelivery);
         return resultPage;
+    }
+    @RequestMapping("outStorage")
+    @ResponseBody
+    public Boolean outStorage(Integer id) {
+        try {
+            warehouseDeliveryService.outStorage(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
