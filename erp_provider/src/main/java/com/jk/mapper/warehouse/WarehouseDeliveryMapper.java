@@ -21,4 +21,6 @@ public interface WarehouseDeliveryMapper {
     List<WarehouseDelivery> queryList(Map<String, Object> map);
 
     Integer queryCount(Map<String, Object> map);
+
+    void outStorage(Integer id);
 }

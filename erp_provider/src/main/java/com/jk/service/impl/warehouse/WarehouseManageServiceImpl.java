@@ -53,4 +53,9 @@ public class WarehouseManageServiceImpl implements IWarehouseManageService {
         resultPage.setTotal(warehouseManageMapper.queryCount(map));
         return resultPage;
     }
+
+    @Override
+    public void inStorage(Integer id) {
+        warehouseManageMapper.inStorage(id);
+    }
 }
