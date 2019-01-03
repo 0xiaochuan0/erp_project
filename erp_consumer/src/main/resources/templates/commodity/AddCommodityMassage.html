@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../uploadify/uploadify.css"/>
+
+    <link href="https://cdn.bootcss.com/bootstrap-select/1.12.4/css/bootstrap-select.min.css" rel="stylesheet"/>
+
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <script src="../uploadify/jquery.uploadify.min.js"></script>
+
+
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-12" style="height: 400px">
+            <div class="row">
+                <div class="col-md-12" style="height: 40px;background-color: #F0F0F0" >
+                    <h3 style="color:red;display:inline-block" ><b>|</b></h3>
+                    <h3 style="display:inline-block">运营快捷入口</h3>
+                </div>
+                <div  class="col-md-6">
+                    <label style="font-weight:normal;background-color: #fac090;width: 80px;text-align: center" >Biz Unit</label>
+                    <select id="sel_bizUnit" name="bUnitId" class="selectpicker" title="请选择" data-width="150px" style="">
+                    </select>
+                </div>
+                <div  class="col-md-6">
+                    <label style="font-weight:normal;background-color: #fac090;width: 80px;text-align: center" >Division</label>
+                    <select id="sel_division" name="divId" class="selectpicker"title="请选择" data-width="150px" style="">
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12" style="height: 400px">
+
+        </div>
+
+        <div class="col-md-12" style="height: 200px">
+
+        </div>
+    </div>
+    <script>
+        $(function(){
+            //初始化下一级下拉框
+            //动态加载
+            $.ajax({
+                type: 'get',
+                url: '${baseURL}/listAllSABusinessUnit',
+                dataType: "json",
+                success: function (data) {
+                    for(var i=0;i<data.length;i++){
+                        $("#sel_bizUnit").append("<option value='"+data[i].bUnitId+"'>"+data[i].bUnitName+"</option>");
+                    }
+                    $("#sel_bizUnit").selectpicker("refresh");
+                }
+            });
+
+            //二级下拉框的选项随一级下拉框的值而改变
+            $("#sel_bizUnit").change(function(){
+                //根据bUnit去获取Division
+                $.ajax({
+                    type: 'get',
+                    url: '${baseURL}/getSADivisionByBUnit?bUnitId='+$("#sel_bizUnit").val(),
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.length == 0){
+                            //如果一级没有对应的二级 则清空二级并 不往下执行
+                            $("#sel_division").empty();
+                            $("#sel_division").selectpicker("refresh");
+                            return ;
+                        }
+                        //如果一级有对应的二级 则进行拼接
+                        //每次拼接前都进行清空
+                        $("#sel_division").empty();
+                        for(var i=0;i<data.length;i++){
+                            $("#sel_division").append("<option value='"+data[i].divId+"'>"+data[i].divName+"</option>");
+                        }
+                        //这里千万别忘记了
+                        $("#sel_division").selectpicker("refresh");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

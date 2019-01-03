@@ -122,20 +122,18 @@
 </body>
 <script>
     /* <![CDATA[ */
-    // $("#btn_edit").click(function () {
-    //     var arrselections = $("#myTable").bootstrapTable('getSelections');
-    //     if (arrselections.length > 1) {
-    //         alert('只能选择一行进行查看');
-    //         return;
-    //     }
-    //     if (arrselections.length <= 0) {
-    //         alert('请选择有效数据');
-    //         return;
-    //     }
-    //     $("#myModal").modal({
-    //         remote: "../indents/queryGoodsByName?name="+goods,
-    //     });
-    // });
+    $("#btn_edit").click(function () {
+        var arrselections = $("#myTable").bootstrapTable('getSelections');
+        if (arrselections.length > 1) {
+            alert('只能选择一行进行查看');
+            return;
+        }
+        if (arrselections.length <= 0) {
+            alert('请选择有效数据');
+            return;
+        }
+        $('#myModal').modal();
+    });
     /* ]]> */
     //日期插件
     $("#startData").datetimepicker({
@@ -234,7 +232,7 @@
                     }},
                 /* <![CDATA[ */
                 {field:'111',title:'操作',width:100, formatter:function(value,row,index){
-                        return "<a href='#' onclick='delOne("+row.id+")'>删除</a> | <a onclick='queryIndents("+row.goods+")'>查看</a>";
+                        return "<a href='#' onclick='delOne("+row.id+")'>删除</a> | <a onclick='updateIndents("+row.goods+")'>查看</a>";
                     }}
                 /* ]]> */
             ]
@@ -292,7 +290,7 @@
             dataType:'json',
             success:function(data){
                 if (data) {
-                    $("#myTable").bootstrapTable('refresh',opt);
+                    $("#myTable").bootstrapTable('load', json);
                 }else{
                     alert("删除失败");
                 }
@@ -311,7 +309,7 @@
             dataType:'json',
             success:function(data){
                 if (data) {
-                   location.reload();
+                    $("#myTable").bootstrapTable('load', json);
                 }else{
                     alert("删除失败");
                 }

@@ -73,7 +73,6 @@ public class IndentsController {
             object[4]=book.getPayId();
             object[5]=book.getFromId();
             object[6]=book.getPayStatus();
-
             dataList.add(object);
         }
         ExportExcel expoet=new ExportExcel(title, rowName, dataList, response);
@@ -261,6 +260,5 @@ public class IndentsController {
             e.printStackTrace();
         }
     }
-
 
 }
