@@ -52,6 +52,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/bootstrap-datetimepicker/**", "anon");
         filterChainDefinitionMap.put("/bootstrap-table/**", "anon");
         filterChainDefinitionMap.put("/bootstrap-treeview/**", "anon");
+        filterChainDefinitionMap.put("/bootstrap-select/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/highCharts/**", "anon");
         filterChainDefinitionMap.put("/images/**", "anon");
