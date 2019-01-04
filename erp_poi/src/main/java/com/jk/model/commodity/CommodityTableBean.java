@@ -29,6 +29,8 @@ public class CommodityTableBean implements Serializable {
     private Integer priceThisId;
     //价格本Id:品牌Name
     private String trademark;
+    //价格本Id:销售价格sellingPrice
+    private String sellingPrice;
     //库存预警值
     private Integer inventoryWarningValue;
     //属性ID
@@ -150,6 +152,14 @@ public class CommodityTableBean implements Serializable {
         this.trademark = trademark;
     }
 
+    public String getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public void setSellingPrice(String sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
     @Override
     public String toString() {
         return "CommodityTableBean{" +
@@ -163,6 +173,7 @@ public class CommodityTableBean implements Serializable {
                 ", typeId2=" + typeId2 +
                 ", priceThisId=" + priceThisId +
                 ", trademark='" + trademark + '\'' +
+                ", sellingPrice='" + sellingPrice + '\'' +
                 ", inventoryWarningValue=" + inventoryWarningValue +
                 ", attributeId=" + attributeId +
                 ", explain='" + explain + '\'' +

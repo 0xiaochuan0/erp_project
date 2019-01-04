@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.commodity.CommodityPriceThisMapper" >
+    <select id="queryCommodityPriceThisCount" parameterType="map" resultType="int">
+        select count(1)
+        from commodity_priceThis
+        where 1=1 <include refid="queryCommodityPriceThis"></include>
+    </select>
+    <select id="queryCommodityPriceThisList" parameterType="map" resultType="com.jk.model.commodity.CommodityPriceThisBean">
+        select *
+        from commodity_priceThis
+        where 1=1 <include refid="queryCommodityPriceThis"></include>
+        limit #{start},#{end}
+    </select>
+    <sql id="queryCommodityPriceThis">
+       <if test="commodityPriceThis.number!=null and commodityPriceThis.number!='' ">
+            and number like '%${commodityPriceThis.number}%'
+        </if>
+    </sql>
+<select id="queryCommodity_priceThis_log"  resultType="java.util.LinkedHashMap" parameterType="int">
+        select  time as time,Commodity_priceThis_id  as Commodity_priceThis_id ,pricePurchasing as pricePurchasing , sellingPrice as sellingPrice
+                from commodity_priceThis_log
+                where Commodity_priceThis_id=#{id}
+</select>
+    <insert id="SaveOrUpdateCommodityPriceThis"  parameterType="com.jk.model.commodity.CommodityPriceThisBean">
+            insert into commodity_priceThis
+                        (name,number,trademark,pricePurchasing,sellingPrice)
+                values(#{name},#{number},#{trademark},#{pricePurchasing},#{sellingPrice})
+    </insert>
+    <update id="UpdateCommodityPriceThis" parameterType="com.jk.model.commodity.CommodityPriceThisBean">
+        update commodity_priceThis  set name=#{name},trademark=#{trademark},pricePurchasing=#{pricePurchasing},sellingPrice=#{sellingPrice} where id=#{id}
+    </update>
+<select id="getCommodity_priceThis"  resultType="com.jk.model.commodity.CommodityPriceThisBean" parameterType="int">
+    select *
+    from commodity_priceThis
+    where id=#{id}
+</select>
+</mapper>

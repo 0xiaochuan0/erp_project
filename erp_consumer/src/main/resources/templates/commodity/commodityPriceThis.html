@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css" />
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>
+
+    <!--表格-->
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <!-- 弹框 -->
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+</head>
+<body style="height:100% ;width:100%;">
+<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
+    <div class="panel-heading">
+        <h3 class="panel-title">商品管理 /添加商品</h3>
+    </div>
+    <div class="panel-body">
+        <div id="toolbar">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="name" placeholder="请输入属性组名称"/>
+                    <button type="button" onclick="searchUser()" class="btn btn-info glyphicon glyphicon-search">搜索</button>
+                    <button type="button" onclick="add()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+                </div>
+            </form>
+        </div>
+        <!-- 展示用户列表 -->
+        <table id="myTable"></table>
+    </div>
+</div>
+<script>
+    //页面加载
+    $(function(){
+        initTable();
+    })
+    //搜索
+    function searchUser(){
+        $('#myTable').bootstrapTable('refresh');
+    }
+    //初始化表格数据
+    function initTable(){
+        $("#myTable").bootstrapTable({
+            toolbar:'#toolbar',
+            url:'../commodityPriceThis/queryCommodityPriceThis',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[1,5,10,20,50],//分页组件
+            pageNumber:1,
+            pageSize:5,//默认每页条数
+            //search:true,//是否显示搜索框
+            //searchText:'试试',//初始化搜索文字
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            striped:true,
+            queryParams:function(){
+                var name=$("#name").val();
+                return{
+                    page: this.pageNumber,
+                    rows: this.pageSize,
+                    number:name,
+                }
+            },
+            columns:[
+                {checkbox:true},
+                {
+                    field:"number",
+                    title: '<div style="background-color:#F0F0F0 ">商品编号</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return 'NO '+value;
+                    }
+                },
+                {
+                    field:"name",
+                    title: '<div style="background-color:#F0F0F0 ">商品名称</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+
+                {
+                    field:"trademark",
+                    title: '<div style="background-color:#F0F0F0 ">品牌</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"classify",
+                    title: '<div style="background-color:#F0F0F0 ">分类</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"specification",
+                    title: '<div style="background-color:#F0F0F0 ">规格</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"unit",
+                    title: '<div style="background-color:#F0F0F0 ">单位</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"pricePurchasing",
+                    title: '<div style="background-color:#F0F0F0 ">进价</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return '￥'+value;
+                    }
+                },
+                {
+                    field:"sellingPrice",
+                    title: '<div style="background-color:#F0F0F0 ">销售</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return '￥'+value;
+                    }
+                },
+                {
+                    field:"123",
+                    align: 'trademark',
+                    title: '<div style="background-color:#F0F0F0 ">操作</div>',
+                    formatter:function(value,row,index){
+                        return '<button type="button" onclick="get('+row.id+')" class="btn btn-warning">编辑</button><button type="button" onclick="queryCommodity_priceThis_Table('+row.id+')" class="btn btn-danger">查看走势</button>' ;
+                    }
+                }
+            ]
+        })
+    }
+    function add() {
+        bootbox.dialog({
+            title:"<center>添加商品价格</center>",
+            message:createAddContent('../commodityPriceThis/AddCommodityPriceThis'),
+            closeButton:true,
+            buttons:{
+                "success":{
+                    "label" : '<i class="icon-ok"></i> 保存',
+                    "className" : "btn-sm btn-success",
+                    "callback":function(){
+
+                          $.ajax({
+                            url:'../commodityPriceThis/SaveOrUpdateCommodityPriceThis',
+                            type:'post',
+                            data:$("#addForm").serialize(),
+                            dataType:'json',
+                            success:function(data){
+                                $("#close").click('close');
+                                $('#myTable').bootstrapTable('refresh');
+                            }
+                        })
+
+                    }
+                },
+                "cancel":{
+                    "label":'<i id="close" class="icon-info"></i> 取消',
+                    "className":"btn-sm btn-danger",
+                    "callback" :function(){}
+                }
+            }
+        })
+    }
+    //  createAddContent(url)  这个方法直接用--必需品
+    var res;
+    function createAddContent(url){
+        $.ajax({
+            url:url,
+            async:false,
+            success:function(data){
+                res = data;
+            }
+        });
+        return res;
+    }
+    function get(id){
+        bootbox.dialog({
+            title:"<center>添加商品价格</center>",
+            message:createAddContent('../commodityPriceThis/AddCommodityPriceThis'),
+            closeButton:true,
+            buttons:{
+                "success":{
+                    "label" : '<i class="icon-ok"></i> 保存',
+                    "className" : "btn-sm btn-success",
+                    "callback":function(){
+                        $.ajax({
+                            url:'../commodityPriceThis/SaveOrUpdateCommodityPriceThis',
+                            type:'post',
+                            data:$("#addForm").serialize(),
+                            dataType:'json',
+                            success:function(data){
+                                $("#close").click('close');
+                                $('#myTable').bootstrapTable('refresh');
+                            }
+                        })
+
+                    }
+                },
+                "cancel":{
+                    "label":'<i id="close" class="icon-info"></i> 取消',
+                    "className":"btn-sm btn-danger",
+                    "callback" :function(){}
+                }
+            }
+        })
+        $.ajax({
+            url:'../commodityPriceThis/getCommodity_priceThis',
+            type:'post',
+            data:{id:id},
+            dataType:'json',
+            success:function(data){
+                $("input[name='name']").val(data.name);
+                $("input[name='trademark']").val(data.trademark);
+                $("input[name='sellingPrice']").val(data.sellingPrice);
+                $("input[name='pricePurchasing']").val(data.pricePurchasing);
+                $("input[name='id']").val(data.id);
+               /* bootbox.form('data',{data});*/
+            }
+        })
+    }
+    function queryCommodity_priceThis_Table(id){
+        if(id!=null){
+            $.ajax({
+                url:'../commodityPriceThis/queryCommodity_priceThis_log',
+                type:'post',
+                data:{id:id},
+                success:function(data){
+
+                    var chart = Highcharts.chart('container', {
+                        title: {
+                            text: '2010 ~ 2016 年太阳能行业就业人员发展情况'
+                        },
+                        subtitle: {
+                            text: '数据来源：thesolarfoundation.com'
+                        },
+                        yAxis: {
+                            title: {
+                                text: '就业人数'
+                            }
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle'
+                        },
+                        xAxis: {
+                            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                        },
+                        series: [{
+                            name: '安装，实施人员',
+                            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+                        }, {
+                            name: '工人',
+                            data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+                        }, {
+                            name: '销售',
+                            data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+                        }, {
+                            name: '项目开发',
+                            data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+                        }, {
+                            name: '其他',
+                            data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+                        }],
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+
+
+
+                }
+            })
+        }else{
+            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
+        }
+    }
+</script>
+</body>
+</html>
