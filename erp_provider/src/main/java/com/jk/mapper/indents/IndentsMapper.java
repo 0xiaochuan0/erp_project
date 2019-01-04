@@ -34,4 +34,6 @@ public interface IndentsMapper {
     Goods queryGoodsByName(String name);
 
     void updateIndentsPayStatus(Integer[] ids);
+
+    void updateIndentsToConfirm(Integer[] ids);
 }
