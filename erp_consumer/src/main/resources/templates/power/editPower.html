@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+    <form id="editPowerForm">
+        <div class="row" style="margin-top: 10px">
+            <div class="col-sm-2">
+                <input type="hidden" name="id"/>
+            </div>
+            <div class="col-sm-3" style="height: 34px;line-height: 34px;text-align: right">
+                权限组名称
+            </div>
+            <div class="col-sm-5">
+                <select class="form-control" name="pid">
+                    <option value="0">请选择</option>
+                    <optgroup label="基础信息">
+                        <option value="7">系统首页</option>
+                        <option value="8">个人信息</option>
+                    </optgroup>
+                    <optgroup label="商品管理">
+                        <option value="9">商品列表</option>
+                        <option value="10">添加商品</option>
+                        <option value="11">商品分类编辑</option>
+                        <option value="12">商品价格本</option>
+                    </optgroup>
+                    <optgroup label="数据报表">
+                        <option value="13">订单报表</option>
+                        <option value="14">销售报表</option>
+                        <option value="15">财务报表</option>
+                    </optgroup>
+                    <optgroup label="采购管理">
+                        <option value="16">供应商管理</option>
+                        <option value="17">请购单管理</option>
+                        <option value="18">采购单管理</option>
+                        <option value="19">退货单管理</option>
+                    </optgroup>
+                    <optgroup label="仓库管理">
+                        <option value="20">入库管理</option>
+                        <option value="21">出库管理</option>
+                        <option value="22">仓库结构</option>
+                        <option value="23">仓储管理</option>
+                        <option value="24">仓库报表</option>
+                    </optgroup>
+                    <optgroup label="权限管理">
+                        <option value="1">员工管理</option>
+                        <option value="2">公司架构</option>
+                        <option value="3">权限分配</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-3" style="height: 34px;line-height: 34px;text-align: right">
+                权限组等级
+            </div>
+            <div class="col-sm-5">
+                <select class="form-control" name="grade">
+                    <option value="0"></option>
+                    <option value="1">Ⅰ</option>
+                    <option value="2">Ⅱ</option>
+                    <option value="3">Ⅲ</option>
+                    <option value="4">Ⅳ</option>
+                    <option value="5">Ⅴ</option>
+                </select>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-3" style="height: 34px;line-height: 34px;text-align: right">
+                权限名
+            </div>
+            <div class="col-sm-5">
+                <input class="form-control" name="name" type="text"/>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-3" style="height: 34px;line-height: 34px;text-align: right">
+                权限
+            </div>
+            <div class="col-sm-5">
+                <input class="form-control" name="power" type="text"/>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-3" style="height: 34px;line-height: 34px;text-align: right">
+                隶属角色
+            </div>
+            <div class="col-sm-5">
+                <select class="form-control" name="roleId"></select>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </form>
+    <script>
+        /*<![CDATA[*/
+        /*$(function () {
+            initRole();
+        })
+        function initRole() {
+            $.ajax({
+                url:'../power/queryRoleAll',
+                type:'post',
+                data:{},
+                dataType:'json',
+                success:function (result) {
+                    var html = '';
+                    for (var i = 0; i < result.length; i++) {
+                        html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                    }
+                    $("select[name='ids']").html(html);
+                }
+            })
+        }*/
+        /*]]> */
+    </script>
+</body>
+</html>
