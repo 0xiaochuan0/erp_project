@@ -94,7 +94,7 @@
   <!--查询所有-->
   <select id="queryList" parameterType="map" resultMap="BaseResultMap">
     select * from warehouse_delivery
-    where 1 = 1
+    where 1 = 1 order by id
     limit #{start},#{end}
   </select>
   <!--查询条数-->
@@ -102,4 +102,8 @@
     select count(1) from warehouse_delivery
     where 1 = 1
   </select>
+  <!--出库-->
+  <update id="outStorage" parameterType="com.jk.model.warehouse.WarehouseDelivery" >
+    update warehouse_delivery wd set wd.return_date = CURDATE() where wd.id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
