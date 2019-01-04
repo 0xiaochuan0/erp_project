@@ -28,7 +28,7 @@ public class ShiroConfig {
 
     /**
      * shiro 的过滤器链
-     *       shiro的核心总入口
+     *      *       shiro的核心总入口
      *
      * */
     @Bean
@@ -58,6 +58,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/uploadify/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
+
         // 放过登录页面拦截
         filterChainDefinitionMap.put("/page/toLogin", "anon");
         /// **代表所有路径 除以上路径外都拦截 authc代表权限拦截过滤器
@@ -68,9 +69,13 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setLoginUrl("/page/login");
         // 登录成功跳转到登录成功页面
         shiroFilterFactoryBean.setSuccessUrl("/temp/main");
+        //解决登录成功后不发跳转到指定页面的问题
+        Map map = new LinkedHashMap();
+        map.put("authc", new MyFormAuthenticationFilter());
+        shiroFilterFactoryBean.setFilters(map);
         // 未授权界面;
         //shiroFilterFactoryBean.setUnauthorizedUrl("/403.html");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/page/toError");
+        shiroFilterFactoryBean.setUnauthorizedUrl("user/error");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         // 最终返回过滤器链
         return shiroFilterFactoryBean;
@@ -130,7 +135,7 @@ public class ShiroConfig {
     public SimpleMappingExceptionResolver resolver() {
         SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
         Properties properties = new Properties();
-        properties.setProperty("org.apache.shiro.authz.UnauthorizedException", "/page/toError");
+        properties.setProperty("org.apache.shiro.authz.UnauthorizedException", "user/error");
         resolver.setExceptionMappings(properties);
         return resolver;
     }

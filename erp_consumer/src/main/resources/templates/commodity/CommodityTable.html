@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css" />
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>
+
+    <!--表格-->
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <!--添加扇形叶-->
+    <link rel="stylesheet" href="../bootStrap-addTabs/bootstrap.addtabs.css"/>
+    <script src="../bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+
+</head>
+<body>
+<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
+    <div class="panel-heading">
+        <h3 class="panel-title">商品管理/商品列表</h3>
+    </div>
+    <div class="panel-body">
+        <div id="toolbar">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="number">商品编号</label>
+                    <input type="text" class="form-control" id="number" placeholder="请输入商品编号"/>
+                </div>
+                <div class="form-group">
+                    <label for="name">商品名称</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入商品名称"/>
+                </div>
+                <div class="form-group">
+                    <!--<label>生日</label>-->
+                    <label for="trademark">商品品牌</label>
+                    <input type="text" class="form-control" id="trademark" placeholder="请输入商品品牌"/>
+                    <!--<input type="text" class="form-control date" id="birthdayStart" />
+                    <input type="text" class="form-control date" id="birthdayEnd" />-->
+                </div>
+                <div class="form-group">
+                    <label for="state">商品状态</label>
+                    <input type="text" class="form-control" id="state" placeholder="上架"/>
+                </div>
+            </form>
+            <button type="button" onclick="commodity()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+            <button type="button" onclick="searchUser()" class="btn btn-info glyphicon glyphicon-search">搜索</button>
+            <!--  <button type="button" onclick="deleteAll()" class="btn btn-danger glyphicon glyphicon-trash">批量删除</button>
+              <button type="button" onclick="updateLockStateAll()" class="btn btn-active glyphicon glyphicon-lock">批量锁定</button>
+        -->  </div>
+        <!-- 展示用户列表 -->
+        <table id="myTable"></table>
+    </div>
+</div>
+
+<script>
+    //页面加载
+    $(function(){
+        initTable();
+    })
+    //搜索
+    function searchUser(){
+        $('#myTable').bootstrapTable('refresh');
+    }
+    //初始化表格数据
+    function initTable(){
+        $("#myTable").bootstrapTable({
+            toolbar:'#toolbar',
+            url:'../commodityTable/queryCommodityTable',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[1,5,10,20,50],//分页组件
+            pageNumber:1,
+            pageSize:5,//默认每页条数
+            //search:true,//是否显示搜索框
+            //searchText:'试试',//初始化搜索文字
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            striped:true,
+            queryParams:function(){
+                var name=$("#name").val();
+                var number=$("#number").val();
+                var trademark=$("#trademark").val();
+                var state=$("#state").val();
+                return{
+                    page: this.pageNumber,
+                    rows: this.pageSize,
+                    name:name,
+                    number:number,
+                    trademark:trademark,
+                    state:state
+                }
+            },
+            columns:[
+                {checkbox:true},
+                {
+                    field:"name",
+                    title: '<div style="background-color:#F0F0F0 ">商品名称</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"number",
+                    title: '<div style="background-color:#F0F0F0 ">商品编号</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return 'NO '+value;
+                    }
+                },
+                {
+                    field:"imgId",
+                    title: '<div style="background-color:#F0F0F0 ">商品图片</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return 'value<img src="#" style="height:50px;width:50px"/>';
+                    }
+                },
+                {
+                    field:"priceThisId",
+                    title: '<div style="background-color:#F0F0F0 ">商品价格</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return '￥'+value;
+                    }
+                },
+                {
+                    field:"priceThisId",
+                    title: '<div style="background-color:#F0F0F0 ">商品品牌</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"attributeId",
+                    title: '<div style="background-color:#F0F0F0 ">商品属性</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"inventoryWarningValue",
+                    title: '<div style="background-color:#F0F0F0 ">库存状态</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return '剩余:'+value;
+                    }
+                },
+                {
+                    field:"state",
+                    title: '<div style="background-color:#F0F0F0 ">商品状态</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return row.state==1 ? '<button type="button" class="btn btn-info btn-primary disabled">上架</button>' : '<button type="button" class="btn btn-success btn-primary disabled">下架</button>' ;
+                    }
+                },
+                {
+                    field:"123",
+                    align: 'center',
+                    title: '<div style="background-color:#F0F0F0 ">操作</div>',
+                    formatter:function(value,row,index){
+                        var valuesHtml='<button type="button" onclick="openAddDialog()" class="btn btn-warning">编辑</button>';
+
+                        row.state==1 ? valuesHtml+='<button type="button" onclick="upState('+row.id+','+row.state+','+row.inventoryWarningValue+')" class="btn btn-danger">下架</button>' :valuesHtml+= '<button type="button" onclick="upState('+row.state+')" class="btn btn-danger disabled">下架</button>'
+                        return valuesHtml;
+                    }
+                }
+            ]
+        })
+    }
+    function commodity() {
+        $.addtabs({iframeHeight: 650});
+        $.addtabs.add({
+            id:7,
+            title:'添加商品',
+            url:''
+        });
+    }
+    function upState(id,state,inventoryWarningValue){
+        if(id!=null||state==1||inventoryWarningValue>1 ||inventoryWarningValue!=null){
+            state=0
+            $.ajax({
+                url:'../commodityTable/upState',
+                type:'post',
+                data:{state:state,inventoryWarningValue:inventoryWarningValue,id:id},
+                success:function(data){
+                    if(data){
+                        $('#myTable').bootstrapTable('refresh');
+                    }else{
+                        alert("您的操作错误")
+                    }
+                }
+            })
+        }else{
+            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
+        }
+    }
+</script>
+</body>
+</html>

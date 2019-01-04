@@ -24,6 +24,10 @@ public class Indents implements Serializable{
     private Integer payStatus;
 
     private String goods;
+    private String consignee;
+    private String confirm_time;
+    private String receiving_time;
+    private String dispose_time;
 
     public Integer getId() {
         return id;
@@ -105,6 +109,38 @@ public class Indents implements Serializable{
         this.endDate = endDate;
     }
 
+    public String getConsignee() {
+        return consignee;
+    }
+
+    public void setConsignee(String consignee) {
+        this.consignee = consignee;
+    }
+
+    public String getConfirm_time() {
+        return confirm_time;
+    }
+
+    public void setConfirm_time(String confirm_time) {
+        this.confirm_time = confirm_time;
+    }
+
+    public String getReceiving_time() {
+        return receiving_time;
+    }
+
+    public void setReceiving_time(String receiving_time) {
+        this.receiving_time = receiving_time;
+    }
+
+    public String getDispose_time() {
+        return dispose_time;
+    }
+
+    public void setDispose_time(String dispose_time) {
+        this.dispose_time = dispose_time;
+    }
+
     @Override
     public String toString() {
         return "Indents{" +
@@ -118,6 +154,10 @@ public class Indents implements Serializable{
                 ", fromId=" + fromId +
                 ", payStatus=" + payStatus +
                 ", goods='" + goods + '\'' +
+                ", consignee='" + consignee + '\'' +
+                ", confirm_time='" + confirm_time + '\'' +
+                ", receiving_time='" + receiving_time + '\'' +
+                ", dispose_time='" + dispose_time + '\'' +
                 '}';
     }
 }

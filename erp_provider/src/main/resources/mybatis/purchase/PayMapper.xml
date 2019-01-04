@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.purchase.PayMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.purchase.Purchase" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pay_Way" property="payWay" jdbcType="VARCHAR" />
+    <result column="later_Pay" property="laterPay" jdbcType="VARCHAR" />
+    <result column="start_Time" property="startTime" jdbcType="VARCHAR" />
+    <result column="count_Time" property="countTime" jdbcType="VARCHAR" />
+    <result column="count_Pay_Time" property="countPayTime" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="addPay"  parameterType="com.jk.model.purchase.Pay">
+      insert into xzs_pay ( pay_Way, later_Pay,
+      start_Time, count_Time, count_Pay_Time,
+       user_id)
+    values ( #{payWay,jdbcType=VARCHAR}, #{laterPay,jdbcType=VARCHAR},
+      #{startTime,jdbcType=VARCHAR}, #{countTime,jdbcType=VARCHAR},
+      #{countPayTime,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER})
+  </insert>
+
+</mapper>
