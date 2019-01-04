@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Insert title here</title>
+    <script type="text/javascript"  src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-treeview/bootstrap-treeview.min.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" />
+    <script type="text/javascript"  src="../bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript"  src="../bootstrap-table/bootstrap-table.js"></script>
+    <script type="text/javascript" src="../bootstrap-bootbox/bootbox.js"></script>
+    <script type="text/javascript" src="../bootstrap-datetimepicker/js/bootstarp/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript"  src="../bootstrap-datetimepicker/js/bootstarp/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+
+</head>
+<body>
+<div class="content-head mgb10" id="search">
+    <form>
+        <div style="float:left "  class="form-inline">
+            <label>供应商编号:</label>
+            <input type="text" class="form-control" id="supplierNumber" placeholder="供应商编号"/>
+        </div>
+        <div style="float: left ;margin-left:10px" class="form-inline">
+            <label>建档日期:</label>
+            <input type="text" class="form-control"  id="createDate" placeholder="建档日期"/>
+        </div>
+        <div style="float: left ;margin-left:10px" class="form-inline">
+            <label>供应商来源:</label>
+            <input type="text" class="form-control"  id="supplierSource" placeholder="供应商来源"/>
+        </div>
+        <div style="float: left;margin-left:10px"  class="form-inline">
+            <label>负责人:</label>
+            <input type="text" class="form-control"  id="chargePerson" placeholder="负责人"/>
+        </div>
+        <div style="clear:both"></div>
+        <div style="float: left;margin-top: 15px" class="form-inline">
+            <label>单位名称:</label>
+            <input type="text" class="form-control"    id="companyName" placeholder="单位名称"/>
+        </div>
+
+        <div style="float: left;margin-left:30px;margin-top: 15px"  class="form-inline">
+            <label>品牌:</label>
+            <input type="text"  class="form-control"   id="brand" placeholder="品牌"/>
+        </div>
+
+        <div style="float: left;margin-left:30px;margin-top: 15px" class="form-inline">
+            <label>经营范围:</label>
+            <input type="text" class="form-control"  id="businessScope" placeholder="经营范围"/>
+        </div>
+        <div style="clear:both"></div>
+        <button type="button" class="btn btn-primary"  onclick="setMyTable()" >
+            <span class="glyphicon glyphicon-search"></span>搜索
+        </button>
+        <button type="button" class="btn btn-info"  onclick="save()">
+            <span class="glyphicon glyphicon-plus"></span> 添加
+        </button>
+    </form>
+
+</div>
+    <div class="table" id="myTable" ></div>
+</body>
+<script>
+   $(function(){
+       setMyTable();
+   })
+   function save() {
+       location.href="../purchase/savePurchase";
+   }
+    function setMyTable(){
+        $('#myTable').bootstrapTable('destroy');
+        $('#myTable').bootstrapTable({
+            toolbar:'#search',
+            url:'../purchase/queryPurchase',//获取数据地址
+            pagination:true, //是否展示分页
+            pageNumber:1,
+            pageSize:3,
+            pageList:[3,10,20,50],
+            //search:true,//是否显示搜索框
+            //searchText:'试试',//初始化搜索文字
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            striped:true,
+            queryParams:function(){
+                return {
+                    page: this.pageNumber,
+                    rows: this.pageSize,
+                    supplierNumber:$('#supplierNumber').val(),
+                    createDate:$('#createDate').val(),
+                    supplierSource:$('#supplierSource').val(),
+                    chargePerson:$('#chargePerson').val(),
+                    companyName:$('#companyName').val(),
+                    brand:$('#brand').val(),
+                    businessScope:$('#businessScope').val()
+                };
+            },
+            columns:[
+                {field:'1211',title:'序号',width:100,formatter:function(value,row,index){
+                    return  index+1;
+                    }},
+                {field:'supplierNumber',title:'供应商编号',width:100},
+                {field:'supplierSource',title:'供应商来源',width:100},
+                {field:'companyName',title:'单位名称',width:100},
+                {field:'brand',title:'品牌',width:100},
+                {field:'businessScope',title:'经营范围',width:100},
+                {field:'chargePerson',title:'负责引进人',width:100},
+                {field:'createDate',title:'建档日期',width:100},
+                {field:'1111',title:'操作',width:150,formatter:function(value,row,index){
+                    return  '<button type="button" class="btn btn-warning"  onclick="hui('+row.id+')">编辑</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger"  onclick="savePay()">审核</button>'
+                }}
+
+            ]
+        });
+    }
+    function hui(id) {
+        $.ajax({
+            url:'../purchase/huiPurchase',
+            type:'post',
+            data:{
+                id:id
+            },
+            dataType:'json',
+            success:function (data) {
+                location.href="../purchase/updatePurchse"
+                $("input[name='id']").val(data.id);
+               $("input[name='supplierNumber']").val(data.supplierNumber);
+               /* $("input[name='pwd']").val(result.pwd);
+                $("input[name='name']").val(result.name);
+                $("input[name='account']").val(result.account);
+                $("input[type=radio][name=sex][value="+result.sex+"]").attr("checked",'checked');
+                $("input[name='phone']").val(result.phone);
+                $("input[name='email']").val(result.email);
+                alert($("#deptIdSelect").find("option[value='"+result.deptId+"']"));
+                $("#deptIdSelect").val(result.deptId);
+                $("#postSelect").val(result.post);*/
+                //$("#deptIdSelect").find("option[value='"+result.deptId+"']").attr('selected','selected');
+                /*$("select[name='post']").find("option[value='"+result.post+"']").prop("selected",true);*/
+            }
+        })
+    }
+</script>
+</html>
