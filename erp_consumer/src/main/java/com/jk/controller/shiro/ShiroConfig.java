@@ -58,6 +58,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/uploadify/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
+
         // 放过登录页面拦截
         filterChainDefinitionMap.put("/page/toLogin", "anon");
         /// **代表所有路径 除以上路径外都拦截 authc代表权限拦截过滤器
