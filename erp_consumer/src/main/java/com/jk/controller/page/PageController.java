@@ -55,4 +55,14 @@ public class PageController {
     String toEditUser(){
         return "user/editUser";
     }
+
+    @RequestMapping("toPowerPage")
+    String toPowerPage(){
+        return "power/powerPage";
+    }
+
+    @RequestMapping("toEditPower")
+    String toEditPower(){
+        return "power/editPower";
+    }
 }

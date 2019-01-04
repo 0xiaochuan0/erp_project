@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css" />
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>
+
+    <!--表格-->
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <!-- 弹框 -->
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+</head>
+<body>
+<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
+    <div class="panel-heading">
+        <h3 class="panel-title">商品管理 /添加商品</h3>
+    </div>
+    <div class="panel-body">
+        <div id="toolbar">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="name" placeholder="请输入属性组名称"/>
+                    <button type="button" onclick="searchUser()" class="btn btn-info glyphicon glyphicon-search">搜索</button>
+                    <button type="button" onclick="add()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+                </div>
+            </form>
+        </div>
+        <!-- 展示用户列表 -->
+        <table id="myTable"></table>
+    </div>
+</div>
+<script>
+    //页面加载
+    $(function(){
+        initTable();
+    })
+    //搜索
+    function searchUser(){
+        $('#myTable').bootstrapTable('refresh');
+    }
+    //初始化表格数据
+    function initTable(){
+        $("#myTable").bootstrapTable({
+            toolbar:'#toolbar',
+            url:'../commodityTypeSumUp/queryCommodityTypeSumUp',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[1,5,10,20,50],//分页组件
+            pageNumber:1,
+            pageSize:5,//默认每页条数
+            //search:true,//是否显示搜索框
+            //searchText:'试试',//初始化搜索文字
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            striped:true,
+            queryParams:function(){
+                var name=$("#name").val();
+                return{
+                    page: this.pageNumber,
+                    rows: this.pageSize,
+                    type_three_name:name,
+                }
+            },
+            columns:[
+                {checkbox:true},
+                {
+                    field:"type_Three_name",
+                    title: '<div style="background-color:#F0F0F0 ">库存状态</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return row.type_two_name,value;
+                    }
+                },
+                {
+                    field:"type_four_name",
+                    title: '<div style="background-color:#F0F0F0 ">包含属性</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }
+                },
+                {
+                    field:"123",
+                    align: 'center',
+                    title: '<div style="background-color:#F0F0F0 ">操作</div>',
+                    formatter:function(value,row,index){
+                        return '<button type="button" onclick="get()" class="btn btn-warning">编辑</button><button type="button" onclick="delsCommodityTypeSumUp('+row.id+')" class="btn btn-danger">删除</button>' ;
+                    }
+                }
+            ]
+        })
+    }
+    function add() {
+        bootbox.dialog({
+            title:"<center>添加商品价格</center>",
+            message:createAddContent('../commodityTypeSumUp/AddCommodityTypeSumUp'),
+            closeButton:true,
+            buttons:{
+                "success":{
+                    "label" : '<i class="icon-ok"></i> 保存',
+                    "className" : "btn-sm btn-success",
+                    "callback":function(){
+
+                        $.ajax({
+                            url:'../commodityTypeSumUp/SaveOrUpdateCommodityTypeSumUp',
+                            type:'post',
+                            data:$("#addForm").serialize(),
+                            dataType:'json',
+                            success:function(data){
+                                $("#close").click('close');
+                                $('#myTable').bootstrapTable('refresh');
+                            }
+                        })
+
+                    }
+                },
+                "cancel":{
+                    "label":'<i id="close" class="icon-info"></i> 取消',
+                    "className":"btn-sm btn-danger",
+                    "callback" :function(){}
+                }
+            }
+        })
+    }
+    //  createAddContent(url)  这个方法直接用--必需品
+    var res;
+    function createAddContent(url){
+        $.ajax({
+            url:url,
+            async:false,
+            success:function(data){
+                res = data;
+            }
+        });
+        return res;
+    }
+    function get(){
+        add();
+
+    }
+    function delsCommodityTypeSumUp(id){
+        if(id!=null){
+            $.ajax({
+                url:'../commodityTypeSumUp/delsCommodityTypeSumUp',
+                type:'post',
+                data:{ids:id},
+                success:function(data){
+                    if(data){
+                        $('#myTable').bootstrapTable('refresh');
+                    }else{
+                        alert("您的操作错误")
+                    }
+                }
+            })
+        }else{
+            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
+        }
+    }
+</script>
+</body>
+</html>

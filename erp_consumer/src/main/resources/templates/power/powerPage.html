@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../bootstrap-select/css/bootstrap-select.css"/>
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+    <script src="../bootstrap-select/js/bootstrap-select.js"></script>
+    <script src="../bootstrap-select/js/i18n/defaults-zh_CN.js"></script>
+</head>
+<body>
+    <div class="row" style="margin-top: 20px">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="请输入权限组名称"/>
+                <span class="input-group-btn">
+                    <div class="btn btn-success" type="button">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
+                    </div>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="btn btn-info">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 15px">
+        <div class="col-md-12">
+            <div class="table"></div>
+        </div>
+    </div>
+    <script>
+        /*<![CDATA[*/
+        $(function () {
+            initPowerTable();
+        })
+
+        $(".btn-success").click(function () {
+            initPowerTable();
+        })
+
+        var res;
+        function createAddContent(url){
+            $.ajax({
+                url:url,
+                async:false,
+                success:function(data){
+                    res = data;
+                }
+            });
+            return res;
+        }
+
+        /*添加*/
+        $(".btn-info").click(function () {
+            bootbox.dialog({
+                size:'big',
+                title:'<center>添加权限</center>',
+                message: createAddContent("../page/toEditPower"),
+                closeButton: true,
+                buttons : {
+                    "success" : {
+                        "label" : "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>&nbsp;&nbsp;保存",
+                        "className" : "btn-lg btn-success",
+                        "algin" : "center",
+                        "callback" : function() {
+                            $.ajax({
+                                url:'../power/saveOrUpdatePower',
+                                type:'post',
+                                data:$("#editPowerForm").serialize(),
+                                dataType:'json',
+                                success:function (result) {
+                                    if (result) {
+                                        location.reload();
+                                    } else {
+                                        bootbox.alert({
+                                            size: "small",//small 小    big 中    large 大
+                                            title: "<center>提示</center>",
+                                            message: "<font size='4px' color='#ff6699'>添加失败</font>",
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    "cancel" : {
+                        "label" : "<span class='glyphicon glyphicon-remove-circle' aria-hidden='true'></span>&nbsp;&nbsp;关闭",
+                        "className" : "btn-lg btn-danger",
+                        "callback" : function() {
+
+                        }
+                    }
+                }
+            });
+            initRole();
+        })
+
+        /*修改*/
+        function updatUser(id) {
+            bootbox.dialog({
+                size:'big',
+                title:'<center>修改权限</center>',
+                message: createAddContent("../page/toEditPower"),
+                closeButton: true,
+                buttons : {
+                    "success" : {
+                        "label" : "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>&nbsp;&nbsp;保存",
+                        "className" : "btn-lg btn-success",
+                        "algin" : "center",
+                        "callback" : function() {
+                            $.ajax({
+                                url:'../power/saveOrUpdatePower',
+                                type:'post',
+                                data:$("#editPowerForm").serialize(),
+                                dataType:'json',
+                                success:function (result) {
+                                    if (result) {
+                                        location.reload();
+                                    } else {
+                                        bootbox.alert({
+                                            size: "small",//small 小    big 中    large 大
+                                            title: "<center>提示</center>",
+                                            message: "<font size='4px' color='#ff6699'>修改失败</font>",
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    "cancel" : {
+                        "label" : "<span class='glyphicon glyphicon-remove-circle' aria-hidden='true'></span>&nbsp;&nbsp;关闭",
+                        "className" : "btn-lg btn-danger",
+                        "callback" : function() {
+
+                        }
+                    }
+                }
+            });
+
+            initRole();
+
+            $.ajax({
+                url:'../power/queryPowerInfoById',
+                type:'post',
+                data:{
+                    id:id
+                },
+                dataType:'json',
+                success:function (result) {
+                    $("input[name='id']").val(result.id);
+                    $("select[name='pid']").val(result.pid);
+                    $("select[name='grade']").val(result.grade);
+                    $("input[name='name']").val(result.name);
+                    $("input[name='power']").val(result.power);
+                    $("select[name='roleId']").val(result.roleId);
+                }
+            })
+        }
+
+        /*初始化角色*/
+        function initRole() {
+            $.ajax({
+                url:'../power/queryRoleAll',
+                type:'post',
+                data:{},
+                dataType:'json',
+                success:function (result) {
+                    var html = '<option value="0">请选择</option>';
+                    for (var i = 0; i < result.length; i++) {
+                        html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                    }
+                    $('select[name="roleId"]').html(html);
+                }
+            })
+        }
+
+        /*function initTree() {
+            $.ajax({
+                url:'../power/queryPowerByPid',
+                type:'post',
+                data:{
+                    pid:0
+                },
+                dataType:'json',
+                success:function (result) {
+                    var html = "";
+                    for (var i = 0; i < result.length; i++) {
+                        $.ajax({
+                            url:'../power/queryPowerByPid',
+                            type:'post',
+                            data:{
+                                pid:result[i].id
+                            },
+                            dataType:'json',
+                            success:function (data) {
+                                for (var j = 0; j < data.length; j++) {
+                                    html = '<optgroup label="'+result.text+'"><option value="'+data.id+'">'+data.text+'</option></optgroup>';
+                                }
+                            }
+                        })
+                    }
+                    $('select[name="pid"]').html(html);
+                }
+            })
+        }*/
+
+        function initPowerTable(){
+            $('.table').bootstrapTable('destroy');
+            $('.table').bootstrapTable({
+                //toolbar:'#userToolbar',
+                url:'../power/queryPowerPage',//获取数据地址
+                pagination:true, //是否展示分页
+                pageList:[5, 10, 20, 50],//分页组件
+                pageNumber:1,
+                pageSize:5,//默认每页条数
+                //search:true,//是否显示搜索框
+                //searchText:'试试',//初始化搜索文字
+                showColumns:false,//是否显示 内容列下拉框
+                showToggle:false,//是否显示 切换试图（table/card）按钮
+                showPaginationSwitch:false,//是否显示 数据条数选择框
+                showRefresh:false,//是否显示刷新按钮
+                detailView:false,//设置为 true 可以显示详细页面模式。
+                showFooter:false,//是否显示列脚
+                clickToSelect: true, //是否启用点击选中行
+                sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+                striped:true,
+                queryParams:function(){
+                    return {
+                        page: this.pageNumber,
+                        rows: this.pageSize,
+                        treeName:$("#searchInput").val(),
+                    };
+                },
+                columns:[
+                    {checkbox:true},
+                    {field:'id',title:'权限组编号',align:'center',width:150},
+                    {field:'treeName',title:'权限组名称',align:'center',width:150},
+                    {field:'grade',title:'权限等级',align:'center',width:150,
+                        formatter:function (value, row, index) {
+                            return value == 1? "Ⅰ":(value == 2? "Ⅱ":(value == 3? "Ⅲ":(value == 4? "Ⅳ":(value == 5? "Ⅴ":""))))
+                        }
+                    },
+                    {field:'name',title:'包含的权限',align:'center',width:150},
+                    {field:'operation',title:'操作',align:'center',width:150,
+                        formatter:function(value,row,index){
+                            return '<input type="button" class="btn btn-warning" value="编辑" onclick="updatUser('+row.id+')"/>';
+                        }
+                    },
+                ]
+            });
+        }
+        /*]]> */
+    </script>
+</body>
+</html>

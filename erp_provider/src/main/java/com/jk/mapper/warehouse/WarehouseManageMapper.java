@@ -24,4 +24,6 @@ public interface WarehouseManageMapper {
 
 
     Integer queryCount(Map<String, Object> map);
+
+    void inStorage(Integer id);
 }

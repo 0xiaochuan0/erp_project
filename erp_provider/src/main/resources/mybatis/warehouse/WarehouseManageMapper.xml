@@ -114,5 +114,8 @@
     select count(1) from warehouse_manage
     where 1 = 1
   </select>
-
+  <!--入库-->
+  <update id="inStorage" parameterType="com.jk.model.warehouse.WarehouseManage" >
+     update warehouse_manage wm set state = 2 where wm.id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

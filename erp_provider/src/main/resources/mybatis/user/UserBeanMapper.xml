@@ -15,7 +15,6 @@
     <result column="entry_time" property="entryTime" jdbcType="TIMESTAMP" />
     <result column="age" property="age" jdbcType="INTEGER" />
     <result column="head_img" property="headImg" jdbcType="VARCHAR" />
-
   </resultMap>
   <sql id="Base_Column_List" >
     id, name, account, pwd, phone, status, sex, dept_id deptId, post, email, entry_time entryTime, age,
