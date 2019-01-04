@@ -67,4 +67,9 @@ public class IndentsServiceImpl implements IndentsService {
     public void updateIndentsPayStatus(Integer[] ids) {
         indentsMapper.updateIndentsPayStatus(ids);
     }
+
+    @Override
+    public void updateIndentsToConfirm(Integer[] ids) {
+        indentsMapper.updateIndentsToConfirm(ids);
+    }
 }

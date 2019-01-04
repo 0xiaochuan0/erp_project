@@ -53,4 +53,9 @@ public class WarehouseDeliveryServiceImpl implements IWarehouseDeliveryService {
         resultPage.setTotal(warehouseDeliveryMapper.queryCount(map));
         return resultPage;
     }
+
+    @Override
+    public void outStorage(Integer id) {
+        warehouseDeliveryMapper.outStorage(id);
+    }
 }
