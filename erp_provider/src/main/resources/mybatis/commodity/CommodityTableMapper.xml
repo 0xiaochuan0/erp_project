@@ -3,30 +3,36 @@
 <mapper namespace="com.jk.mapper.commodity.CommodityTableMapper" >
     <select id="queryCommodityTableCount" parameterType="map" resultType="int">
         select count(1)
-                from Commodity_Table
-                where 1=1 <include refid="queryCommodityTable"></include>
+                from Commodity_Table ct
+                left join commodity_priceThis cp
+                on ct.priceThisId=cp.id
+                where 1=1
+                <include refid="queryCommodityTable"></include>
     </select>
     <select id="queryCommodityTableList" parameterType="map" resultType="com.jk.model.commodity.CommodityTableBean">
-        select *
-                from Commodity_Table
-                where 1=1 <include refid="queryCommodityTable"></include>
+        select ct.*,cp.name as name,cp.number as number ,cp.trademark as trademark ,cp.sellingPrice as sellingPrice
+                from Commodity_Table ct
+                left join commodity_priceThis cp
+                on ct.priceThisId=cp.id
+                where 1=1
+                <include refid="queryCommodityTable"></include>
         limit #{start},#{end}
     </select>
     <sql id="queryCommodityTable">
             <if test="commodityTable.number!=null and commodityTable.number!='' ">
                 and
-                    number
+                cp.number
                     like
                     '%${commodityTable.number}%'
             </if>
             <if test="commodityTable.name!=null and commodityTable.name!='' ">
-                and name like '%${commodityTable.name}%'
+                and cp.name like '%${commodityTable.name}%'
             </if>
             <if test="commodityTable.state!=null">
                 and state =#{commodityTable.state}
             </if>
             <if test="commodityTable.trademark!=null and commodityTable.trademark!='' ">
-
+                and cp.trademark like '%${commodityTable.trademark}%'
             </if>
     </sql>
     <update id="upState" parameterType="com.jk.model.commodity.CommodityTableBean">

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css" />
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <form id="addForm" class="form-horizontal">
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-8">
+                <div class="form-group">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td><input type="hidden" class="form-control" name="id" /></td>
+                        </tr>
+                        <tr>
+                            <td>一级类型</td>
+                            <td><select id='type_one_id' name="type_one_id" class="form-control selectpicker"  onchange="querytwo()" data-live-search="true"></select></td>
+                        </tr>
+                        <tr>
+                            <td>二级类型</td>
+                            <td><select id='type_two_id' name="type_two_id" class="form-control selectpicker"   onchange="querythree()" data-live-search="true"></select></td>
+                        </tr>
+                        <tr>
+                            <td>属性组名称</td>
+                            <td><select id='type_three_id' name="type_three_id" class="form-control selectpicker"  onchange="queryfour()"   data-live-search="true"></select></td>
+                        </tr>
+                        <tr>
+                            <td>包含属性</td>
+                            <td><select id='type_four_id' name="type_four_id" class="form-control selectpicker"   data-live-search="true"></select></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    /*<![CDATA[*/
+    $.ajax({
+        url: "../commodityTypeSumUp/queryTypeOne",
+        type:'post',
+        dataType:"json",
+        success:function(data){
+            var optArr = [];
+            for (var i = 0; i < data.length; i++) {
+                $('.selectpicker').append("<option value=" + data[i].type_one_id + ">" + data[i].type_one_name + "</option>");
+            }
+            // 缺一不可
+            $('#type_one_id').selectpicker('refresh');
+            $('#type_one_id').selectpicker('render');
+        },
+    })
+    function querytwo(){
+        var id=$('#type_one_id option:selected').val();
+        alert(id)
+        if(id!=null){
+            $.ajax({
+                url:'../commodityTypeSumUp/queryTypeTwo',
+                type:'post',
+                data:{id:id},
+                dataType:"json",
+                success:function(data){
+                    if(data!=null){
+                        var optArr = [];
+                        var html="";
+                        for (var i = 0; i < data.length; i++) {
+                           /* $('.selectpicker').append(*/ html+="<option value=" + data[i].type_two_id + ">" + data[i].type_two_name + "</option>"/*)*/;
+                        }
+                        $('#type_two_id').html(html)
+                        // 缺一不可
+                        /*$('#type_two_id').selectpicker('refresh');
+                        $('#type_two_id').selectpicker('render');*/
+                    }else{
+                        alert("您的操作错误")
+                    }
+                }
+            })
+        }else{
+            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
+        }
+    }
+    function querythree(){
+        var id=$('#type_two_id option:selected').val();
+        if(id!=null){
+            $.ajax({
+                url:'../commodityTypeSumUp/queryTypeThree',
+                type:'post',
+                data:{id:id},
+                dataType:"json",
+                success:function(data){
+                    if(data!=null){
+                        var optArr = [];
+                        for (var i = 0; i < data.length; i++) {
+                            $('.selectpicker').append("<option value=" + data[i].type_three_id + ">" + data[i].type_three_name + "</option>");
+                        }
+                        // 缺一不可
+                        $('#type_three_id').selectpicker('refresh');
+                        $('#type_three_id').selectpicker('render');
+                    }else{
+                        alert("您的操作错误")
+                    }
+                }
+            })
+        }else{
+            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
+        }
+    }
+    function queryfour(){
+        var id=$('#type_three_id option:selected').val();
+        if(id!=null){
+            $.ajax({
+                url:'../commodityTypeSumUp/queryTypeFour',
+                type:'post',
+                data:{id:id},
+                dataType:"json",
+                success:function(data){
+                    if(data!=null){
+                        var optArr = [];
+                        for (var i = 0; i < data.length; i++) {
+                            $('.selectpicker').append("<option value=" + data[i].type_four_id + ">" + data[i].type_four_name + "</option>");
+                        }
+                        // 缺一不可
+                        $('#type_four_id').selectpicker('refresh');
+                        $('#type_four_id').selectpicker('render');
+                    }else{
+                        alert("您的操作错误")
+                    }
+                }
+            })
+        }else{
+            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
+        }
+    }
+    /*]]> */
+</script>
+</body>
+</html>

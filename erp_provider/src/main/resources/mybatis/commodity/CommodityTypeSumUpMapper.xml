@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.commodity.CommodityTypeSumUpMapper" >
+    <sql id="queryCommodityTypeSumUpForm">
+        from
+        commodity_type_one one
+        left join  commodity_type_two   two     on     one.pid=two.pid
+        left join  commodity_type_three thr     on     thr.pid=two.pid
+        left join  commodity_type_four  fou     on     thr.pid=fou.pid
+        left join  commodity_TypeSumUp  SumUp on SumUp.type_one_id=one.id
+        where SumUp.type_two_id=two.id
+        and SumUp.type_three_id=thr.id
+        and SumUp.type_four_id=fou.id
+    </sql>
+    <select id="queryCommodityTypeSumUpCount" parameterType="map" resultType="int">
+        select count(1)
+        <include refid="queryCommodityTypeSumUpForm"></include>
+        <include refid="queryCommodityTypeSumUp"></include>
+    </select>
+    <select id="queryCommodityTypeSumUpList" parameterType="map" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select one.name as type_one_name,two.name as type_two_name ,thr.name as  type_three_name ,fou.name as type_four_name
+        <include refid="queryCommodityTypeSumUpForm"></include>
+        <include refid="queryCommodityTypeSumUp"></include>
+        limit #{start},#{end}
+    </select>
+    <sql id="queryCommodityTypeSumUp">
+        <if test="commodityTypeSumUp.type_three_name!=null and commodityTypeSumUp.type_three_name!='' ">
+            and thr.type_three_name like '%${commodityTypeSumUp.type_three_name}%'
+        </if>
+    </sql>
+    <delete id="delsCommodityTypeSumUp"  parameterType="string">
+        delete from commodity_TypeSumUp where id in(#{ids})
+    </delete>
+
+
+    <!--Query type-->
+    <select id="queryTypeOne" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select id as type_one_id , name as type_one_name
+        from commodity_type_one
+    </select>
+    <select id="queryTypeTwo" parameterType="int" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select tw.id as type_two_id , tw.name as type_two_name
+        from commodity_type_two tw
+        left join commodity_type_one one  on tw.pid=one.pid
+        where one.id=#{id}
+    </select>
+    <select id="queryTypeThree" parameterType="int" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select thr.id as type_two_id , thr.name as type_two_name
+        from commodity_type_three thr
+        left join commodity_type_two two
+        on thr.pid=two.pid
+        where two.id=#{id}
+    </select>
+    <select id="queryTypeFour" parameterType="int" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select fou.id as type_two_id , fou.name as type_two_name
+        from commodity_type_four fou
+        left join commodity_type_three thr
+        on fou.pid=thr.pid
+        where thr.id=#{id}
+    </select>
+    <insert id="SaveOrUpdateCommodityTypeSumUp"  parameterType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        insert into commodity_TypeSumUp
+        (type_one_id,type_two_id,type_three_id,type_four_id)
+        values(#{type_one_id},#{type_two_id},#{type_three_id},#{type_four_id})
+    </insert>
+    <select id="getCommodityTypeSumUp" parameterType="int" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select * from commodity_TypeSumUp where id=#{id}
+    </select>
+</mapper>

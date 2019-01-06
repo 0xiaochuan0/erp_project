@@ -169,9 +169,9 @@
   <insert id="insertMany"  parameterType="list">
     insert   into  indent (creat_time, consumer,
       money, pay_id, from_id,
-      pay_status,goods) values
+      pay_status) values
     <foreach collection="list" item="item" index="index" separator=",">
-     (#{item.creatTime},#{item.consumer},#{item.money},#{item.payId},#{item.fromId},#{item.payStatus},#{item.goods})
+     (#{item.creatTime},#{item.consumer},#{item.money},#{item.payId},#{item.fromId},#{item.payStatus})
     </foreach>
   </insert>
   <delete id="delIndentsByIds" parameterType="java.lang.Integer">

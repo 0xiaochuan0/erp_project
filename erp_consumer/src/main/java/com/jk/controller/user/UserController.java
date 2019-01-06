@@ -6,8 +6,9 @@ import com.jk.model.dept.DeptBean;
 import com.jk.model.job.JobBean;
 import com.jk.model.user.UserBean;
 import com.jk.service.user.UserService;
-import com.jk.util.UploadifyUtil;
+import com.jk.util.OSSClientUtil;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,9 +23,13 @@ public class UserController {
     @Reference(version = "1.0.0")
     private UserService userService;
 
+    @Autowired
+    private OSSClientUtil ossClientUtil;
+
     @RequestMapping("uploadImg")
     public String uploadImg(MultipartFile imgFile, HttpServletRequest request) throws Exception {
-        return UploadifyUtil.upload(imgFile,request);
+        String image = ossClientUtil.checkImage(imgFile);
+        return image;
     }
 
     @RequestMapping("updateUserPassword")

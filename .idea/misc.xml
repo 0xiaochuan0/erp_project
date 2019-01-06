@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="com.alibaba.dubbo.config.annotation.Service" />
+    </list>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/erp_consumer" />
@@ -12,9 +17,9 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/erp_provider/pom.xml" />
         <option value="$PROJECT_DIR$/erp_consumer/pom.xml" />
         <option value="$PROJECT_DIR$/erp_poi/pom.xml" />
-        <option value="$PROJECT_DIR$/erp_provider/pom.xml" />
       </list>
     </option>
   </component>

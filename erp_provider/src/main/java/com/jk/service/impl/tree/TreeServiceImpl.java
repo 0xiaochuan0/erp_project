@@ -29,9 +29,11 @@ public class TreeServiceImpl implements TreeService {
         for (Tree tree : list) {
             List<Tree> list2 = TreeNode(tree.getId());
             if (list2 != null && list2.size() > 0) {
+                tree.setLeaf(false);
                 tree.setSelectable(false);
                 tree.setNodes(list2);
             }else {
+                tree.setLeaf(true);
                 tree.setSelectable(true);
             }
         }
