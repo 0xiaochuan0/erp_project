@@ -15,34 +15,14 @@
     <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" />
     <script type="text/javascript" src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript" src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <link rel="stylesheet" href="../uploadify/uploadify.css"/>
+    <script type="text/javascript" src="../uploadify/jquery.uploadify.js"></script>
+
 </head>
+<style>
+</style>
 <body>
 <div id="search">
-   <!-- <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-
-            <div>
-                <ul class="nav navbar-nav">
-                    <li class="btn btn-info" style="width: 150px;" >
-                        <a href="../indents/toShow" class="dropdown-toggle">
-                            <center><font color="black">全部订单</font></center>
-                        </a>
-                    </li>
-                    <li  style="width: 150px;">
-                        <a href="../indents/toConfirm" class="dropdown-toggle">
-                            <center><font color="black">确认收货</font></center>
-                        </a>
-                    </li>
-                    <li  style="width: 150px;">
-                        <a href="../indents/toReturn" class="dropdown-toggle">
-                            <center><font color="black">退换货处理</font></center>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>-->
-
     <form class="form-horizontal" role="form">
         <fieldset>
             <div class="form-group" style="float: left">
@@ -100,18 +80,23 @@
     </form>
     <fieldset>
         <div>
-        <div  style="float:left;margin-top: 50px">
+        <div  style="float: left;margin-top: 0px">
             <button onclick="delMany()" class="btn btn-primary">删除选中</button>
             <button onclick="updateIndentsPayStatus()" class="btn btn-primary">批量出货</button>
         </div>
-        <div style="float: right;;margin-top: 20px">
-            <form action="/indents/importExcel" class="form-horizontal" method="post" enctype="multipart/form-data">
-                <input type="file" name="file" />
-                <a href="javascript:expoprtMyTable();" class="btn btn-primary "><i class="fa fa-search"></i>导出</a>
-                <input type="submit" class="btn btn-primary " value="导入excel"/>
-            </form>
+        <div style="">
+            <div class="form-group" style="float: right;margin-bottom: -100px">
+                <div class="col-sm-4">
+                    <a href="javascript:expoprtMyTable();" class="btn btn-primary "><i class="fa fa-search"></i>导出</a>
+                </div>
+                <div class="col-sm-4">
+                    <input type="file" name=""  class="" id="userphoto" style="opacity: 0;"/>
+                </div>
+            </div>
+
         </div>
         </div>
+
     </fieldset>
 </div>
 <div class="table" id="myTable" style="width: 1000px;margin-left:10px"></div>
@@ -371,6 +356,47 @@
         })
 
     }
+    $(function(){
+        $("#userphoto").uploadify({
+            //前台请求后台的url 不可忽略的参数
+            'uploader' :"../indents/importExcel",
+            //插件自带 不可忽略的参数
+            'swf' : '../uploadify/uploadify.swf',
+            //撤销按钮的图片路径
+            'cancelImg' : '../uploadify/uploadify-cancel.png',
+            //如果为true 为自动上传 在文件后 为false 那么它就要我们自己手动点上传按钮
+            'auto' : true,
+            //可以同时选择多个文件 默认为true 不可忽略
+            'multi' : false,
+            //给上传按钮设置文字
+            'buttonText':'<div class="btn btn-primary">导入</div>',
+
+            'height':'50px',
+            'width':'100px',
+            'buttonClass' : 'some-class',
+            //上传后队列是否消失
+            'removeCompleted' : true,
+            'removeTimeout' : 1,
+            //上传文件的个数
+            'uploadLimit' : 1,
+            'fileTypeExts' : '*.xls',
+            'fileSizeLimit' : '2MB',
+            //给div的进度条加背景 不可忽略
+            'queueID' : 'showswf',
+            // controller层方法中接收文件的参数名
+            'fileObjName' : 'file',
+            //上传成功后的回调函数
+            'onUploadSuccess' : function(file, data, response) {
+                //data : 图片上传成功后的 图片路径
+                /*
+                2.将图片路径 放到隐藏域中  保存用户数据时  直接添加到数据库
+                */
+                alert("上传成功");
+                location.reload();
+            }
+        });
+    });
     /* ]]> */
+
 </script>
 </html>

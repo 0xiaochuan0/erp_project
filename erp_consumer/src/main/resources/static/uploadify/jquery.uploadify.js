@@ -229,7 +229,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 					// Create the button
 					var $button = $('<div />', {
 						'id'    : settings.id + '-button',
-						'class' : 'uploadify-button ' + settings.buttonClass
+						'class' : settings.buttonClass != '' ? settings.buttonClass : 'uploadify-button ' + settings.buttonClass
 					});
 					if (settings.buttonImage) {
 						$button.css({

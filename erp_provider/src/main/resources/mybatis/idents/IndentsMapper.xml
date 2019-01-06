@@ -186,7 +186,7 @@
     select * from t_goods t where t.name =#{name}
   </select>
   <update id="updateIndentsPayStatus" parameterType="java.lang.Integer">
-    update indent set pay_status = 3 where id in
+    update indent set pay_status = 4 where id in
     (
     <foreach collection="array" item="item" index="index" separator=",">
       #{item}
@@ -201,4 +201,36 @@
     </foreach>
     )
   </update>
+  <select id="queryCountByDay" resultType="java.util.LinkedHashMap">
+      SELECT DATE_FORMAT( creat_time, "%m-%d" ) as 1月每天, COUNT( * ) as 总个数
+	FROM indent where DATE_FORMAT( creat_time, "%y" ) =19 and DATE_FORMAT( creat_time, "%m" ) =1
+	GROUP BY DATE_FORMAT( creat_time, "%d" )
+  </select>
+  <select id="queryCountByName" resultType="java.util.LinkedHashMap">
+      select name as '名称',COUNT(*) as '总个数' from t_clothes GROUP BY NAME
+  </select>
+  <select id="queryConfirm" parameterType="map" resultMap="BaseResultMap">
+    select * from indent
+    where 1 = 1 and pay_status = 3
+    <include refid="indentswhere"></include>
+    limit #{start},#{end}
+  </select>
+
+  <select id="queryCountConfirm" resultType="int" parameterType="map">
+    select count(1) from indent
+    where 1 = 1 and pay_status = 3
+    <include refid="indentswhere"></include>
+  </select>
+  <select id="queryReturn" parameterType="map" resultMap="BaseResultMap">
+    select * from indent
+    where 1 = 1 and pay_status = 4
+    <include refid="indentswhere"></include>
+    limit #{start},#{end}
+  </select>
+
+  <select id="queryCountReturn" resultType="int" parameterType="map">
+    select count(1) from indent
+    where 1 = 1 and pay_status = 4
+    <include refid="indentswhere"></include>
+  </select>
 </mapper>

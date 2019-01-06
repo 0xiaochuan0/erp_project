@@ -36,4 +36,18 @@ public interface IndentsMapper {
     void updateIndentsPayStatus(Integer[] ids);
 
     void updateIndentsToConfirm(Integer[] ids);
+
+    List<Map<String, Object>> queryCountByDay();
+
+    List<Map<String, Object>> queryCountByName();
+
+    List<Indents> queryConfirm(Map<String, Object> map);
+
+    Integer queryCountConfirm(Map<String, Object> map);
+
+    List<Indents> queryReturn(Map<String, Object> map);
+
+    Integer queryCountReturn(Map<String, Object> map);
+
+
 }

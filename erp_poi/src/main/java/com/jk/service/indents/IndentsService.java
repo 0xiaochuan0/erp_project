@@ -5,6 +5,7 @@ import com.jk.model.indents.Indents;
 import com.jk.utils.ResultPage;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: erp_project
@@ -27,4 +28,12 @@ public interface IndentsService {
     void updateIndentsPayStatus(Integer[] ids);
 
     void updateIndentsToConfirm(Integer[] ids);
+
+    List<Map<String, Object>> queryCountByDay();
+
+    List<Map<String, Object>> queryCountByName();
+
+    ResultPage queryConfirm(Integer page, Integer rows, Indents indents);
+
+    ResultPage queryReturn(Integer page, Integer rows, Indents indents);
 }

@@ -72,4 +72,51 @@ public class IndentsServiceImpl implements IndentsService {
     public void updateIndentsToConfirm(Integer[] ids) {
         indentsMapper.updateIndentsToConfirm(ids);
     }
+
+    @Override
+    public List<Map<String, Object>> queryCountByDay() {
+        return indentsMapper.queryCountByDay();
+    }
+
+    @Override
+    public List<Map<String, Object>> queryCountByName() {
+        return indentsMapper.queryCountByName();
+    }
+
+    @Override
+    public ResultPage queryConfirm(Integer page, Integer rows, Indents indents) {
+        ResultPage resultPage = new ResultPage();
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(page != null && rows != null){
+            map.put("start",(page-1) * rows);
+            map.put("end",rows);
+        }else{
+            map.put("start",0);
+            map.put("end",3);
+        }
+        map.put("indents",indents);
+        List<Indents> list = indentsMapper.queryConfirm(map);
+        resultPage.setRows(list);
+        resultPage.setTotal(indentsMapper.queryCountConfirm(map));
+        return resultPage;
+    }
+
+    @Override
+    public ResultPage queryReturn(Integer page, Integer rows, Indents indents) {
+        ResultPage resultPage = new ResultPage();
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(page != null && rows != null){
+            map.put("start",(page-1) * rows);
+            map.put("end",rows);
+        }else{
+            map.put("start",0);
+            map.put("end",3);
+        }
+        map.put("indents",indents);
+        List<Indents> list = indentsMapper.queryReturn(map);
+        resultPage.setRows(list);
+        resultPage.setTotal(indentsMapper.queryCountReturn(map));
+        return resultPage;
+    }
+
 }

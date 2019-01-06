@@ -4,7 +4,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.jk.model.indents.Goods;
 import com.jk.model.indents.Indents;
 import com.jk.service.indents.IndentsService;
+
 import com.jk.utils.ResultPage;
+import com.jk.util.UploadifyUtil;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -24,7 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: erp_project
@@ -43,6 +47,18 @@ public class IndentsController {
     @ResponseBody
     public ResultPage queryList(Integer page, Integer rows,Indents indents){
         ResultPage resultPage = indentsService.queryList(page, rows,indents);
+        return resultPage;
+    }
+    @RequestMapping("queryConfirm")
+    @ResponseBody
+    public ResultPage queryConfirm(Integer page, Integer rows,Indents indents){
+        ResultPage resultPage = indentsService.queryConfirm(page, rows,indents);
+        return resultPage;
+    }
+    @RequestMapping("queryReturn")
+    @ResponseBody
+    public ResultPage queryReturn(Integer page, Integer rows,Indents indents){
+        ResultPage resultPage = indentsService.queryReturn(page, rows,indents);
         return resultPage;
     }
 
@@ -319,5 +335,88 @@ public class IndentsController {
     @RequestMapping("toBread")
     public String toBread(){
         return "bread";
+    }
+
+    @RequestMapping("queryCountByDay")
+    @ResponseBody
+    public List<Map<String,Object>> queryCountByDay(){
+        List<Map<String,Object>> list =  new ArrayList<Map<String,Object>>();
+        try {
+            List<Map<String,Object>> queryUserList = indentsService.queryCountByDay();
+            for (Map<String, Object> map : queryUserList) {
+                HashMap<String, Object> map2 = new HashMap<String,Object>();
+                String obj =  (String) map.get("1月每天");
+                if((obj.trim()).equals("01-01")) {
+                    map2.put("name","01-01周二");
+                }
+                if((obj.trim()).equals("01-02")) {
+                    map2.put("name","01-02周三");
+                }
+                if((obj.trim()).equals("01-03")) {
+                    map2.put("name","01-03周四");
+                }
+                if((obj.trim()).equals("01-04")) {
+                    map2.put("name","01-04周五");
+                }
+                if((obj.trim()).equals("01-05")) {
+                    map2.put("name","01-05周六");
+                }
+                if((obj.trim()).equals("01-06")) {
+                    map2.put("name","01-06周日");
+                }
+                if((obj.trim()).equals("01-07")) {
+                    map2.put("name","01-07周一");
+                }
+                map2.put("y", map.get("总个数"));
+                map2.put("sliced", false);
+                map2.put("selected", false);
+                list.add(map2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    @RequestMapping("queryCountByName")
+    @ResponseBody
+    public List<Map<String,Object>> queryCountByName(){
+        List<Map<String,Object>> list =  new ArrayList<Map<String,Object>>();
+        try {
+            List<Map<String,Object>> queryUserList = indentsService.queryCountByName();
+            for (Map<String, Object> map : queryUserList) {
+                HashMap<String, Object> map2 = new HashMap<String,Object>();
+                String obj =  (String) map.get("名称");
+                if((obj.trim()).equals("女装")) {
+                    map2.put("name","女装");
+                }
+                if((obj.trim()).equals("男装")) {
+                    map2.put("name","男装");
+                }
+                if((obj.trim()).equals("男鞋")) {
+                    map2.put("name","男鞋");
+                }
+                if((obj.trim()).equals("女鞋")) {
+                    map2.put("name","女鞋");
+                }
+                if((obj.trim()).equals("家电")) {
+                    map2.put("name","家电");
+                }
+                if((obj.trim()).equals("其他")) {
+                    map2.put("name","其他");
+                }
+                map2.put("y", map.get("总个数"));
+                map2.put("sliced", false);
+                map2.put("selected", false);
+                list.add(map2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    @RequestMapping("uploadImg")
+    @ResponseBody
+    public String uploadImg(MultipartFile imgFile, HttpServletRequest request) throws Exception {
+        return UploadifyUtil.upload(imgFile,request);
     }
 }
