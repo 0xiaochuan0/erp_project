@@ -12,9 +12,6 @@
     <script  type="text/javascript" src="../highcharts/code/modules/exporting.js"></script>
     <script  type="text/javascript" src="../highcharts/code/modules/export-data.js"></script>
 </head>
-<!--
--->
-<body >
     <style>
         #containerDay {
             min-width: 610px;
@@ -159,7 +156,7 @@
                                         </div>
                                     </thead>
                                     <tbody>
-                                    <tr>
+                                    <!--<tr>
                                         <td><a href="#">2018年春节放假通知</a></td>
                                     </tr>
                                     <tr>
@@ -182,6 +179,7 @@
                                             <a href="#">2017年11月3日 公司聚餐</a>
                                             <hr/>
                                         </td>
+                                    </tr>-->
                                     <tr style="height: 300px">
                                         <td>
                                             <div class="div1" style="height: 300px">
@@ -215,41 +213,45 @@
                 </div>
 </div>
 </div>
+</div>
     <script>
 
         <!--本月的订单数 -->
-       $(function(){
-            $.ajax({
-                url:"../indents/queryCountByDay",
-                dataType:"json",
-                type:"post",
-                success:function(data) {
-                    var title = {
-                        text: '本周订单统计'
-                    };
-                    var subtitle = {
-                        text: 'Source:1806B班第二项目组'
-                    };
-                    var tooltip={
-                        pointFormat: '{series.name}: <b>{point.y}个</b>'
-                    };
-                    var plotOptions = {
-                        line: {
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '<b>{point.name}</b>: {point.y}个',
-                                connectorAllowed: false
-                            },
+       $(function() {
+           $.ajax({
+               url: "../indents/queryCountByDay",
+               dataType: "json",
+               type: "post",
+               success: function (data) {
+                   var title = {
+                       text: '本周订单统计'
+                   };
+                   var subtitle = {
+                       text: 'Source:1806B班第二项目组'
+                   };
+                   var tooltip = {
+                       // pointFormat: '{series.name}: <b>{point.y}个</b>'
+                   };
+                   var plotOptions = {
+                       line: {
+                           cursor: 'pointer',
+                           dataLabels: {
+                               enabled: true,
+                               format: '<b>{point.name}</b>: {point.y}个',
+                               connectorAllowed: false
+                           },
 
-                        }
-                    };
-                    var series= [{
-                        data:data
-                    }
-                    ];
+                       }
+                   };
+                   var series = [{
+                       data: data
+                   }
+                   ];
 
-                    var json = {};
-
+                   var json = {};
+               }
+           })
+       })
+    </script>
 </body>
 </html>

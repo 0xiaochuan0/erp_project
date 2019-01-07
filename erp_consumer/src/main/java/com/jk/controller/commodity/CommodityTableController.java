@@ -24,9 +24,15 @@ public class CommodityTableController {
      *
      *
      */
+    @RequiresPermissions("commodityTable:query")
     @RequestMapping("CommodityTable")
     public String CommodityTable(){
         return "commodity/CommodityTable";
+    }
+
+    @RequestMapping("addCommodity")
+    public String addCommodity(){
+        return "commodity/AddCommodity";
     }
 
     @RequiresPermissions("commodityTable:query")

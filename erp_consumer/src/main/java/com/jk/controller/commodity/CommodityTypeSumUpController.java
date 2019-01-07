@@ -20,6 +20,7 @@ public class CommodityTypeSumUpController {
     @Reference(version = "1.0.0")
     private CommodityTypeSumUpService commodityTypeSumUpService;
 
+    @RequiresPermissions("commodityTypeSumUp:query")
     @RequestMapping("CommodityTypeSumUp")
     public String CommodityTable(){
         return "commodity/commodityTypeSumUp";

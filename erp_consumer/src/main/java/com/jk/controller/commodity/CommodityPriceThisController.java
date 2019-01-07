@@ -6,6 +6,7 @@ import com.jk.model.commodity.Commodity_priceThis_log;
 import com.jk.service.commodity.CommodityPriceThisService;
 import com.jk.utils.ResultPage;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +20,7 @@ public class CommodityPriceThisController {
     @Reference(version = "1.0.0")
     private CommodityPriceThisService commodityPriceThisService;
 
+    @RequiresPermissions("commodityPriceThis:query")
     @RequestMapping("CommodityPriceThis")
     public String CommodityTable(){
         return "commodity/commodityPriceThis";
