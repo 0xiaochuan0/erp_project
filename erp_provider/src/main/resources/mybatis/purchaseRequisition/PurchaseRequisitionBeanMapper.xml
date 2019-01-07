@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.purchaseRequisition.PurchaseRequisitionBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="originate_time" property="originateTime" jdbcType="TIMESTAMP" />
+    <result column="purchase_requisition_identifier" property="purchaseRequisitionIdentifier" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="originate_man_id" property="originateManId" jdbcType="INTEGER" />
+    <result column="person_in_charge" property="personInCharge" jdbcType="INTEGER" />
+    <result column="auditor" property="auditor" jdbcType="INTEGER" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="arrival_address" property="arrivalAddress" jdbcType="VARCHAR" />
+    <result column="commodity_id" property="commodityId" jdbcType="INTEGER" />
+    <result column="purchase_requisition_number" property="purchaseRequisitionNumber" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, originate_time, purchase_requisition_identifier, status, originate_man, person_in_charge,
+    auditor, comments, arrival_address, commodity_id, purchase_requisition_number
+  </sql>
+
+<!-- 查询请购商品单  总条数 -->
+  <select id="queryPurchaseRequisitionCount" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" resultType="int">
+    select count(*) from (
+    SELECT id FROM t_purchaserequisition
+    <where>
+      <if test="status != null and status != 0">
+        and status = #{status}
+      </if>
+      <if test="startOriginateTime != null">
+        and originate_time &gt; #{startOriginateTime}
+      </if>
+      <if test="endOriginateTime != null">
+        and originate_time &lt; #{endOriginateTime}
+      </if>
+      <if test="personInCharge != null and personInCharge != ''">
+        and person_in_charge like '%${personInCharge}%'
+      </if>
+      <if test="auditor != null and auditor != ''">
+        and auditor like '%${auditor}%'
+      </if>
+    </where>
+    GROUP BY purchase_requisition_identifier) s
+  </select>
+
+  <!-- 查询请购商品单  分页 -->
+  <select id="queryPurchaseRequisitionList" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" resultType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean">
+    SELECT id,originate_time originateTime,status,person_in_charge personInCharge,
+    purchase_requisition_identifier purchaseRequisitionIdentifier,comments,
+    originate_man originateMan,auditor FROM t_purchaserequisition
+    <where>
+      <if test="status != null and status != 0">
+        and status = #{status}
+      </if>
+      <if test="startOriginateTime != null">
+        and originate_time &gt; #{startOriginateTime}
+      </if>
+      <if test="endOriginateTime != null">
+        and originate_time &lt; #{endOriginateTime}
+      </if>
+      <if test="personInCharge != null and personInCharge != ''">
+        and person_in_charge like '%${personInCharge}%'
+      </if>
+      <if test="auditor != null and auditor != ''">
+        and auditor like '%${auditor}%'
+      </if>
+    </where>
+    GROUP BY purchase_requisition_identifier
+    limit #{startIndex},#{rows}
+  </select>
+
+  <!-- 查询商品总条数 -->
+  <select id="queryGoodCount" parameterType="com.jk.model.commodity.CommodityTableBean" resultType="int">
+    select count(*) from commodity_table cta,commodity_typesumup cty
+    where cta.attribute_id = cty.id
+  </select>
+
+  <!-- 查询商品分页-->
+  <select id="queryGoodList" parameterType="com.jk.model.commodity.CommodityTableBean" resultType="com.jk.model.commodity.CommodityTableBean">
+    select cta.id,cta.name,cta.number,cta.inventory,cta.sellingPrice,
+    cty.type_key,cty.type_value
+    from commodity_table cta,commodity_typesumup cty
+    where cta.attribute_id = cty.id
+    limit #{startIndex},#{rows}
+  </select>
+
+  <!-- 查询物品by  ids-->
+  <select id="queryGoodListByIds" resultType="com.jk.model.commodity.CommodityTableBean">
+    select cta.id,cta.name,cta.number,cta.inventory,cta.sellingPrice,
+    cty.type_key,cty.type_value
+    from commodity_table cta,commodity_typesumup cty where cta.attribute_id=cty.id and cta.id in
+    <foreach item="item" index="index" collection="split" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <!-- 添加请购单  批量-->
+  <insert id="savePurchaseRequisition">
+    insert into t_purchaserequisition (originate_time, purchase_requisition_identifier,
+    status, originate_man, comments, arrival_address, commodity_id,
+    purchase_requisition_number) values
+    <foreach collection="arrayList" item="item" index="index" separator=",">
+      (#{item.originateTime},#{item.purchaseRequisitionIdentifier},#{item.status},
+      #{item.originateMan},#{item.comments},#{item.arrivalAddress},#{item.commodityId},
+      #{item.purchaseRequisitionNumber})
+    </foreach>
+  </insert>
+
+  <!-- 查询请购单  单条信息 by id-->
+  <select id="queryPurchaseRequisitionInfoByPurchaseRequisitionIdentifier" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" resultType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean">
+    SELECT comments,arrival_address arrivalAddress,GROUP_CONCAT(commodity_id) commodityIds,
+    purchase_requisition_identifier purchaseRequisitionIdentifier,
+    GROUP_CONCAT(purchase_requisition_number) purchaseRequisitionNumbers,
+    GROUP_CONCAT(id) ids
+    FROM t_purchaserequisition WHERE purchase_requisition_identifier = #{purchaseRequisitionIdentifier}
+  </select>
+
+
+<!-- 修改状态  -->
+  <update id="updatePurchaseRequisitionStatusById" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" >
+    update t_purchaserequisition
+    <set >
+      <if test="status != null" >
+        status = #{status},
+      </if>
+      <if test="comments != null and comments != ''" >
+        comments = #{comments},
+      </if>
+      <if test="auditor != null and auditor != ''">
+        auditor = #{auditor}
+      </if>
+    </set>
+    where purchase_requisition_identifier = #{item.purchaseRequisitionIdentifier}
+  </update>
+
+  <!--  修改   -->
+  <update id="updatePurchaseRequisitionById" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean">
+    update t_purchaserequisition
+      set originate_time = #{originateTime},
+      originate_man = #{originateMan},
+      comments = #{comments},
+      arrival_address = #{arrivalAddress},
+      commodity_id = #{commodityId},
+      purchase_requisition_number = #{purchaseRequisitionNumber}
+      where id = #{id}
+  </update>
+
+  <update id="updatePurchaseRequisitionByPurchaseRequisitionIdentifier">
+    <foreach collection="arrayList" separator=";" item="item">
+      update t_purchaserequisition
+      set originate_time = #{item.originateTime},
+      status = #{item.status},
+      originate_man = #{item.originateMan},
+      comments = #{item.comments},
+      arrival_address = #{item.arrivalAddress},
+      commodity_id = #{item.commodityId},
+      purchase_requisition_number = #{item.purchaseRequisitionNumber},
+      unit_price = #{item.unitPrice}
+      where id = #{item.id}
+    </foreach>
+  </update>
+</mapper>

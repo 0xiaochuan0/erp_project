@@ -53,6 +53,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/bootstrap-table/**", "anon");
         filterChainDefinitionMap.put("/bootstrap-treeview/**", "anon");
         filterChainDefinitionMap.put("/bootstrap-select/**", "anon");
+        filterChainDefinitionMap.put("/EasyUI/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/highCharts/**", "anon");
         filterChainDefinitionMap.put("/images/**", "anon");

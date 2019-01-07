@@ -66,6 +66,19 @@ public class UserBean extends Page implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date endTime;
 
+    /**
+     * 业务使用  角色名
+     */
+    private String roleName;
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     public String getDepName() {
         return depName;
     }

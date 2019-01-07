@@ -34,7 +34,10 @@
 
   <!-- 查询用户总条数 -->
   <select id="queryUserCount" resultType="int">
-    select count(*) from t_user u,t_dept d,t_job j where u.dept_id = d.id and u.post = j.id
+    select count(*) FROM
+    (select u.id
+    from t_user u,t_dept d,t_job j,t_user_role ur,t_role r
+    where u.dept_id = d.id and u.post = j.id and u.id = ur.user_id and ur.role_id = r.id
     <if test="userBean.name != null and userBean.name != ''">
       and u.name like '%${userBean.name}%'
     </if>
@@ -53,13 +56,16 @@
     <if test="userBean.endTime != null">
       and u.entry_time &lt; #{userBean.endTime}
     </if>
+    GROUP BY u.id) a
   </select>
 
   <!-- 查询用户 带分页 -->
   <select id="queryUserList" resultType="com.jk.model.user.UserBean">
     select u.id, u.name, u.account, u.pwd, u.phone, u.status, u.sex, u.dept_id deptId, u.post,
-    u.email, u.entry_time entryTime, u.age, u.head_img headImg,d.name depName,j.name jobName
-    from t_user u,t_dept d,t_job j where u.dept_id = d.id and u.post = j.id
+    u.email, u.entry_time entryTime, u.age, u.head_img headImg,d.name depName,j.name jobName,
+    GROUP_CONCAT(r.name) roleName
+    from t_user u,t_dept d,t_job j,t_user_role ur,t_role r
+    where u.dept_id = d.id and u.post = j.id and u.id = ur.user_id and ur.role_id = r.id
     <if test="userBean.name != null and userBean.name != ''">
       and u.name like '%${userBean.name}%'
     </if>
@@ -78,6 +84,7 @@
     <if test="userBean.endTime != null">
       and u.entry_time &lt; #{userBean.endTime}
     </if>
+    GROUP BY u.id
     limit #{userBean.startIndex},#{userBean.rows}
   </select>
 
@@ -122,89 +129,95 @@
   </insert>
 
   <!-- 添加用户 -->
-  <insert id="saveUser">
+  <insert id="saveUser" parameterType="com.jk.model.user.UserBean">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="userBean.name != null and userBean.name != ''" >
+      <if test="name != null and name != ''" >
         name,
       </if>
-      <if test="userBean.account != null and userBean.account != ''" >
+      <if test="account != null and account != ''" >
         account,
       </if>
-      <if test="userBean.pwd != null and userBean.pwd != ''" >
+      <if test="pwd != null and pwd != ''" >
         pwd,
       </if>
-      <if test="userBean.phone != null and userBean.phone != ''" >
+      <if test="phone != null and phone != ''" >
         phone,
       </if>
-      <if test="userBean.status != null" >
+      <if test="status != null" >
         status,
       </if>
-      <if test="userBean.sex != null" >
+      <if test="sex != null" >
         sex,
       </if>
-      <if test="userBean.deptId != null" >
+      <if test="deptId != null" >
         dept_id,
       </if>
-      <if test="userBean.post != null" >
+      <if test="post != null" >
         post,
       </if>
-      <if test="userBean.email != null and userBean.email != ''" >
+      <if test="email != null and email != ''" >
         email,
       </if>
-      <if test="userBean.entryTime != null" >
+      <if test="entryTime != null" >
         entry_time,
       </if>
-      <if test="userBean.age != null" >
+      <if test="age != null" >
         age,
       </if>
-      <if test="userBean.headImg != null and userBean.headImg != '' " >
+      <if test="headImg != null and headImg != '' " >
         head_img,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="userBean.name != null and userBean.name != ''" >
-        #{userBean.name},
+      <if test="name != null and name != ''" >
+        #{name},
       </if>
-      <if test="userBean.account != null and userBean.account != ''" >
-        #{userBean.account},
+      <if test="account != null and account != ''" >
+        #{account},
       </if>
-      <if test="userBean.pwd != null and userBean.pwd != ''" >
-        #{userBean.pwd},
+      <if test="pwd != null and pwd != ''" >
+        #{pwd},
       </if>
-      <if test="userBean.phone != null and userBean.phone != ''" >
-        #{userBean.phone},
+      <if test="phone != null and phone != ''" >
+        #{phone},
       </if>
-      <if test="userBean.status != null" >
-        #{userBean.status},
+      <if test="status != null" >
+        #{status},
       </if>
-      <if test="userBean.sex != null" >
-        #{userBean.sex},
+      <if test="sex != null" >
+        #{sex},
       </if>
-      <if test="userBean.deptId != null" >
-        #{userBean.deptId},
+      <if test="deptId != null" >
+        #{deptId},
       </if>
-      <if test="userBean.post != null" >
-        #{userBean.post},
+      <if test="post != null" >
+        #{post},
       </if>
-      <if test="userBean.email != null and userBean.email != ''" >
-        #{userBean.email},
+      <if test="email != null and email != ''" >
+        #{email},
       </if>
-      <if test="userBean.entryTime != null" >
-        #{userBean.entryTime},
+      <if test="entryTime != null" >
+        #{entryTime},
       </if>
-      <if test="userBean.age != null" >
-        #{userBean.age},
+      <if test="age != null" >
+        #{age},
       </if>
-      <if test="userBean.headImg != null and userBean.headImg != ''" >
-        #{userBean.headImg},
+      <if test="headImg != null and headImg != ''" >
+        #{headImg},
       </if>
     </trim>
+    <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID() as ID
+    </selectKey>
   </insert>
 
   <select id="queryUserInfoById" resultType="com.jk.model.user.UserBean">
-    select id, name, account, pwd, phone, status, sex, dept_id deptId, post, email,
-    entry_time entryTime, age, head_img headImg from t_user where id = #{userBean.id}
+    select u.id, u.name, u.account, u.pwd, u.phone, u.status, u.sex, u.dept_id deptId,
+    u.post, u.email, u.entry_time entryTime, u.age, u.head_img headImg,
+    GROUP_CONCAT(ur.role_id) roleName
+    from t_user u,t_user_role ur
+    where u.id = ur.user_id and u.id = #{userBean.id}
   </select>
 
   <update id="updateUser">
@@ -265,4 +278,26 @@
       head_img = #{headImg,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="queryUserInfoAndDeptNameByUserId" parameterType="com.jk.model.user.UserBean" resultType="com.jk.model.user.UserBean">
+    select u.id,u.name,d.name depName from t_user u,t_dept d where u.dept_id = d.id and u.id = #{id}
+  </select>
+
+  <!-- 查询角色所有 -->
+  <select id="queryRoleAll" resultType="com.jk.model.role.RoleBean">
+    select * from t_role
+  </select>
+
+  <!-- 批量保存用户角色表 -->
+  <insert id="saveUserRole">
+    insert into t_user_role (user_id,role_id) values
+    <foreach collection="arrayList" item="item" index="index" separator=",">
+      (#{item.userId},#{item.roleId})
+    </foreach>
+  </insert>
+
+  <!-- 删除用户角色表 by userId-->
+  <delete id="deleteUserRoleByUserId" parameterType="com.jk.model.user.UserBean">
+    delete from t_user_role where user_id = #{id}
+  </delete>
 </mapper>

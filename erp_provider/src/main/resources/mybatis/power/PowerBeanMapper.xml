@@ -12,100 +12,62 @@
   </sql>
 
   <!-- 查询总条数 -->
-  <select id="queryPowerCount" resultType="int" >
-    SELECT count(*) FROM (SELECT p.id,p.power,p.grade,GROUP_CONCAT(p.`name`) name,t.text treeName FROM
-    t_power p,t_tree t where p.pid = t.id
-    <if test="powerBean.treeName != null and powerBean.treeName != ''">
-      and t.text like '%${powerBean.treeName}%'
+  <select id="queryRoleCount" parameterType="com.jk.model.role.RoleBean" resultType="int" >
+    SELECT count(*) FROM(
+    SELECT r.id from t_role r,t_role_power rp,t_power p
+    where r.id = rp.role_id and rp.power_id = p.id
+    <if test="name != null and name != ''">
+      r.name like '%${name}%'
     </if>
-    GROUP BY t.text) a
+    GROUP BY r.id )l
   </select>
 
   <!-- 分页  -->
-  <select id="queryPowerList" resultType="com.jk.model.power.PowerBean" >
-    SELECT p.id,p.power,p.grade,GROUP_CONCAT(p.`name`) name,t.text treeName FROM
-    t_power p,t_tree t where p.pid = t.id
-    <if test="powerBean.treeName != null and powerBean.treeName != ''">
-      and t.text like '%${powerBean.treeName}%'
+  <select id="queryRoleList" parameterType="com.jk.model.role.RoleBean" resultType="com.jk.model.role.RoleBean" >
+    SELECT r.*,GROUP_CONCAT(p.name) powerName
+    from t_role r,t_role_power rp,t_power p
+    where r.id = rp.role_id and rp.power_id = p.id
+    <if test="name != null and name != ''">
+      r.name like '%${name}%'
     </if>
-    GROUP BY t.text limit #{powerBean.startIndex},#{powerBean.rows}
+    GROUP BY r.id
+    limit #{startIndex},#{rows}
   </select>
 
-  <!-- 查询角色 -->
-  <select id="queryRoleAll" resultType="com.jk.model.role.RoleBean">
-    select * from t_role
-  </select>
-
-  <!-- 添加权限 -->
-  <insert id="savePower" parameterType="com.jk.model.power.PowerBean">
-    insert into t_power
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="grade != null" >
-        grade,
-      </if>
-      <if test="name != null and name != ''" >
-        name,
-      </if>
-      <if test="pid != null" >
-        pid,
-      </if>
-      <if test="power != null and power != ''" >
-        power,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="grade != null" >
-        #{grade},
-      </if>
-      <if test="name != null and name != ''" >
-        #{name},
-      </if>
-      <if test="pid != null" >
-        #{pid},
-      </if>
-      <if test="power != null and power != ''" >
-        #{power},
-      </if>
-    </trim>
-
+  <!-- 添加角色 -->
+  <insert id="saveRole" parameterType="com.jk.model.role.RoleBean">
+    insert into t_role (name) values (#{name})
     <selectKey resultType="int" keyProperty="id">
       SELECT LAST_INSERT_ID() as ID
     </selectKey>
   </insert>
 
-  <!-- 修改权限 -->
-  <update id="updatePowerById">
-    update t_power
-    <set>
-      <if test="powerBean.name != null and powerBean.name != ''" >
-        name = #{powerBean.name},
-      </if>
-      <if test="powerBean.pid != null" >
-        pid = #{powerBean.pid},
-      </if>
-      <if test="powerBean.power != null and powerBean.power != ''" >
-        power = #{powerBean.power},
-      </if>
-      <if test="powerBean.grade != null">
-        grade = #{powerBean.grade},
-      </if>
-    </set>
-    where id = #{powerBean.id}
+  <!-- 修改角色 -->
+  <update id="updateRoleById" parameterType="com.jk.model.role.RoleBean">
+    update t_role set name = #{name}
+    where id = #{id}
   </update>
 
   <!--  删除角色权限表  -->
-  <delete id="deleteRolePowerByPowerId">
-    delete from t_role_power where power_id = #{powerBean.id}
+  <delete id="deleteRolePowerByRoleId" parameterType="com.jk.model.role.RoleBean">
+    delete from t_role_power where role_id = #{id}
   </delete>
 
   <!-- 添加角色权限表 -->
   <insert id="saveRolePower">
     insert into t_role_power (role_id,power_id) values
-    (#{rolePowerBean.roleId},#{rolePowerBean.powerId})
+    <foreach collection="arrayList" item="item" index="index" separator=",">
+      (#{item.roleId},#{item.powerId})
+    </foreach>
   </insert>
 
-  <select id="queryPowerInfoById" resultType="com.jk.model.power.PowerBean">
-    select p.id,p.name,p.grade,p.power,p.pid,rp.role_id roleId from t_power p ,t_role_power rp
-    where p.id = rp.power_id and p.id = #{powerBean.id}
+  <!-- 查询所有权限  -->
+  <select id="queryPowerAll" resultType="com.jk.model.power.PowerBean">
+    select * from t_power
+  </select>
+
+  <select id="queryRoleInfoById" parameterType="com.jk.model.role.RoleBean" resultType="com.jk.model.role.RoleBean">
+    SELECT r.*,GROUP_CONCAT(rp.power_id) powerName from t_role r,t_role_power rp
+    where r.id = rp.role_id and r.id = #{id}
   </select>
 </mapper>

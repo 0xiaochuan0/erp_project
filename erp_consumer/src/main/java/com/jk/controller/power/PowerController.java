@@ -5,6 +5,7 @@ import com.jk.model.power.PowerBean;
 import com.jk.model.role.RoleBean;
 import com.jk.service.power.PowerService;
 import com.jk.utils.ResultPage;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,20 +18,17 @@ public class PowerController {
     @Reference(version = "1.0.0")
     private PowerService powerService;
 
-    @RequestMapping("queryPowerPage")
-    public ResultPage queryPowerPage(PowerBean powerBean){
-        return powerService.queryPowerPage(powerBean);
+    @RequiresPermissions("role:query")
+    @RequestMapping("queryRolePage")
+    public ResultPage queryRolePage(RoleBean roleBean){
+        return powerService.queryRolePage(roleBean);
     }
 
-    @RequestMapping("queryRoleAll")
-    public List<RoleBean> queryRoleAll(){
-        return powerService.queryRoleAll();
-    }
-
-    @RequestMapping("saveOrUpdatePower")
-    public Boolean saveOrUpdatePower(PowerBean powerBean){
+    @RequiresPermissions("role:save")
+    @RequestMapping("saveOrUpdateRole")
+    public Boolean saveOrUpdateRole(RoleBean roleBean){
         try {
-            powerService.saveOrUpdatePower(powerBean);
+            powerService.saveOrUpdateRole(roleBean);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -38,10 +36,16 @@ public class PowerController {
         return true;
     }
 
-    @RequestMapping("queryPowerInfoById")
-    public PowerBean queryPowerInfoById(PowerBean powerBean){
-        PowerBean info = powerService.queryPowerInfoById(powerBean);
+    @RequiresPermissions("role:edit")
+    @RequestMapping("queryRoleInfoById")
+    public RoleBean queryRoleInfoById(RoleBean roleBean){
+        RoleBean info = powerService.queryRoleInfoById(roleBean);
         System.out.println(info);
         return info;
+    }
+
+    @RequestMapping("queryPowerAll")
+    public List<PowerBean> queryPowerAll(){
+        return powerService.queryPowerAll();
     }
 }
