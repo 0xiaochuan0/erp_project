@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
@@ -15,13 +20,12 @@
     <!--添加扇形叶-->
     <link rel="stylesheet" href="../bootStrap-addTabs/bootstrap.addtabs.css"/>
     <script src="../bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+    <!-- 弹框 -->
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+
 
 </head>
 <body>
-<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
-    <div class="panel-heading">
-        <h3 class="panel-title">商品管理/商品列表</h3>
-    </div>
     <div class="panel-body">
         <div id="toolbar">
             <form class="form-inline">
@@ -34,28 +38,24 @@
                     <input type="text" class="form-control" id="name" placeholder="请输入商品名称"/>
                 </div>
                 <div class="form-group">
-                    <!--<label>生日</label>-->
                     <label for="trademark">商品品牌</label>
                     <input type="text" class="form-control" id="trademark" placeholder="请输入商品品牌"/>
-                    <!--<input type="text" class="form-control date" id="birthdayStart" />
-                    <input type="text" class="form-control date" id="birthdayEnd" />-->
                 </div>
                 <div class="form-group">
                     <label for="state">商品状态</label>
                     <input type="text" class="form-control" id="state" placeholder="上架"/>
                 </div>
             </form>
-            <button type="button" onclick="commodity()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+            <shiro:hasPermission name="commodityTable:save" ><button type="button" onclick="commodity()" class="btn btn-info glyphicon glyphicon-plus">添加</button></shiro:hasPermission>
+
             <button type="button" onclick="searchUser()" class="btn btn-info glyphicon glyphicon-search">搜索</button>
-            <!--  <button type="button" onclick="deleteAll()" class="btn btn-danger glyphicon glyphicon-trash">批量删除</button>
-              <button type="button" onclick="updateLockStateAll()" class="btn btn-active glyphicon glyphicon-lock">批量锁定</button>
-        -->  </div>
+          </div>
         <!-- 展示用户列表 -->
-        <table id="myTable"></table>
+        <shiro:hasPermission name="commodityTable:query" ><table id="myTable"></table></shiro:hasPermission>
     </div>
-</div>
 
 <script>
+    /*<![CDATA[*/
     //页面加载
     $(function(){
         initTable();
@@ -115,17 +115,16 @@
                     formatter:function(value,row,index){
                         return 'NO '+value;
                     }
-                },
-                {
+                },{
                     field:"imgId",
-                    title: '<div style="background-color:#F0F0F0 ">商品图片</div>',
+                    title: '<div style="background-color:#F0F0F0">商品图片</div>',
                     align: 'center',
                     formatter:function(value,row,index){
-                        return 'value<img src="#" style="height:50px;width:50px"/>';
+                        return '<img src="#" style="height:50px;width:50px"/>';
                     }
                 },
                 {
-                    field:"priceThisId",
+                    field:"sellingPrice",
                     title: '<div style="background-color:#F0F0F0 ">商品价格</div>',
                     align: 'center',
                     formatter:function(value,row,index){
@@ -140,20 +139,34 @@
                         return value;
                     }
                 },
+/*                {
+                    field:"state",
+                    title: '<div style="background-color:#F0F0F0 ">商品类型</div>',
+                    align: 'center',
+                    formatter:function(value,row,index){
+                        return row.type_key+''+row.type_value;
+                    }
+                },*/
                 {
-                    field:"attributeId",
+                    field:"attribute_Key",
                     title: '<div style="background-color:#F0F0F0 ">商品属性</div>',
                     align: 'center',
                     formatter:function(value,row,index){
-                        return value;
+                        return row.attribute_Key+','+row.attribute_Value+''+row.color;
                     }
                 },
                 {
-                    field:"inventoryWarningValue",
-                    title: '<div style="background-color:#F0F0F0 ">库存状态</div>',
+                    field:"inventory",
+                    title: '<div style="background-color:#F0F0F0 ">库存量</div>',
                     align: 'center',
                     formatter:function(value,row,index){
-                        return '剩余:'+value;
+                        var text="";
+                        if(value==null&& row.state==2){
+                            text="清及时监督"
+                        }else{
+                            text=value;
+                        }
+                        return '剩余:'+text;
                     }
                 },
                 {
@@ -161,7 +174,7 @@
                     title: '<div style="background-color:#F0F0F0 ">商品状态</div>',
                     align: 'center',
                     formatter:function(value,row,index){
-                        return row.state==1 ? '<button type="button" class="btn btn-info btn-primary disabled">上架</button>' : '<button type="button" class="btn btn-success btn-primary disabled">下架</button>' ;
+                        return row.state==1 ? '<button type="button" class="btn btn-info btn-primary disabled">上架</button>' : row.state==2? '<button type="button" class="btn btn-success btn-primary disabled">下架</button>':'异常' ;
                     }
                 },
                 {
@@ -169,9 +182,8 @@
                     align: 'center',
                     title: '<div style="background-color:#F0F0F0 ">操作</div>',
                     formatter:function(value,row,index){
-                        var valuesHtml='<button type="button" onclick="openAddDialog()" class="btn btn-warning">编辑</button>';
-
-                        row.state==1 ? valuesHtml+='<button type="button" onclick="upState('+row.id+','+row.state+','+row.inventoryWarningValue+')" class="btn btn-danger">下架</button>' :valuesHtml+= '<button type="button" onclick="upState('+row.state+')" class="btn btn-danger disabled">下架</button>'
+                        var valuesHtml='';/*<shiro:hasPermission name="commodityTable:updata" ><button type="button" onclick="Up(\'+row.id+\')" class="btn btn-warning">编辑</button> </shiro:hasPermission>';*/
+                        row.state==1 ? valuesHtml+='<shiro:hasPermission name="commodityTableUpState:update" ><button type="button" onclick="upState('+row.id+','+row.state+','+row.inventoryWarningValue+')" class="btn btn-danger">下架</button></shiro:hasPermission>' :valuesHtml+= '<shiro:hasPermission name="commodityTableUpState:update" ><button type="button" onclick="upState('+row.state+')" class="btn btn-danger disabled">下架</button></shiro:hasPermission>'
                         return valuesHtml;
                     }
                 }
@@ -179,12 +191,50 @@
         })
     }
     function commodity() {
-        $.addtabs({iframeHeight: 650});
-        $.addtabs.add({
-            id:7,
-            title:'添加商品',
-            url:''
-        });
+        bootbox.dialog({
+            //设置大
+            size:'large',
+            title:"<center>添加商品</center>",
+            message:createAddContent('../commodity/addCommodity'),
+            closeButton:true,
+            buttons:{
+                "success":{
+                    "label" : '<i class="icon-ok"></i> 保存',
+                    "className" : "btn-sm btn-success",
+                    "callback":function(){
+                        var g_form = new FormData($("#myPurchase")[0]);
+                        $.ajax({
+                            url : "../commodityTable/SaveCommodityTableBean",
+                            async : true,
+                            type: "POST",
+                            data: g_form,
+                            processData: false,
+                            contentType:false,
+                            dataType: "json",
+                            success : function(data) {
+                                if(data){
+                                    alert("添加成功！");
+                                    $("#close").click('close');
+                                    $('#myTable').bootstrapTable('refresh');
+                                }
+                            },
+                            error : function(e){
+                                alert("请打开F12或者跑debug");
+                            }
+                        });
+
+                    }
+                },
+                "cancel":{
+                    "label":'<i id="close" class="icon-info"></i> 取消',
+                    "className":"btn-sm btn-danger",
+                    "callback" :function(){}
+                }
+            }
+        })
+        type();
+        trademarSelect();
+        queryType_key();
     }
     function upState(id,state,inventoryWarningValue){
         if(id!=null||state==1||inventoryWarningValue>1 ||inventoryWarningValue!=null){
@@ -205,6 +255,284 @@
             alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
         }
     }
+
+    //  createAddContent(url)  这个方法直接用--必需品
+    var res;
+    function createAddContent(url){
+        $.ajax({
+            url:url,
+            async:false,
+            success:function(data){
+                res = data;
+            }
+        });
+        return res;
+    }
+
+    function Up(id){
+        bootbox.dialog({
+            size:'large',
+            title:"<center>修改商品</center>",
+            message:createAddContent('../commodity/addCommodity'),
+            closeButton:true,
+            buttons:{
+                "success":{
+                    "label" : '<i class="icon-ok"></i> 保存',
+                    "className" : "btn-sm btn-success",
+                    "callback":function(){
+                        var g_form = new FormData($("#myPurchase")[0]);
+                        $.ajax({
+                            url : "../commodityTable/SaveCommodityTableBean",
+                            async : true,
+                            type: "POST",
+                            data: g_form,
+                            processData: false,
+                            contentType:false,
+                            dataType: "json",
+                            success : function(data) {
+                                if(data){
+                                    alert("修改成功！");
+                                    $('#myTable').bootstrapTable('refresh');
+                                }
+                            },
+                            error : function(e){
+                                alert("请打开F12或者跑debug");
+                            }
+                        });
+
+                    }
+                },
+                "cancel":{
+                    "label":'<i id="close" class="icon-info"></i> 取消',
+                    "className":"btn-sm btn-danger",
+                    "callback" :function(){}
+                }
+            }
+        })
+        //类型
+        type();
+        //品牌
+        trademarSelect();
+        //属性
+        queryType_key();
+        $.ajax({
+            url:'../commodityTable/getCommodityTableBean',
+            type:'post',
+            data:{id:id},
+            success:function(data){
+                $("#idUP").val(data.id);
+                $("#nameUP").val(data.name);
+                $("#numberUP").val(data.number);
+                $("#inventoryWarningValueUP").val(data.inventoryWarningValue);
+                $("#sellingPriceUP").val(data.sellingPrice);
+                $("#explainsUP").val(data.expires);
+
+                //类型
+               /* $.ajax({
+                    url:'../commodityTable/queryTypeWhereId',
+                    type:'post',
+                    data:{id:data.typeId},
+                    dataType:'json',
+                    success:function (result) {*/
+                    $.ajax({
+                        url:'../commodityTypeSumUp/queryType',
+                        type:'post',
+                        data:{id:data.typeId},
+                        dataType:'json',
+                        success:function (result) {
+                            $("#typeUP").val(result.id);
+                            alert(result.id)
+                        }
+                    })
+
+/*                        $.ajax({
+                            url:'../commodityTypeSumUp/queryType',
+                            type:'post',
+                            data:{id:result.id},
+                            dataType:'json',
+                            success:function (result) {
+                                var html = '<option value="0">清选择二级分类</option>';
+                                for (var i = 0; i < result.length ; i++) {
+                                    html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                                }
+                                $("select[name='typeId']").html(html);
+                            }
+                        })*/
+                    /*}*/
+               /* })*/
+
+               $("#typeValueUP").val(data.typeId);
+                //品牌
+                $("#trademarkUP").val(data.trademark);
+                //属性
+                $.ajax({
+                    url:'../commodityTable/queryTypeAttributeWhereid',
+                    type:'post',
+                    data:{id:data.attribute_id},
+                    dataType:'json',
+                    success:function (result) {
+                        $("#type_keyUP").val(result.type_key);
+                        $.ajax({
+                            url:'../commodityTypeSumUp/queryType_value',
+                            type:'post',
+                            data:{type_key:result.type_key},
+                            dataType:'json',
+                            success:function (result) {
+                                var html = '<option value="0">清选择属性包含</option>';
+                                for (var i = 0; i < result.length ; i++) {
+                                    html += '<option value="'+result[i].id+'">'+result[i].type_value+'</option>';
+                                }
+                                $("select[name='attribute_id']").html(html);
+                            }
+                        })
+
+                        $("select[name='attribute_id']").val(data.attribute_id);
+
+                    }
+                })
+
+
+                $("#colorUP").val(data.color);
+                /*#("#imgUrlPU").val(data.imgUrlPU)*/
+                /*//图片表Id  imgUrl;*/
+            }
+        })
+
+
+
+    }
+    /*]]> */
+
+    /*<![CDATA[*/
+    //页面加载
+  /*  $(function (){*/
+        /*$("input [name='number']").val(Math.random()*6);*/
+      /*  $("input[name='startTime']").val(new Date());*/
+/*
+    })*/
+    /*function number(){*/
+        /*        var D = new Date()
+                D= D.replaceAll("[[\\s-:punct:]]","");
+                alert(D)*/
+/*        var D=$("input [name='number']").val( Math.random()*6);
+    }*/
+//属性
+    function queryType_key(){
+        $.ajax({
+            url:'../commodityTypeSumUp/queryType_key',
+            type:'post',
+            dataType:'json',
+            success:function (result) {
+                var html = '<option value="0"> 清选择属性</option>';
+                for (var i = 0; i < result.length ; i++) {
+                    html += '<option value="'+result[i].type_key+'">'+result[i].type_key+'</option>';
+                }
+                $("select[name='type_key']").html(html);
+            }
+        })
+    }
+    function queryType_value(){
+        var id=$("select[name='type_key'] option:selected").val();
+        $.ajax({
+            url:'../commodityTypeSumUp/queryType_value',
+            type:'post',
+            data:{type_key:id},
+            dataType:'json',
+            success:function (result) {
+                var html = '<option value="0">清选择属性包含</option>';
+                for (var i = 0; i < result.length ; i++) {
+                    html += '<option value="'+result[i].id+'">'+result[i].type_value+'</option>';
+                }
+                $("select[name='attribute_id']").html(html);
+            }
+        })
+    }
+    //类型
+    function type(){
+        var id=0;
+        $.ajax({
+            url:'../commodityTypeSumUp/queryType',
+            type:'post',
+            data:{id:id},
+            dataType:'json',
+            success:function (result) {
+                var html = '<option value="0">清选择一级分类</option>';
+                for (var i = 0; i < result.length ; i++) {
+                    html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                }
+                $("select[name='type']").html(html);
+            }
+        })
+    }
+    function querytypeS(){
+        var id=$('#type').val();
+        $.ajax({
+            url:'../commodityTypeSumUp/queryType',
+            type:'post',
+            data:{id:id},
+            dataType:'json',
+            success:function (result) {
+                var html = '<option value="0">清选择二级分类</option>';
+                for (var i = 0; i < result.length ; i++) {
+                    html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                }
+                $("select[name='typeId']").html(html);
+            }
+        })
+    }
+    function addTrademar(){
+        $("#trademarkLoadSpan").html("");
+        $('#trademarkLoadSpan').html("<input type=\"tet\" class=\"form-control\"   name=\"trademark\"  placeholder=\"加品牌\"/>")
+        $("#trademarkButtonSpan").html("");
+        $("#trademarkButtonSpan").html("<button type=\"button\" class=\"btn btn-default\" style=\"width: 100px;\" onclick=\"queryTrademarButton()\">选已有品牌</button>");
+
+    }
+    function queryTrademarButton(){
+        $("#trademarkLoadSpan").html("");
+        $('#trademarkLoadSpan').html("<select  name=\"trademark\" class=\"form-control \" style=\"width: 180px\" data-live-search=\"true\"> </select>")
+        $("#trademarkButtonSpan").html("");
+        $("#trademarkButtonSpan").html(" <button type=\"button\" class=\"btn btn-default\"  onclick=\"addTrademar()\">添加</button>")
+        trademarSelect();
+    }
+    function trademarSelect(){
+        $.ajax({
+            url:'../commodityTable/queryCommodityTrademar',
+            type:'post',
+            dataType:'json',
+            success:function (result) {
+                var html = '<option value="0">选择已有商品品牌</option>';
+                for (var i = 0; i < result.length ; i++) {
+                    html += '<option value="'+result[i].trademark+'">'+result[i].trademark+'</option>';
+                }
+                $("select[name='trademark']").html(html);
+            }
+        })
+    }
+
+    function save(){
+        alert( $("input [name='name']").val())
+     var g_form = new FormData($("#myPurchase")[0]);
+        $.ajax({
+            url : "../commodityTable/SaveCommodityTableBean",
+            async : true,
+            type: "POST",
+            data: g_form,
+            processData: false,
+            contentType:false,
+            dataType: "json",
+            success : function(data) {
+                if(data){
+                    alert("成功！");
+                    $("#close").click('close');
+                    $('#myTable').bootstrapTable('refresh');
+                }
+            },
+            error : function(e){
+                alert("请打开F12或者跑debug");
+            }
+        });
+    }
+    /*]]> */
 </script>
 </body>
 </html>

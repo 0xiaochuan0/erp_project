@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
@@ -16,25 +21,25 @@
     <script src="../bootstrap-bootbox/bootbox.js"></script>
 </head>
 <body>
-<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
-    <div class="panel-heading">
-        <h3 class="panel-title">商品管理 /添加商品</h3>
-    </div>
     <div class="panel-body">
         <div id="toolbar">
             <form class="form-inline">
                 <div class="form-group">
                     <input type="text" class="form-control" id="name" placeholder="请输入属性组名称"/>
                     <button type="button" onclick="searchUser()" class="btn btn-info glyphicon glyphicon-search">搜索</button>
-                    <button type="button" onclick="add()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+                    <a shiro:hasPermission="commodityTypeSumUp:save" href="#">
+                        <button type="button" onclick="add()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+                    </a>
                 </div>
             </form>
         </div>
         <!-- 展示用户列表 -->
-        <table id="myTable"></table>
+        <shiro:hasPermission name="commodityTypeSumUp:query" href="#">
+            <table id="myTable"></table>
+        </shiro:hasPermission>
     </div>
-</div>
 <script>
+    /*<![CDATA[*/
     //页面加载
     $(function(){
         initTable();
@@ -68,13 +73,13 @@
                 return{
                     page: this.pageNumber,
                     rows: this.pageSize,
-                    type_three_name:name,
+                    type_value:name,
                 }
             },
             columns:[
                 {checkbox:true},
                 {
-                    field:"type_Three_name",
+                    field:"type_key",
                     title: '<div style="background-color:#F0F0F0 ">库存状态</div>',
                     align: 'center',
                     formatter:function(value,row,index){
@@ -82,7 +87,7 @@
                     }
                 },
                 {
-                    field:"type_four_name",
+                    field:"type_value",
                     title: '<div style="background-color:#F0F0F0 ">包含属性</div>',
                     align: 'center',
                     formatter:function(value,row,index){
@@ -94,7 +99,7 @@
                     align: 'center',
                     title: '<div style="background-color:#F0F0F0 ">操作</div>',
                     formatter:function(value,row,index){
-                        return '<button type="button" onclick="get()" class="btn btn-warning">编辑</button><button type="button" onclick="delsCommodityTypeSumUp('+row.id+')" class="btn btn-danger">删除</button>' ;
+                        return /*'<button type="button" onclick="get()" class="btn btn-warning">编辑</button>*/'<shiro:hasPermission name="commodityTypeSumUp:delete" href="#" ><button type="button" onclick="delsCommodityTypeSumUp(\''+row.type_key+'\')" class="btn btn-danger">删除</button></shiro:hasPermission>' ;
                     }
                 }
             ]
@@ -110,11 +115,26 @@
                     "label" : '<i class="icon-ok"></i> 保存',
                     "className" : "btn-sm btn-success",
                     "callback":function(){
+                        /*var type_value=$("input[name='type_value']").val();
+                        var type_key=$("input[name='type_key']").val();
 
+                        var type_valueArr ="";
+
+                        $("input[name='type_value']").each(function(index,el){
+                                type_valueArr==""? type_valueArr+$(el).val():","+type_valueArr+$(el).val();
+                        });
+                        alert(type_valueArr);*/
+
+                      /*  var img_url =[];
+                        $("input[name='goods_images_a']").each(function(){
+                            img_url.push($(this).val());
+                        })
+*/
                         $.ajax({
                             url:'../commodityTypeSumUp/SaveOrUpdateCommodityTypeSumUp',
                             type:'post',
                             data:$("#addForm").serialize(),
+                            /*data:{type_valueArr: type_valueArr,type_key:type_key},*/
                             dataType:'json',
                             success:function(data){
                                 $("#close").click('close');
@@ -131,6 +151,7 @@
                 }
             }
         })
+        queryType_key();
     }
     //  createAddContent(url)  这个方法直接用--必需品
     var res;
@@ -166,6 +187,7 @@
             alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
         }
     }
+    /*]]> */
 </script>
 </body>
 </html>

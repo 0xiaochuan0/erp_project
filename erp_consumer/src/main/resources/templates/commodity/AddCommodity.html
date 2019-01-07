@@ -1,50 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>Title</title>
+<!--    <script type="text/javascript"  src="../jquery-1.9.1.min.js"></script>
     <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
-    <link rel="stylesheet" href="../bootStrap-addTabs/bootstrap.addtabs.css"/>
-    <script src="../bootstrap3/js/bootstrap.js"></script>
-    <script src="../bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-treeview/bootstrap-treeview.min.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../bootstrap-select/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" />
+    <script type="text/javascript"  src="../bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript"  src="../bootstrap-table/bootstrap-table.js"></script>
+    <script type="text/javascript" src="../bootstrap-bootbox/bootbox.js"></script>
+    <script type="text/javascript" src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript"  src="../bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>-->
+   <!-- <script src="../bootstrap-select/js/bootstrap-select.js"></script>-->
+<!--    <script src="../bootstrap-select/js/i18n/defaults-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>-->
+    <script src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
+    <script src="../bootstrap3/js/bootstrap.min.js"></script>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script src="../bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+
 </head>
 <body>
-<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
-    <div class="panel-heading">
-        <h3 class="panel-title">商品管理 /添加商品</h3>
-    </div>
-    <div class="panel-body">
-
-
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active">
-                        <a href="/commodity/addcommodityMassage" aria-controls="home" role="tab" data-toggle="tab">Home</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a>
-                    </li>
-                </ul>
-
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="home">...</div>
-                    <div role="tabpanel" class="tab-pane" id="profile">...</div>
-                    <div role="tabpanel" class="tab-pane" id="messages">...</div>
-                    <div role="tabpanel" class="tab-pane" id="settings">...</div>
+        <form  id="myPurchase">
+            <input type="hidden" name="id" id="idUP"/>
+               <div class="panel-heading" style="font-size: 15px; background-color: #F0F0F0">
+                   <span class="glyphicon" style="color: rgb(247, 3, 94); font-size: 15px;"><b>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</b></span>商品分类
                 </div>
-            </div>
-        </div>
-
-
-    </div>
-</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;"> 选择一级分类:</div>
+                        <div class="col-sm-4">
+                            <select  id="typeUP" name="type"  class="form-control " style="width: 250px;" onchange="querytypeS()" ></select>
+                        </div>
+                        <div class="col-sm-2"  style="height: 34px;line-height: 34px;"> 选择二级分类:</div>
+                        <div class="col-sm-4">
+                            <select  name="typeId" id="typeValueUP" style="width: 250px" class="form-control " ></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;">属性:</div>
+                        <div class="col-sm-4">
+                            <select  name="type_key" class="form-control " id="type_keyUP" style="width: 250px;" onchange="queryType_value()" ></select>
+                        </div>
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;"> 属性类型:</div>
+                        <div class="col-sm-4">
+                            <select  name="attribute_id" class="form-control " id="attribute_KeyUP" style="width: 250px;" ></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;">颜色:</div>
+                        <div class="col-sm-4">
+                            <select  name="color" id="colorUP" class="form-control" style="width: 250px;">
+                                <option value="" >请选择颜色</option>
+                                <option value="红">红</option>
+                                <option value="黄">黄</option>
+                                <option value="蓝">蓝</option>
+                                <option value="绿">绿</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2" name="imgUrl" id="imgUrlPU" style="height: 34px;line-height: 34px;">图片:</div>
+                        <div class="col-sm-4">
+                            <input type="file" />
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading" style="font-size: 15px; background-color: #F0F0F0">
+                    <span class="glyphicon" style="color: rgb(247, 3, 94); font-size: 15px;"><b>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</b></span>基本信息
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-2"  style="height: 34px;line-height: 34px;">• 商品名称: </div>
+                        <div class="col-sm-4">
+                            <input type="text" id="nameUP" class="form-control"  name="name" style="width: 250px;"  placeholder="单位名称"/>
+                        </div>
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;">• 商品品牌: </div>
+                        <div class="col-sm-3">
+                            <span id="trademarkLoadSpan"> <select  name="trademark" id="trademarkUP" class="form-control " style="width: 180px" data-live-search="true"> </select></span>
+                        </div>
+                        <div class="col-sm-1" style="width:50px">
+                            <span id="trademarkButtonSpan">
+                                <button type="button" class="btn btn-default"  onclick="addTrademar()">添加</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;">• 商品价格: </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control"  id="sellingPriceUP" name="sellingPrice" style="width: 250px;" placeholder="商品价格"/>
+                        </div>
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;">• 库存预警值: </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="inventoryWarningValueUP" name="inventoryWarningValue" style="width: 250px;" placeholder="库存预警值" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="height: 34px;line-height: 34px;">• 说明: </div>
+                        <div class="col-sm-10">
+                            <textarea class="form-control"  id="explainUP" name="explain" style="height: 200px"> </textarea>
+                        </div>
+                    </div>
+                </div>
+        </form>
+   <!--<button type="button" class="btn btn-default" onclick="fanhui()"><span class="glyphicon glyphicon-remove" > </span>取消</button>
+    <button type="button" class="btn btn-info"  onclick="save()"><span class="glyphicon glyphicon-ok" > </span>保存</button>-->
 </body>
+<script >
+
+</script>
 </html>

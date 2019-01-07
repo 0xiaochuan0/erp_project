@@ -2,26 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jk.mapper.commodity.CommodityPriceThisMapper" >
     <select id="queryCommodityPriceThisCount" parameterType="map" resultType="int">
-        select count(1)
-        from commodity_priceThis
-        where 1=1 <include refid="queryCommodityPriceThis"></include>
-    </select>
-    <select id="queryCommodityPriceThisList" parameterType="map" resultType="com.jk.model.commodity.CommodityPriceThisBean">
-        select *
-        from commodity_priceThis
-        where 1=1 <include refid="queryCommodityPriceThis"></include>
-        limit #{start},#{end}
+        select count(1) <include refid="queryCommodityPriceThis"></include>
     </select>
     <sql id="queryCommodityPriceThis">
+        from Commodity_Table ct
+        left join commodity_typesumup sum on sum.id=ct.attribute_id
+        left join  commodity_type typ  on ct.typeId=typ.id
+        left join commodity_type typ2 on typ2.id=typ.pid
+        where 1=1 <include refid="queryCommodityPriceThisWhere"></include>
+    </sql>
+    <select id="queryCommodityPriceThisList" parameterType="map" resultType="com.jk.model.commodity.CommodityTableBean">
+        select  ct.* , sum.type_key as attribute_Key ,sum.type_value as attribute_Value,typ.name as type_key ,typ2.name as type_value
+        <include refid="queryCommodityPriceThis"></include>
+        limit #{start},#{end}
+    </select>
+    <sql id="queryCommodityPriceThisWhere">
        <if test="commodityPriceThis.number!=null and commodityPriceThis.number!='' ">
-            and number like '%${commodityPriceThis.number}%'
+            and ct.number like '%${commodityPriceThis.number}%'
         </if>
     </sql>
-<select id="queryCommodity_priceThis_log"  resultType="java.util.LinkedHashMap" parameterType="int">
-        select  time as time,Commodity_priceThis_id  as Commodity_priceThis_id ,pricePurchasing as pricePurchasing , sellingPrice as sellingPrice
-                from commodity_priceThis_log
-                where Commodity_priceThis_id=#{id}
+
+<select id="queryCommodity_priceThis_logGetSellingPrice"  resultType="com.jk.model.commodity.Commodity_priceThis_log" parameterType="int">
+    select  MONTH(log.time) as time ,log.commodity_table_id  as commodity_table_id ,ct.purchasingPrice as purchasingPrice , ct.sellingPrice as sellingPrice
+        from commodity_pricethis_log log
+        left join Commodity_Table ct on log.commodity_table_id=ct.id
+        where log.id=#{id} <!--and time=YEAR(time)=YEAR(NOW())--> GROUP BY MONTH(log.time) ,ct.purchasingPrice ,ct.sellingPrice
 </select>
+<select id="queryCommodity_priceThis_logGetPricePurchasing"  resultType="com.jk.model.commodity.Commodity_priceThis_log" parameterType="int">
+    select  MONTH(log.time) as time ,log.commodity_table_id  as commodity_table_id ,ct.purchasingPrice as purchasingPrice , ct.sellingPrice as sellingPrice
+        from commodity_pricethis_log log
+        left join Commodity_Table ct on log.commodity_table_id=ct.id
+        where log.id=#{id} <!--and time=YEAR(time)=YEAR(NOW())--> GROUP BY MONTH(log.time) ,ct.purchasingPrice ,ct.sellingPrice
+</select>
+    <insert id="SaveCommodity_priceThis_log"  parameterType="com.jk.model.commodity.Commodity_priceThis_log">
+        insert into commodity_pricethis_log
+        (time,Commodity_priceThis_id)
+        values(#{time},#{Commodity_priceThis_id})
+    </insert>
+
     <insert id="SaveOrUpdateCommodityPriceThis"  parameterType="com.jk.model.commodity.CommodityPriceThisBean">
             insert into commodity_priceThis
                         (name,number,trademark,pricePurchasing,sellingPrice)

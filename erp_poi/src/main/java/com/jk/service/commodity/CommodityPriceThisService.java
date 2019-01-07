@@ -1,6 +1,7 @@
 package com.jk.service.commodity;
 
 import com.jk.model.commodity.CommodityPriceThisBean;
+import com.jk.model.commodity.Commodity_priceThis_log;
 import com.jk.utils.ResultPage;
 
 import java.util.List;
@@ -14,5 +15,7 @@ public interface CommodityPriceThisService {
     Boolean SaveOrUpdateCommodityPriceThis(CommodityPriceThisBean commodityPriceThis);
 
     CommodityPriceThisBean getCommodity_priceThis(Integer id);
+
+    Boolean SaveCommodity_priceThis_log(Commodity_priceThis_log commodity_priceThis_log);
 
 }
