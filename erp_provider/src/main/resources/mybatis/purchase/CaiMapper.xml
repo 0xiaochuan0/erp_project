@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.purchase.CaiMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.purchase.Cai" >
+    <id column="order_Id" property="orderId" jdbcType="INTEGER" />
+    <result column="creat_Date" property="creatDate" jdbcType="DATE" />
+    <result column="order_Num" property="orderNum" jdbcType="VARCHAR" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="gong_Ying_Shang_Num" property="gongYingShangNum" jdbcType="VARCHAR" />
+    <result column="gong_Ying_Shang_Name" property="gongYingShangName" jdbcType="VARCHAR" />
+    <result column="qing_Gou_Fu_Ze" property="qingGouFuZe" jdbcType="VARCHAR" />
+    <result column="cai_Gou_Chu_Li" property="caiGouChuLi" jdbcType="VARCHAR" />
+    <result column="cai_Gou_Sheng_He" property="caiGouShengHe" jdbcType="VARCHAR" />
+    <result column="dui_Ying_Qing_Gou_num" property="duiYingQingGouNum" jdbcType="VARCHAR" />
+    <result column="shui" property="shui" jdbcType="INTEGER" />
+    <result column="shui_Lv" property="shuiLv" jdbcType="VARCHAR" />
+    <result column="adress" property="adress" jdbcType="VARCHAR" />
+    <result column="editPerson" property="editperson" jdbcType="VARCHAR" />
+    <result column="dept" property="dept" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="beizhu" property="beizhu" jdbcType="VARCHAR" />
+    <result column="caigoushu" property="caigoushu" jdbcType="INTEGER" />
+    <result column="shangnum" property="shangnum" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    order_Id, creat_Date, order_Num, order_status, gong_Ying_Shang_Num, gong_Ying_Shang_Name, 
+    qing_Gou_Fu_Ze, cai_Gou_Chu_Li, cai_Gou_Sheng_He, dui_Ying_Qing_Gou_num, shui, shui_Lv, 
+    adress, editPerson, dept, user_id,beizhu,caigoushu,shangnum
+  </sql>
+
+  <insert id="addCai" parameterType="com.jk.model.purchase.Cai" >
+    insert into xzs_caigou (order_Id, creat_Date, order_Num, 
+      order_status, gong_Ying_Shang_Num, gong_Ying_Shang_Name, 
+      qing_Gou_Fu_Ze, cai_Gou_Chu_Li, cai_Gou_Sheng_He, 
+      dui_Ying_Qing_Gou_num, shui, shui_Lv, 
+      adress, editPerson, dept, 
+      user_id,beizhu,caigoushu,shangnum)
+    values (#{orderId,jdbcType=INTEGER}, #{creatDate,jdbcType=DATE}, #{orderNum,jdbcType=VARCHAR}, 
+      2, #{gongYingShangNum,jdbcType=VARCHAR}, #{gongYingShangName,jdbcType=VARCHAR},
+      #{qingGouFuZe,jdbcType=VARCHAR}, #{caiGouChuLi,jdbcType=VARCHAR}, #{caiGouShengHe,jdbcType=VARCHAR}, 
+      #{duiYingQingGouNum,jdbcType=VARCHAR}, #{shui,jdbcType=INTEGER}, #{shuiLv,jdbcType=VARCHAR}, 
+      #{adress,jdbcType=VARCHAR}, #{editperson,jdbcType=VARCHAR}, #{dept,jdbcType=INTEGER}, 
+      #{userId,jdbcType=INTEGER}, #{beizhu,jdbcType=VARCHAR}, #{caigoushu,jdbcType=INTEGER}, #{shangnum,jdbcType=VARCHAR})
+  </insert>
+
+
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.purchase.Cai" >
+    update xzs_caigou
+    set creat_Date = #{creatDate,jdbcType=DATE},
+      order_Num = #{orderNum,jdbcType=VARCHAR},
+      order_status = #{orderStatus,jdbcType=INTEGER},
+      gong_Ying_Shang_Num = #{gongYingShangNum,jdbcType=VARCHAR},
+      gong_Ying_Shang_Name = #{gongYingShangName,jdbcType=VARCHAR},
+      qing_Gou_Fu_Ze = #{qingGouFuZe,jdbcType=VARCHAR},
+      cai_Gou_Chu_Li = #{caiGouChuLi,jdbcType=VARCHAR},
+      cai_Gou_Sheng_He = #{caiGouShengHe,jdbcType=VARCHAR},
+      dui_Ying_Qing_Gou_num = #{duiYingQingGouNum,jdbcType=VARCHAR},
+      shui = #{shui,jdbcType=INTEGER},
+      shui_Lv = #{shuiLv,jdbcType=VARCHAR},
+      adress = #{adress,jdbcType=VARCHAR},
+      editPerson = #{editperson,jdbcType=VARCHAR},
+      dept = #{dept,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      beizhu=#{beizhu,jdbcType=VARCHAR}
+    where order_Id = #{orderId,jdbcType=INTEGER}
+  </update>
+
+  <select id="showCai" parameterType="map" resultMap="BaseResultMap">
+    select  *  from  xzs_caigou  where   1=1
+    <include refid="caiWhere"></include>
+      limit ${(pages-1)*rows},${rows}
+  </select>
+  <select id="countCai"  parameterType="map"  resultType="int">
+    select  count(*)  from  xzs_caigou  where  1 =1
+    <include refid="caiWhere"></include>
+  </select>
+
+<sql id="caiWhere">
+  <if test="cai.orderStatus !=null  and  cai.orderStatus !=''">
+      and  order_status  = #{cai.orderStatus}
+  </if>
+  <if test="creatda !=null and creatda !=''">
+    and   DATE_FORMAT(creat_Date,'%Y-%m-%d') ='${creatda}'
+  </if>
+  <if test="cai.gongYingShangName !=null and cai.gongYingShangName !=''">
+    and  gong_Ying_Shang_Name  like  '%${cai.gongYingShangName}%'
+  </if>
+  <if test="cai.qingGouFuZe !=null and  cai.qingGouFuZe !=''">
+    and  qing_Gou_Fu_Ze   like'%${cai.qingGouFuZe}%'
+  </if>
+
+</sql>
+
+  <select id="selectType"  resultType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean">
+    select  DISTINCT  purchase_requisition_identifier purchaseRequisitionIdentifier  from  t_purchaserequisition   where  status=2
+  </select>
+
+  <update id="updatStatus" parameterType="map">
+    update   xzs_caigou   set  order_status = #{status}  where  order_Id=#{orderId}
+  </update>
+</mapper>

@@ -11,49 +11,37 @@ public class CommodityTableBean implements Serializable {
 
     //主键
     private Integer id;
-    //类型Id用于条查
-    private Integer typeId;
-        //属性名称
-        private String  type_key;
-        //包含属性
-        private String  type_value;
-    //商品名
-    private String name;
+    //名称
+    private String  name;
     //编号
     private String number;
-    //库存量
-    private Integer inventory;
-    //库存预警值
-    private String inventoryWarningValue;
-    //品牌
-    private String trademark;
-
     //开始上架时间
     private String timeStart;
     //结束上架时间
     private String timeEnd;
-
-    //属性Id key value
-    /*private Integer attributeId;*/
-    private String attribute_id;
-        //属性名称
-        private String attribute_Key;
-        //包含属性
-        private String attribute_Value;
-    //颜色
-    private String color;
-    //销售价格sellingPrice
-    private String sellingPrice;
-
     //图片表Id
-    private String  imgUrl;
+    private Integer  imgId;
+    //一级分类ID
+    private Integer typeId;
+    //二级分类ID
+    private Integer typeId2;
+    //价格本Id
+    private Integer priceThisId;
+    //价格本Id:品牌Name
+    private String trademark;
+    //库存预警值
+    private Integer inventoryWarningValue;
+    //属性ID
+    private Integer attributeId;
     //说明
-    private String  explains;
-    //上下架
+    private String  explain;
+    //上 下 架
     private Integer state;
 
     //进价
     private String  purchasingPrice ;
+
+    private  Integer   qinggoushu;
 
             //用于关联添加
         private Integer saveSId;
@@ -63,14 +51,6 @@ public class CommodityTableBean implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
     }
 
     public String getName() {
@@ -89,30 +69,6 @@ public class CommodityTableBean implements Serializable {
         this.number = number;
     }
 
-    public Integer getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Integer inventory) {
-        this.inventory = inventory;
-    }
-
-    public String getInventoryWarningValue() {
-        return inventoryWarningValue;
-    }
-
-    public void setInventoryWarningValue(String inventoryWarningValue) {
-        this.inventoryWarningValue = inventoryWarningValue;
-    }
-
-    public String getTrademark() {
-        return trademark;
-    }
-
-    public void setTrademark(String trademark) {
-        this.trademark = trademark;
-    }
-
     public String getTimeStart() {
         return timeStart;
     }
@@ -129,60 +85,60 @@ public class CommodityTableBean implements Serializable {
         this.timeEnd = timeEnd;
     }
 
-    public String getAttribute_id() {
-        return attribute_id;
+    public Integer getImgId() {
+        return imgId;
     }
 
-    public void setAttribute_id(String attribute_id) {
-        this.attribute_id = attribute_id;
+    public void setImgId(Integer imgId) {
+        this.imgId = imgId;
     }
 
-    public String getAttribute_Key() {
-        return attribute_Key;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setAttribute_Key(String attribute_Key) {
-        this.attribute_Key = attribute_Key;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    public String getAttribute_Value() {
-        return attribute_Value;
+    public Integer getTypeId2() {
+        return typeId2;
     }
 
-    public void setAttribute_Value(String attribute_Value) {
-        this.attribute_Value = attribute_Value;
+    public void setTypeId2(Integer typeId2) {
+        this.typeId2 = typeId2;
     }
 
-    public String getColor() {
-        return color;
+    public Integer getPriceThisId() {
+        return priceThisId;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setPriceThisId(Integer priceThisId) {
+        this.priceThisId = priceThisId;
     }
 
-    public String getSellingPrice() {
-        return sellingPrice;
+    public Integer getAttributeId() {
+        return attributeId;
     }
 
-    public void setSellingPrice(String sellingPrice) {
-        this.sellingPrice = sellingPrice;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setAttributeId(Integer attributeId) {
+        this.attributeId = attributeId;
     }
 
     public String getExplain() {
-        return explains;
+        return explain;
     }
 
     public void setExplain(String explain) {
-        this.explains = explain;
+        this.explain = explain;
+    }
+
+    public Integer getInventoryWarningValue() {
+        return inventoryWarningValue;
+    }
+
+    public void setInventoryWarningValue(Integer inventoryWarningValue) {
+        this.inventoryWarningValue = inventoryWarningValue;
     }
 
     public Integer getState() {
@@ -193,32 +149,12 @@ public class CommodityTableBean implements Serializable {
         this.state = state;
     }
 
-    public String getPurchasingPrice() {
-        return purchasingPrice;
+    public String getTrademark() {
+        return trademark;
     }
 
-    public void setPurchasingPrice(String purchasingPrice) {
-        this.purchasingPrice = purchasingPrice;
-    }
-
-    public String getExplains() {
-        return explains;
-    }
-
-    public void setExplains(String explains) {
-        this.explains = explains;
-    }
-
-    public String getType_key() {
-        return type_key;
-    }
-
-    public void setType_key(String type_key) {
-        this.type_key = type_key;
-    }
-
-    public String getType_value() {
-        return type_value;
+    public void setTrademark(String trademark) {
+        this.trademark = trademark;
     }
 
     public void setType_value(String type_value) {
@@ -231,5 +167,13 @@ public class CommodityTableBean implements Serializable {
 
     public void setSaveSId(Integer saveSId) {
         this.saveSId = saveSId;
+    }
+
+    public Integer getQinggoushu() {
+        return qinggoushu;
+    }
+
+    public void setQinggoushu(Integer qinggoushu) {
+        this.qinggoushu = qinggoushu;
     }
 }
