@@ -5,6 +5,8 @@ import com.jk.model.commodity.CommodityTypeBean;
 import com.jk.model.commodity.CommodityTypeSumUpBean;
 import com.jk.utils.ResultPage;
 
+import java.util.List;
+
 public interface CommodityTableService {
     ResultPage queryCommodityTable(Integer page, Integer rows, CommodityTableBean commodityTableBean);
 
