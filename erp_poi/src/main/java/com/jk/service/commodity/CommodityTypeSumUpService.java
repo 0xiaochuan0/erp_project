@@ -1,5 +1,6 @@
 package com.jk.service.commodity;
 
+import com.jk.model.commodity.CommodityTypeBean;
 import com.jk.model.commodity.CommodityTypeSumUpBean;
 import com.jk.utils.ResultPage;
 
@@ -10,16 +11,13 @@ public interface CommodityTypeSumUpService {
 
     boolean delsCommodityTypeSumUp(String ids);
 
-    List<CommodityTypeSumUpBean> queryTypeOne();
-
-    List<CommodityTypeSumUpBean> queryTypeTwo(Integer id);
-
-    List<CommodityTypeSumUpBean> queryTypeThree(Integer id);
-
-    List<CommodityTypeSumUpBean> queryTypeFour(Integer id);
-
     List<CommodityTypeSumUpBean> getCommodityTypeSumUp(Integer id);
 
-    Boolean SaveOrUpdateCommodityTypeSumUp(CommodityTypeSumUpBean commodityTypeSumUp);
+    Boolean SaveOrUpdateCommodityTypeSumUp(CommodityTypeSumUpBean commodityTypeSumUp, Integer[] type_valueArr);
 
+    List<CommodityTypeBean> queryType(Integer id);
+
+    List<CommodityTypeBean> queryType_key();
+
+    List<CommodityTypeBean> queryType_value(CommodityTypeSumUpBean commodityTypeSumUp);
 }

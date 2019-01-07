@@ -1,13 +1,11 @@
 package com.jk.model.commodity;
 
-import com.jk.model.Page;
-
 import java.io.Serializable;
 
 /**
  * Commodity_Table	商品表
  */
-public class CommodityTableBean extends Page implements Serializable {
+public class CommodityTableBean implements Serializable {
 
     private static final long serialVersionUID = 6867239093932568583L;
 
@@ -15,10 +13,10 @@ public class CommodityTableBean extends Page implements Serializable {
     private Integer id;
     //类型Id用于条查
     private Integer typeId;
-    //属性名称
-    private String  type_key;
-    //包含属性
-    private String  type_value;
+        //属性名称
+        private String  type_key;
+        //包含属性
+        private String  type_value;
     //商品名
     private String name;
     //编号
@@ -38,10 +36,10 @@ public class CommodityTableBean extends Page implements Serializable {
     //属性Id key value
     /*private Integer attributeId;*/
     private String attribute_id;
-    //属性名称
-    private String attribute_Key;
-    //包含属性
-    private String attribute_Value;
+        //属性名称
+        private String attribute_Key;
+        //包含属性
+        private String attribute_Value;
     //颜色
     private String color;
     //销售价格sellingPrice
@@ -57,9 +55,8 @@ public class CommodityTableBean extends Page implements Serializable {
     //进价
     private String  purchasingPrice ;
 
-    //用于关联添加
-    private String saveSId;
-
+            //用于关联添加
+        private Integer saveSId;
     public Integer getId() {
         return id;
     }
@@ -228,11 +225,11 @@ public class CommodityTableBean extends Page implements Serializable {
         this.type_value = type_value;
     }
 
-    public String getSaveSId() {
+    public Integer getSaveSId() {
         return saveSId;
     }
 
-    public void setSaveSId(String saveSId) {
+    public void setSaveSId(Integer saveSId) {
         this.saveSId = saveSId;
     }
 }

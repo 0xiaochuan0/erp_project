@@ -3,11 +3,15 @@ package com.jk.service.impl.commodity;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.jk.mapper.commodity.CommodityTypeSumUpMapper;
 import com.jk.model.commodity.CommodityTableBean;
+import com.jk.model.commodity.CommodityTypeBean;
 import com.jk.model.commodity.CommodityTypeSumUpBean;
 import com.jk.service.commodity.CommodityTypeSumUpService;
 import com.jk.utils.ResultPage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +26,7 @@ public class CommodityTypeSumUpServiceImpl implements CommodityTypeSumUpService 
 
         map.put("commodityTypeSumUp",commodityTypeSumUp);
         Integer count=commodityTypeSumUpMapper.queryCommodityTypeSumUpCount(map);
+
         ResultPage.setTotal(count);
 
         map.put("start",page*rows-rows);
@@ -41,33 +46,22 @@ public class CommodityTypeSumUpServiceImpl implements CommodityTypeSumUpService 
     }
 
     @Override
-    public List<CommodityTypeSumUpBean> queryTypeOne() {
-        return commodityTypeSumUpMapper.queryTypeOne();
-    }
-
-    @Override
-    public List<CommodityTypeSumUpBean> queryTypeTwo(Integer id) {
-        return commodityTypeSumUpMapper.queryTypeTwo(id);
-    }
-
-    @Override
-    public List<CommodityTypeSumUpBean> queryTypeThree(Integer id) {
-        return commodityTypeSumUpMapper.queryTypeThree(id);
-    }
-
-    @Override
-    public List<CommodityTypeSumUpBean> queryTypeFour(Integer id) {
-        return commodityTypeSumUpMapper.queryTypeFour(id);
-    }
-
-    @Override
     public List<CommodityTypeSumUpBean> getCommodityTypeSumUp(Integer id) {
         return commodityTypeSumUpMapper.getCommodityTypeSumUp();
     }
 
     @Override
-    public Boolean SaveOrUpdateCommodityTypeSumUp(CommodityTypeSumUpBean commodityTypeSumUp) {
+    public Boolean SaveOrUpdateCommodityTypeSumUp(CommodityTypeSumUpBean commodityTypeSumUp , Integer[] type_valueArr) {
+
+
         if(commodityTypeSumUp.getId()==null){
+            /*List<CommodityTypeSumUpBean>  CommodityTypeSumUpBeanList=new ArrayList<CommodityTypeSumUpBean>();
+            for (int i = 0; i < type_valueArr.length; i++) {
+                CommodityTypeSumUpBean commodityType=new CommodityTypeSumUpBean();
+                    commodityType.setType_key(commodityTypeSumUp.getType_key());
+                    commodityType.setType_value((type_valueArr[i]).toString());
+                CommodityTypeSumUpBeanList.add(commodityType);
+            }*/
             commodityTypeSumUpMapper.SaveOrUpdateCommodityTypeSumUp(commodityTypeSumUp);
             return true;
         }else if(commodityTypeSumUp.getId()!=null){
@@ -76,5 +70,20 @@ public class CommodityTypeSumUpServiceImpl implements CommodityTypeSumUpService 
         }else{
             return false;
         }
+    }
+
+    @Override
+    public List<CommodityTypeBean> queryType(Integer id) {
+        return commodityTypeSumUpMapper.queryType(id);
+    }
+
+    @Override
+    public List<CommodityTypeBean> queryType_key() {
+        return commodityTypeSumUpMapper.queryType_key();
+    }
+
+    @Override
+    public List<CommodityTypeBean> queryType_value(CommodityTypeSumUpBean commodityTypeSumUp) {
+        return commodityTypeSumUpMapper.queryType_value(commodityTypeSumUp);
     }
 }

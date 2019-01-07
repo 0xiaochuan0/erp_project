@@ -14,6 +14,8 @@
         <div class="row">
             <div class="col-xs-2"></div>
             <div class="col-xs-8">
+
+
                 <div class="form-group">
                     <table>
                         <tr>
@@ -21,123 +23,85 @@
                             <td><input type="hidden" class="form-control" name="id" /></td>
                         </tr>
                         <tr>
-                            <td>一级类型</td>
-                            <td><select id='type_one_id' name="type_one_id" class="form-control selectpicker"  onchange="querytwo()" data-live-search="true"></select></td>
-                        </tr>
-                        <tr>
-                            <td>二级类型</td>
-                            <td><select id='type_two_id' name="type_two_id" class="form-control selectpicker"   onchange="querythree()" data-live-search="true"></select></td>
-                        </tr>
-                        <tr>
                             <td>属性组名称</td>
-                            <td><select id='type_three_id' name="type_three_id" class="form-control selectpicker"  onchange="queryfour()"   data-live-search="true"></select></td>
+                            <td>
+                                <span id="type_keyType">
+                                     <input type="text" class="form-control"  name="type_key"  style="display: inline-block"  placeholder="添加属性组名称"/>
+                                      <button type="button" class="btn btn-default" style="display: inline-block"  onclick="querytype_keySelect()">切换已有的选择添加</button>
+                                 </span>
+                            </td>
                         </tr>
                         <tr>
                             <td>包含属性</td>
-                            <td><select id='type_four_id' name="type_four_id" class="form-control selectpicker"   data-live-search="true"></select></td>
+                            <td>
+                                <table id="AddMenuDiv">
+                                    <tr>
+                                        <td> <input type="text" class="form-control"  name="type_value"   placeholder="添加属性"/>
+                                            <button type="button" class="btn btn-default" style="display: inline" onclick="addSType_value()">+</button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </td>
                         </tr>
                     </table>
                 </div>
+
             </div>
         </div>
     </form>
 </div>
 <script>
     /*<![CDATA[*/
-    $.ajax({
-        url: "../commodityTypeSumUp/queryTypeOne",
-        type:'post',
-        dataType:"json",
-        success:function(data){
-            var optArr = [];
-            for (var i = 0; i < data.length; i++) {
-                $('.selectpicker').append("<option value=" + data[i].type_one_id + ">" + data[i].type_one_name + "</option>");
+
+        function querytype_keySelect(){
+
+            $("#type_keyType").html("");
+            $("#type_keyType").html("<select id='queryType_key'  class=\"form-control selectpicker\"   data-live-search=\"true\"></select>\n" +
+                "                <button type=\"button\" class=\"btn btn-default\"  style=\"display: inline\" onclick=\"queryType_keyText()\">切换输入添加</button>");
+        }
+    function queryType_keyText(){
+        $("#type_keyType").html("");
+        $("#type_keyType").html("  <input type=\"text\" class=\"form-control\"  name=\"type_key\"   placeholder=\"添加属性组名称\"/>\n" +
+            "            <button type=\"button\" class=\"btn btn-default\" style=\"display: inline\"  onclick=\"querytype_keySelect()\">切换已有的选择添加</button>");
+        queryType_key();
+    }
+    function  addSType_value(){
+        /* 每次获取table里的数据都会  给没有tbody数据加上tbody 当有therd时就不需要tbody添加标签*/
+        /* 获取html里边的代码  返回是一个带《tboody>标签的代码 第二次返回依然是俩个《tboody>*/
+        var AddMenuDivHtml=$("#AddMenuDiv").html();
+
+        /* alert(AddMenuDivHtml)
+      $("#testspan").text(AddMenuDivHtml);   */
+        /*获取《tboody>里边的数据  因为他们的  $("#AddMenuDiv")相同 都是《tboody>所以只获取一个《tboody》里的内容 因为上别的*/
+        var tbodyHtml=$("#AddMenuDiv").find('tbody').html();
+
+        /*   alert(tbodyHtml)
+        $("#testspan2").text(tbodyHtml);   */
+        /*获取《tboody>里边的数据  加上之前的数据  */
+        var zhongjia=AddMenuDivHtml+tbodyHtml
+
+        /*  alert(zhongjia)
+         /* $("#testspan3").text(zhongjia);  */
+        /*添加到table中  */
+        $("#AddMenuDiv").html(zhongjia);
+        /*当时想过每条数据加个编号
+        /*$("input[name='dfs']").val($("input[name='dfs']").val()+1)*/
+    }
+
+    function queryType_key(){
+        $.ajax({
+            url:'../commodityTypeSumUp/queryType_key',
+            type:'post',
+            dataType:'json',
+            success:function (result) {
+                var html = '<option value="0">清选择一级分类</option>';
+                for (var i = 0; i < result.length ; i++) {
+                    html += '<option value="'+result[i].type_key+'">'+result[i].type_key+'</option>';
+                }
+                $("select[name='type_key']").html(html);
             }
-            // 缺一不可
-            $('#type_one_id').selectpicker('refresh');
-            $('#type_one_id').selectpicker('render');
-        },
-    })
-    function querytwo(){
-        var id=$('#type_one_id option:selected').val();
-        alert(id)
-        if(id!=null){
-            $.ajax({
-                url:'../commodityTypeSumUp/queryTypeTwo',
-                type:'post',
-                data:{id:id},
-                dataType:"json",
-                success:function(data){
-                    if(data!=null){
-                        var optArr = [];
-                        var html="";
-                        for (var i = 0; i < data.length; i++) {
-                           /* $('.selectpicker').append(*/ html+="<option value=" + data[i].type_two_id + ">" + data[i].type_two_name + "</option>"/*)*/;
-                        }
-                        $('#type_two_id').html(html)
-                        // 缺一不可
-                        /*$('#type_two_id').selectpicker('refresh');
-                        $('#type_two_id').selectpicker('render');*/
-                    }else{
-                        alert("您的操作错误")
-                    }
-                }
-            })
-        }else{
-            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
-        }
-    }
-    function querythree(){
-        var id=$('#type_two_id option:selected').val();
-        if(id!=null){
-            $.ajax({
-                url:'../commodityTypeSumUp/queryTypeThree',
-                type:'post',
-                data:{id:id},
-                dataType:"json",
-                success:function(data){
-                    if(data!=null){
-                        var optArr = [];
-                        for (var i = 0; i < data.length; i++) {
-                            $('.selectpicker').append("<option value=" + data[i].type_three_id + ">" + data[i].type_three_name + "</option>");
-                        }
-                        // 缺一不可
-                        $('#type_three_id').selectpicker('refresh');
-                        $('#type_three_id').selectpicker('render');
-                    }else{
-                        alert("您的操作错误")
-                    }
-                }
-            })
-        }else{
-            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
-        }
-    }
-    function queryfour(){
-        var id=$('#type_three_id option:selected').val();
-        if(id!=null){
-            $.ajax({
-                url:'../commodityTypeSumUp/queryTypeFour',
-                type:'post',
-                data:{id:id},
-                dataType:"json",
-                success:function(data){
-                    if(data!=null){
-                        var optArr = [];
-                        for (var i = 0; i < data.length; i++) {
-                            $('.selectpicker').append("<option value=" + data[i].type_four_id + ">" + data[i].type_four_name + "</option>");
-                        }
-                        // 缺一不可
-                        $('#type_four_id').selectpicker('refresh');
-                        $('#type_four_id').selectpicker('render');
-                    }else{
-                        alert("您的操作错误")
-                    }
-                }
-            })
-        }else{
-            alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
-        }
+        })
     }
     /*]]> */
 </script>

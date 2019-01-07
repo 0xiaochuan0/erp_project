@@ -14,7 +14,7 @@ public class Commodity_priceThis_log implements Serializable{
     /**
      * 进价
      */
-    private String  pricePurchasing;
+    private String  purchasingPrice;
     /**
      * 销售
      */
@@ -44,14 +44,6 @@ public class Commodity_priceThis_log implements Serializable{
         Commodity_priceThis_id = commodity_Table_id;
     }
 
-    public String getPricePurchasing() {
-        return pricePurchasing;
-    }
-
-    public void setPricePurchasing(String pricePurchasing) {
-        this.pricePurchasing = pricePurchasing;
-    }
-
     public String getSellingPrice() {
         return sellingPrice;
     }
@@ -60,14 +52,11 @@ public class Commodity_priceThis_log implements Serializable{
         this.sellingPrice = sellingPrice;
     }
 
-    @Override
-    public String toString() {
-        return "Commodity_priceThis_log{" +
-                "id=" + id +
-                ", time='" + time + '\'' +
-                ", Commodity_priceThis_id=" + Commodity_priceThis_id +
-                ", pricePurchasing='" + pricePurchasing + '\'' +
-                ", sellingPrice='" + sellingPrice + '\'' +
-                '}';
+    public String getPurchasingPrice() {
+        return purchasingPrice;
+    }
+
+    public void setPurchasingPrice(String purchasingPrice) {
+        this.purchasingPrice = purchasingPrice;
     }
 }

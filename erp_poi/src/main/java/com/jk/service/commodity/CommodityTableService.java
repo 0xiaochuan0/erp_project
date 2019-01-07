@@ -1,6 +1,8 @@
 package com.jk.service.commodity;
 
 import com.jk.model.commodity.CommodityTableBean;
+import com.jk.model.commodity.CommodityTypeBean;
+import com.jk.model.commodity.CommodityTypeSumUpBean;
 import com.jk.utils.ResultPage;
 
 public interface CommodityTableService {
@@ -8,4 +10,14 @@ public interface CommodityTableService {
 
     boolean upState(CommodityTableBean commodityTableBean);
 
+    boolean SaveCommodityTableBean(CommodityTableBean commodityTableBean);
+
+    CommodityTableBean getCommodityTableBean(Integer id);
+
+    List<CommodityTableBean> queryCommodityTrademar();
+
+
+    CommodityTypeBean queryTypeWhereId(Integer id);
+
+    CommodityTypeSumUpBean queryTypeAttributeWhereid(Integer id);
 }
