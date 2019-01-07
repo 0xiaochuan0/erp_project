@@ -18,7 +18,8 @@ public interface WarehouseRegionMapper {
 
     int updateByPrimaryKey(WarehouseRegion record);
 
-    List<WarehouseRegion> queryList(Map<String, Object> map);
+    List<WarehouseRegion> queryDelivery(WarehouseRegion warehouseRegion);
 
-    Integer queryCount(Map<String, Object> map);
+
+    ;
 }

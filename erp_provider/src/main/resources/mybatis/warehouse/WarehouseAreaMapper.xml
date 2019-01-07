@@ -68,4 +68,5 @@
       pid = #{pid,jdbcType=INTEGER}
     where area_id = #{areaId,jdbcType=INTEGER}
   </update>
+
 </mapper>

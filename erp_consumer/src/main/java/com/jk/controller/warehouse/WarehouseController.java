@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br> 
  * 〈WarehouseController〉
@@ -33,7 +35,7 @@ public class WarehouseController {
     @Reference(version = "1.0.0")
     private IWarehouseService warehouseService;
 
-    @RequiresPermissions("indent:query")
+    @RequiresPermissions("warehouse:query")
     @RequestMapping("toWarehouse")
     public String  toWarehouse(){
         return "warehouse/warehouse";
@@ -41,8 +43,9 @@ public class WarehouseController {
 
     @RequestMapping("queryWarehouse")
     @ResponseBody
-    public ResultPage queryWarehouse(Integer page, Integer rows, WarehouseRegion warehouseRegion){
-        ResultPage resultPage = warehouseService.queryDelivery(page, rows,warehouseRegion);
-        return resultPage;
+    public List<WarehouseRegion> queryWarehouse(WarehouseRegion warehouseRegion){
+        List<WarehouseRegion> w = warehouseService.queryDelivery(warehouseRegion);
+        return w;
     }
+
 }

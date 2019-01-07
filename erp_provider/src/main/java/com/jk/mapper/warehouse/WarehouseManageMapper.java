@@ -20,12 +20,9 @@ public interface WarehouseManageMapper {
 
     int updateByPrimaryKey(WarehouseManage record);
 
-    List<WarehouseManage> queryList(Map<String, Object> map);
-
-
-    Integer queryCount(Map<String, Object> map);
-
     void inStorage(Integer id);
 
-    void addManage(String num);
+    String addManage(WarehouseManage record);
+
+    List<WarehouseManage> queryListStock(WarehouseManage warehouseManage);
 }
