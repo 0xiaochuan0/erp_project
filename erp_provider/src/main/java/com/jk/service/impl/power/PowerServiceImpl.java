@@ -19,38 +19,57 @@ public class PowerServiceImpl implements PowerService {
     private PowerBeanMapper powerBeanMapper;
 
     @Override
-    public ResultPage queryPowerPage(PowerBean powerBean) {
-        powerBean.calculate();
+    public ResultPage queryRolePage(RoleBean roleBean) {
+        roleBean.calculate();
         ResultPage resultPage = new ResultPage();
-        int powerCount = powerBeanMapper.queryPowerCount(powerBean);
+        int powerCount = powerBeanMapper.queryRoleCount(roleBean);
         resultPage.setTotal(powerCount);
-        List<PowerBean> powerList = powerBeanMapper.queryPowerList(powerBean);
-        resultPage.setRows(powerList);
+        List<RoleBean> roleList = powerBeanMapper.queryRoleList(roleBean);
+        for (RoleBean role:roleList) {
+            String[] split = role.getPowerName().split(",");
+            if (split.length>4){
+                String str = "";
+                for (int i = 0; i < split.length; i++) {
+                    str += str == ""? split[i] : "," + split[i];
+                    if (i == 3){
+                        break;
+                    }
+                }
+                role.setText(str);
+            }
+        }
+        resultPage.setRows(roleList);
         return resultPage;
     }
 
     @Override
-    public List<RoleBean> queryRoleAll() {
-        return powerBeanMapper.queryRoleAll();
-    }
-
-    @Override
-    public void saveOrUpdatePower(PowerBean powerBean) {
-        RolePowerBean rolePowerBean = new RolePowerBean();
-        if (StringUtils.isEmpty(powerBean.getId())){
-            powerBeanMapper.savePower(powerBean);
-            System.out.println(powerBean.getId());
+    public void saveOrUpdateRole(RoleBean roleBean) {
+        ArrayList<RolePowerBean> arrayList = new ArrayList<>();
+        RolePowerBean rolePowerBean = null;
+        String[] split = roleBean.getPowerName().split(",");
+        if (StringUtils.isEmpty(roleBean.getId())){
+            powerBeanMapper.saveRole(roleBean);
+            System.out.println(roleBean.getId());
         } else {
-            powerBeanMapper.updatePowerById(powerBean);
-            powerBeanMapper.deleteRolePowerByPowerId(powerBean);
+            powerBeanMapper.updateRoleById(roleBean);
+            powerBeanMapper.deleteRolePowerByRoleId(roleBean);
         }
-        rolePowerBean.setPowerId(powerBean.getId());
-        rolePowerBean.setRoleId(powerBean.getRoleId());
-        powerBeanMapper.saveRolePower(rolePowerBean);
+        for (int i = 0; i < split.length; i++) {
+            rolePowerBean = new RolePowerBean();
+            rolePowerBean.setPowerId(Integer.parseInt(split[i]));
+            rolePowerBean.setRoleId(roleBean.getId());
+            arrayList.add(rolePowerBean);
+        }
+        powerBeanMapper.saveRolePower(arrayList);
     }
 
     @Override
-    public PowerBean queryPowerInfoById(PowerBean powerBean) {
-        return powerBeanMapper.queryPowerInfoById(powerBean);
+    public RoleBean queryRoleInfoById(RoleBean roleBean) {
+        return powerBeanMapper.queryRoleInfoById(roleBean);
+    }
+
+    @Override
+    public List<PowerBean> queryPowerAll() {
+        return powerBeanMapper.queryPowerAll();
     }
 }

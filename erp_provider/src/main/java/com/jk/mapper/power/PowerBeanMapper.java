@@ -21,19 +21,19 @@ public interface PowerBeanMapper {
 
     int updateByPrimaryKey(PowerBean record);
 
-    int queryPowerCount(@Param("powerBean") PowerBean powerBean);
+    int queryRoleCount(RoleBean roleBean);
 
-    List<PowerBean> queryPowerList(@Param("powerBean") PowerBean powerBean);
+    List<RoleBean> queryRoleList(RoleBean roleBean);
 
-    List<RoleBean> queryRoleAll();
+    void saveRole(RoleBean roleBean);
 
-    void savePower(PowerBean powerBean);
+    void updateRoleById(RoleBean roleBean);
 
-    void updatePowerById(@Param("powerBean") PowerBean powerBean);
+    void deleteRolePowerByRoleId(RoleBean roleBean);
 
-    void deleteRolePowerByPowerId(@Param("powerBean") PowerBean powerBean);
+    void saveRolePower(@Param("arrayList") List<RolePowerBean> arrayList);
 
-    void saveRolePower(@Param("rolePowerBean") RolePowerBean rolePowerBean);
+    RoleBean queryRoleInfoById(RoleBean roleBean);
 
-    PowerBean queryPowerInfoById(@Param("powerBean") PowerBean powerBean);
+    List<PowerBean> queryPowerAll();
 }

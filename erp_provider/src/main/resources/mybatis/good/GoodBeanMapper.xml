@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.good.GoodBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.good.GoodBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="good_name" property="goodName" jdbcType="VARCHAR" />
+    <result column="good_num" property="goodNum" jdbcType="VARCHAR" />
+    <result column="good_size" property="goodSize" jdbcType="VARCHAR" />
+    <result column="good_unit" property="goodUnit" jdbcType="VARCHAR" />
+    <result column="good_Supplier_Number" property="goodSupplierNumber" jdbcType="VARCHAR" />
+    <result column="user_Id" property="userId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, good_name, good_num, good_size, good_unit, good_Supplier_Number, user_Id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from xzs_good
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from xzs_good
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.model.good.GoodBean" >
+    insert into xzs_good (id, good_name, good_num, 
+      good_size, good_unit, good_Supplier_Number, 
+      user_Id)
+    values (#{id,jdbcType=INTEGER}, #{goodName,jdbcType=VARCHAR}, #{goodNum,jdbcType=VARCHAR}, 
+      #{goodSize,jdbcType=VARCHAR}, #{goodUnit,jdbcType=VARCHAR}, #{goodSupplierNumber,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jk.model.good.GoodBean" >
+    insert into xzs_good
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="goodName != null" >
+        good_name,
+      </if>
+      <if test="goodNum != null" >
+        good_num,
+      </if>
+      <if test="goodSize != null" >
+        good_size,
+      </if>
+      <if test="goodUnit != null" >
+        good_unit,
+      </if>
+      <if test="goodSupplierNumber != null" >
+        good_Supplier_Number,
+      </if>
+      <if test="userId != null" >
+        user_Id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="goodName != null" >
+        #{goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodNum != null" >
+        #{goodNum,jdbcType=VARCHAR},
+      </if>
+      <if test="goodSize != null" >
+        #{goodSize,jdbcType=VARCHAR},
+      </if>
+      <if test="goodUnit != null" >
+        #{goodUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="goodSupplierNumber != null" >
+        #{goodSupplierNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.good.GoodBean" >
+    update xzs_good
+    <set >
+      <if test="goodName != null" >
+        good_name = #{goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodNum != null" >
+        good_num = #{goodNum,jdbcType=VARCHAR},
+      </if>
+      <if test="goodSize != null" >
+        good_size = #{goodSize,jdbcType=VARCHAR},
+      </if>
+      <if test="goodUnit != null" >
+        good_unit = #{goodUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="goodSupplierNumber != null" >
+        good_Supplier_Number = #{goodSupplierNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_Id = #{userId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.good.GoodBean" >
+    update xzs_good
+    set good_name = #{goodName,jdbcType=VARCHAR},
+      good_num = #{goodNum,jdbcType=VARCHAR},
+      good_size = #{goodSize,jdbcType=VARCHAR},
+      good_unit = #{goodUnit,jdbcType=VARCHAR},
+      good_Supplier_Number = #{goodSupplierNumber,jdbcType=VARCHAR},
+      user_Id = #{userId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

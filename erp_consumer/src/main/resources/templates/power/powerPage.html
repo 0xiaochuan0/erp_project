@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
@@ -19,7 +22,7 @@
     <div class="row" style="margin-top: 20px">
         <div class="col-md-4">
             <div class="input-group">
-                <input type="text" class="form-control" id="searchInput" placeholder="请输入权限组名称"/>
+                <input type="text" class="form-control" id="searchInput" placeholder="请输入角色名称"/>
                 <span class="input-group-btn">
                     <div class="btn btn-success" type="button">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
@@ -28,9 +31,11 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="btn btn-info">
-                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
-            </div>
+            <shiro:hasPermission name="role:save">
+                <div class="btn btn-info">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
+                </div>
+            </shiro:hasPermission>
         </div>
     </div>
     <div class="row" style="margin-top: 15px">
@@ -74,7 +79,7 @@
                         "algin" : "center",
                         "callback" : function() {
                             $.ajax({
-                                url:'../power/saveOrUpdatePower',
+                                url:'../power/saveOrUpdateRole',
                                 type:'post',
                                 data:$("#editPowerForm").serialize(),
                                 dataType:'json',
@@ -101,7 +106,7 @@
                     }
                 }
             });
-            initRole();
+            initPower();
         })
 
         /*修改*/
@@ -118,7 +123,7 @@
                         "algin" : "center",
                         "callback" : function() {
                             $.ajax({
-                                url:'../power/saveOrUpdatePower',
+                                url:'../power/saveOrUpdateRole',
                                 type:'post',
                                 data:$("#editPowerForm").serialize(),
                                 dataType:'json',
@@ -146,10 +151,10 @@
                 }
             });
 
-            initRole();
+            initPower();
 
             $.ajax({
-                url:'../power/queryPowerInfoById',
+                url:'../power/queryRoleInfoById',
                 type:'post',
                 data:{
                     id:id
@@ -157,67 +162,35 @@
                 dataType:'json',
                 success:function (result) {
                     $("input[name='id']").val(result.id);
-                    $("select[name='pid']").val(result.pid);
-                    $("select[name='grade']").val(result.grade);
                     $("input[name='name']").val(result.name);
-                    $("input[name='power']").val(result.power);
-                    $("select[name='roleId']").val(result.roleId);
+                    var arr = result.powerName.split(",");
+                    for (var i = 0; i < arr.length; i++) {
+                        $("input[type=checkbox][name=powerName][value="+arr[i]+"]").attr("checked",'checked');
+                    }
                 }
             })
         }
 
-        /*初始化角色*/
-        function initRole() {
+        function initPower() {
             $.ajax({
-                url:'../power/queryRoleAll',
+                url:'../power/queryPowerAll',
                 type:'post',
-                data:{},
                 dataType:'json',
                 success:function (result) {
-                    var html = '<option value="0">请选择</option>';
+                    var html = '';
                     for (var i = 0; i < result.length; i++) {
-                        html += '<option value="'+result[i].id+'">'+result[i].name+'</option>';
+                        html += '<label class="checkbox-inline"><input type="checkbox" name="powerName" value="'+result[i].id+'">'+result[i].name+'</label>';
                     }
-                    $('select[name="roleId"]').html(html);
+                    $("#powerSpan").html(html);
                 }
             })
         }
-
-        /*function initTree() {
-            $.ajax({
-                url:'../power/queryPowerByPid',
-                type:'post',
-                data:{
-                    pid:0
-                },
-                dataType:'json',
-                success:function (result) {
-                    var html = "";
-                    for (var i = 0; i < result.length; i++) {
-                        $.ajax({
-                            url:'../power/queryPowerByPid',
-                            type:'post',
-                            data:{
-                                pid:result[i].id
-                            },
-                            dataType:'json',
-                            success:function (data) {
-                                for (var j = 0; j < data.length; j++) {
-                                    html = '<optgroup label="'+result.text+'"><option value="'+data.id+'">'+data.text+'</option></optgroup>';
-                                }
-                            }
-                        })
-                    }
-                    $('select[name="pid"]').html(html);
-                }
-            })
-        }*/
 
         function initPowerTable(){
             $('.table').bootstrapTable('destroy');
             $('.table').bootstrapTable({
                 //toolbar:'#userToolbar',
-                url:'../power/queryPowerPage',//获取数据地址
+                url:'../power/queryRolePage',//获取数据地址
                 pagination:true, //是否展示分页
                 pageList:[5, 10, 20, 50],//分页组件
                 pageNumber:1,
@@ -237,26 +210,38 @@
                     return {
                         page: this.pageNumber,
                         rows: this.pageSize,
-                        treeName:$("#searchInput").val(),
+                        name:$("#searchInput").val(),
                     };
                 },
                 columns:[
                     {checkbox:true},
-                    {field:'id',title:'权限组编号',align:'center',width:150},
-                    {field:'treeName',title:'权限组名称',align:'center',width:150},
-                    {field:'grade',title:'权限等级',align:'center',width:150,
+                    {field:'name',title:'角色名称',align:'center',width:150},
+                    {field:'text',title:'包含的权限',align:'center',width:400,
                         formatter:function (value, row, index) {
-                            return value == 1? "Ⅰ":(value == 2? "Ⅱ":(value == 3? "Ⅲ":(value == 4? "Ⅳ":(value == 5? "Ⅴ":""))))
+                            if (value != null && value != ''){
+                                return value + '&nbsp;&nbsp;<a onclick="checkPowerName(\''+row.powerName+'\')"><b>•••••</b></a>';
+                            } else {
+                                return row.powerName;
+                            }
                         }
                     },
-                    {field:'name',title:'包含的权限',align:'center',width:150},
                     {field:'operation',title:'操作',align:'center',width:150,
                         formatter:function(value,row,index){
-                            return '<input type="button" class="btn btn-warning" value="编辑" onclick="updatUser('+row.id+')"/>';
+                            return '<shiro:hasPermission name="role:edit">' +
+                                        '<input type="button" class="btn btn-warning" value="编辑" onclick="updatUser('+row.id+')"/>' +
+                                    '</shiro:hasPermission>';
                         }
                     },
                 ]
             });
+        }
+
+        function checkPowerName(powerName) {
+            bootbox.alert({
+                size: "big",//small 小    big 中    large 大
+                title: "<center>包含角色</center>",
+                message: ""+powerName+"",
+            })
         }
         /*]]> */
     </script>

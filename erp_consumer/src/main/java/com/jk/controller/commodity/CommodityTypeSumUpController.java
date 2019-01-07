@@ -1,7 +1,6 @@
 package com.jk.controller.commodity;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.jk.model.commodity.CommodityTableBean;
 import com.jk.model.commodity.CommodityTypeSumUpBean;
 import com.jk.service.commodity.CommodityTypeSumUpService;
 import com.jk.utils.ResultPage;

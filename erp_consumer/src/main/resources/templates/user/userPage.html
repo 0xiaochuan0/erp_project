@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
@@ -8,12 +11,15 @@
     <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
     <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
     <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
+    <link rel="stylesheet" href="../bootstrap-select/css/bootstrap-select.css"/>
     <script src="../bootstrap3/js/bootstrap.min.js"></script>
     <script src="../bootstrap-table/bootstrap-table.js"></script>
     <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
     <script src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
     <script src="../bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script src="../bootstrap-bootbox/bootbox.js"></script>
+    <script src="../bootstrap-select/js/bootstrap-select.js"></script>
+    <script src="../bootstrap-select/js/i18n/defaults-zh_CN.js"></script>
 </head>
 <body>
     <div class="row" style="margin-top: 20px;height: 34px">
@@ -62,10 +68,12 @@
             <div class="btn btn-success">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
             </div>
-
-            <div class="btn btn-info" style="margin-left: 10px">
-                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
-            </div>
+            <shiro:hasPermission name="user:save">
+                <div class="btn btn-info" style="margin-left: 10px">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
+                </div>
+            </shiro:hasPermission>
+            <!--<select id="slpk" class="form-control selectpicker" name="roleName" data-live-search="true" multiple="multiple"></select>-->
         </div>
     </div>
     <div class="row" style="margin-top: 20px">
@@ -78,6 +86,7 @@
         $(function () {
             initUserTable();
             initJob();
+            //initRole();
             $('.date').datetimepicker({
                 language: 'zh-CN',//显示中文
                 format: 'yyyy-mm-dd',//显示格式 hh:ii:ss
@@ -140,6 +149,7 @@
                 }
             });
             initDept();
+            initRole();
         })
 
         /*修改*/
@@ -179,7 +189,7 @@
 
             initDept();
             initJobs();
-
+            initRole();
             $.ajax({
                 url:'../user/queryUserInfoById',
                 type:'post',
@@ -196,11 +206,46 @@
                     $("input[type=radio][name=sex][value="+result.sex+"]").attr("checked",'checked');
                     $("input[name='phone']").val(result.phone);
                     $("input[name='email']").val(result.email);
-                    alert($("#deptIdSelect").find("option[value='"+result.deptId+"']"));
+                    //alert($("#deptIdSelect").find("option[value='"+result.deptId+"']"));
                     $("#deptIdSelect").val(result.deptId);
                     $("#postSelect").val(result.post);
+                    var arr = result.roleName.split(",");
+                    for (var i = 0; i < arr.length; i++) {
+                        $("input[type=checkbox][name=roleName][value="+arr[i]+"]").attr("checked",'checked');
+                    }
                     //$("#deptIdSelect").find("option[value='"+result.deptId+"']").attr('selected','selected');
                     /*$("select[name='post']").find("option[value='"+result.post+"']").prop("selected",true);*/
+                }
+            })
+        }
+
+        function initRole() {
+
+            /*$(".selectpicker").selectpicker({
+                noneSelectedText : '请选择'
+            })*/
+
+            /*$(window).on('load', function() {
+                $('.selectpicker').selectpicker('val', '');
+                $('.selectpicker').selectpicker('refresh');
+
+            });*/
+
+            $.ajax({
+                url : '../user/queryRoleAll',
+                type : 'post',
+                dataType : 'json',
+                success : function(datas) {//返回list数据并循环获取
+                    //var select = $("#slpk");
+                    var html = '';
+                    for (var i = 0; i < datas.length; i++) {
+                        html += '<label class="checkbox-inline"><input type="checkbox" name="roleName" value="'+datas[i].id+'">'+datas[i].name+'</label>';
+                        /*select.append("<option value='"+datas[i].id+"'>"
+                            +datas[i].name+ "</option>");*/
+                    }
+                    $("#mySpan").html(html);
+                    /*$('.selectpicker').selectpicker('val', '');
+                    $('.selectpicker').selectpicker('refresh');*/
                 }
             })
         }
@@ -305,8 +350,8 @@
                 },
                 columns:[
                     {checkbox:true},
-                    {field:'id',title:'员工编号',align:'center',width:150},
-                    {field:'name',title:'员工姓名',align:'center',width:150},
+                    {field:'id',title:'员工编号',align:'center',width:100},
+                    {field:'name',title:'员工姓名',align:'center',width:100},
                     {field:'account',title:'员工账号',align:'center',width:150},
                     {field:'depName',title:'所在部门',align:'center',width:150},
                     {field:'jobName',title:'员工职位',align:'center',width:150},
@@ -317,9 +362,12 @@
                         }
                     },
                     {field:'entryTime',title:'添加时间',align:'center',width:150},
+                    {field:'roleName',title:'拥有角色',align:'center',width:250},
                     {field:'operation',title:'操作',align:'center',width:150,
                         formatter:function(value,row,index){
-                            return '<input type="button" class="btn btn-warning" value="编辑" onclick="updatUser('+row.id+')"/>';
+                            return '<shiro:hasPermission name="user:edit">' +
+                                        '<input type="button" class="btn btn-warning" value="编辑" onclick="updatUser('+row.id+')"/>' +
+                                    '</shiro:hasPermission>';
                         }
                     },
                 ]

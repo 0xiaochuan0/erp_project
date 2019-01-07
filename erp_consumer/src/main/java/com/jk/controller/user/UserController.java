@@ -4,10 +4,12 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.jk.model.ResultPage;
 import com.jk.model.dept.DeptBean;
 import com.jk.model.job.JobBean;
+import com.jk.model.role.RoleBean;
 import com.jk.model.user.UserBean;
 import com.jk.service.user.UserService;
 import com.jk.util.OSSClientUtil;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +45,7 @@ public class UserController {
         return true;
     }
 
+    @RequiresPermissions("user:query")
     @RequestMapping("queryUserPage")
     public ResultPage queryUserPage(UserBean userBean){
         return userService.queryUserPage(userBean);
@@ -64,6 +67,7 @@ public class UserController {
         return userService.queryJobByDeptId(jobBean);
     }
 
+    @RequiresPermissions("user:save")
     @RequestMapping("saveUser")
     public Boolean saveUser(UserBean userBean){
         try {
@@ -75,6 +79,7 @@ public class UserController {
         return true;
     }
 
+    @RequiresPermissions("user:edit")
     @RequestMapping("queryUserInfoById")
     public UserBean queryUserInfoById(UserBean userBean){
         return userService.queryUserInfoById(userBean);
@@ -84,5 +89,11 @@ public class UserController {
     public UserBean getInfo(){
         UserBean userInfo = (UserBean) SecurityUtils.getSubject().getPrincipal();
         return userInfo;
+    }
+
+    @RequestMapping("queryRoleAll")
+    public List<RoleBean> queryRoleAll(){
+        List<RoleBean> roleBeans = userService.queryRoleAll();
+        return roleBeans;
     }
 }

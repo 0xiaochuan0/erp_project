@@ -4,6 +4,7 @@ package com.jk.service.user;
 import com.jk.model.ResultPage;
 import com.jk.model.dept.DeptBean;
 import com.jk.model.job.JobBean;
+import com.jk.model.role.RoleBean;
 import com.jk.model.user.UserBean;
 
 import java.util.List;
@@ -27,4 +28,8 @@ public interface UserService {
     void saveUser(UserBean userBean);
 
     UserBean queryUserInfoById(UserBean userBean);
+
+    UserBean queryUserInfoAndDeptNameByUserId(UserBean userInfo);
+
+    List<RoleBean> queryRoleAll();
 }

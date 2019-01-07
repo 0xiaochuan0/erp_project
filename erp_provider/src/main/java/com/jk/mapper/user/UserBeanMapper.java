@@ -2,9 +2,12 @@ package com.jk.mapper.user;
 
 import com.jk.model.dept.DeptBean;
 import com.jk.model.job.JobBean;
+import com.jk.model.role.RoleBean;
 import com.jk.model.user.UserBean;
+import com.jk.model.userRole.UserRoleBean;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface UserBeanMapper {
@@ -36,9 +39,17 @@ public interface UserBeanMapper {
 
     List<JobBean> queryJobByDeptId(@Param("jobBean") JobBean jobBean);
 
-    void saveUser(@Param("userBean") UserBean userBean);
+    void saveUser(UserBean userBean);
 
     UserBean queryUserInfoById(@Param("userBean") UserBean userBean);
 
     void updateUser(@Param("userBean") UserBean userBean);
+
+    UserBean queryUserInfoAndDeptNameByUserId(UserBean userInfo);
+
+    List<RoleBean> queryRoleAll();
+
+    void saveUserRole(@Param("arrayList") ArrayList<UserRoleBean> arrayList);
+
+    void deleteUserRoleByUserId(UserBean userBean);
 }

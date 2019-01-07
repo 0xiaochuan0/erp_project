@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+    <div class="row" style="margin-top: 30px;margin-bottom: 30px">
+        <div class="col-xs-6">
+            <div class="btn btn-default btn-lg" id="tg">
+                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                审核通过
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="btn btn-default btn-lg" id="wtg" style="margin-left: 10px">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                审核未通过
+            </div>
+        </div>
+    </div>
+    <div class="row" id="hiddenDiv" style="margin-bottom: 30px">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="exampleInputEmail1">未通过理由</label>
+                <textarea class="form-control" id="exampleInputEmail1" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="status"/>
+    <script>
+        $(function () {
+            $("#hiddenDiv").hide();
+        })
+
+        $("#tg").click(function () {
+            $("#hiddenDiv").hide();
+            $("#status").val("2");
+            $("#tg").attr("class","btn btn-success btn-lg active");
+            $("#wtg").attr("class","btn btn-default btn-lg");
+        })
+
+        $("#wtg").click(function () {
+            $("#hiddenDiv").show();
+            $("#status").val("4");
+            $("#wtg").attr("class","btn btn-success btn-lg active");
+            $("#tg").attr("class","btn btn-default btn-lg");
+        })
+    </script>
+</body>
+</html>

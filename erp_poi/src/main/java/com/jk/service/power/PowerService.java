@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface PowerService {
 
-    ResultPage queryPowerPage(PowerBean powerBean);
+    ResultPage queryRolePage(RoleBean roleBean);
 
-    List<RoleBean> queryRoleAll();
+    void saveOrUpdateRole(RoleBean roleBean);
 
-    void saveOrUpdatePower(PowerBean powerBean);
+    RoleBean queryRoleInfoById(RoleBean roleBean);
 
-    PowerBean queryPowerInfoById(PowerBean powerBean);
+    List<PowerBean> queryPowerAll();
 }
