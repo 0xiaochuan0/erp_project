@@ -1,10 +1,12 @@
 package com.jk.service.warehouse;
 
 import com.jk.model.warehouse.WarehouseManage;
-import com.jk.utils.ResultPage;
+
+
+import java.util.List;
 
 public interface IWarehouseManageService {
-    ResultPage queryListStock(Integer page, Integer rows, WarehouseManage warehouseManage);
+    List<WarehouseManage> queryListStock(WarehouseManage warehouseManage);
 
     void inStorage(Integer id);
 }

@@ -6,7 +6,7 @@
     <result column="state" property="state" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="inbound_date" property="inboundDate" jdbcType="DATE" />
-    <result column="indent_id" property="indentId" jdbcType="INTEGER" />
+    <result column="indent_id" property="indentId" jdbcType="VARCHAR" />
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -27,7 +27,7 @@
       inbound_date, indent_id, warehouse_id
       )
     values (#{id,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
-      #{inboundDate,jdbcType=DATE}, #{indentId,jdbcType=INTEGER}, #{warehouseId,jdbcType=INTEGER}
+      #{inboundDate,jdbcType=DATE}, #{indentId,jdbcType=VARCHAR}, #{warehouseId,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jk.model.warehouse.WarehouseManage" >
@@ -66,7 +66,7 @@
         #{inboundDate,jdbcType=DATE},
       </if>
       <if test="indentId != null" >
-        #{indentId,jdbcType=INTEGER},
+        #{indentId,jdbcType=VARCHAR},
       </if>
       <if test="warehouseId != null" >
         #{warehouseId,jdbcType=INTEGER},
@@ -86,7 +86,7 @@
         inbound_date = #{inboundDate,jdbcType=DATE},
       </if>
       <if test="indentId != null" >
-        indent_id = #{indentId,jdbcType=INTEGER},
+        indent_id = #{indentId,jdbcType=VARCHAR},
       </if>
       <if test="warehouseId != null" >
         warehouse_id = #{warehouseId,jdbcType=INTEGER},
@@ -99,23 +99,37 @@
     set state = #{state,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       inbound_date = #{inboundDate,jdbcType=DATE},
-      indent_id = #{indentId,jdbcType=INTEGER},
+      indent_id = #{indentId,jdbcType=VARCHAR},
       warehouse_id = #{warehouseId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <!--查询所有-->
-  <select id="queryList" parameterType="map" resultMap="BaseResultMap">
-    select * from warehouse_manage
-    where 1 = 1
-    limit #{start},#{end}
-  </select>
-  <!--查询条数-->
-  <select id="queryCount" resultType="int" parameterType="map">
-    select count(1) from warehouse_manage
-    where 1 = 1
+  <select id="queryListStock" parameterType="map" resultType="com.jk.model.warehouse.WarehouseManage">
+    select
+	wm.inbound_date as inboundDate, wm.id as id, wm.indent_id as indentId,
+	wm.state as state, wm.type as type, wm.indent_id as indentMerchantName,
+	wr.region_name as warehouseName, wm.indent_id as indentUserName,
+	u.name as warehouseUserName
+    from
+    warehouse_manage wm, shelf_place sp,warehouse_region wr,
+    warehouse_shelf ws,warehouse_area wa,t_user u
+        where wr.user_id = u.id and  wa.pid = wr.region_id AND
+                        ws.pid = wa.area_id AND sp.pid = wa.area_id
+            GROUP BY wm.id
+
   </select>
   <!--入库-->
   <update id="inStorage" parameterType="com.jk.model.warehouse.WarehouseManage" >
      update warehouse_manage wm set state = 2 where wm.id = #{id,jdbcType=INTEGER}
   </update>
+  <insert id="addManage" parameterType="java.lang.String" >
+      insert into warehouse_manage (state, type,
+            inbound_date, indent_id, warehouse_id
+            )
+          values (1, 1,
+            CURDATE(),#{value }, 1
+            )
+
+  </insert>
+
 </mapper>

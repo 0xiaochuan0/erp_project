@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.warehouse.ShelfPlaceMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.warehouse.ShelfPlace" >
+    <id column="place_id" property="placeId" jdbcType="INTEGER" />
+    <result column="place_name" property="placeName" jdbcType="VARCHAR" />
+    <result column="place_number" property="placeNumber" jdbcType="INTEGER" />
+    <result column="place_use" property="placeUse" jdbcType="INTEGER" />
+    <result column="commodity_id" property="commodityId" jdbcType="INTEGER" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    place_id, place_name, place_number, place_use, commodity_id, pid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from shelf_place
+    where place_id = #{placeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from shelf_place
+    where place_id = #{placeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.model.warehouse.ShelfPlace" >
+    insert into shelf_place (place_id, place_name, place_number, 
+      place_use, commodity_id, pid
+      )
+    values (#{placeId,jdbcType=INTEGER}, #{placeName,jdbcType=VARCHAR}, #{placeNumber,jdbcType=INTEGER}, 
+      #{placeUse,jdbcType=INTEGER}, #{commodityId,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jk.model.warehouse.ShelfPlace" >
+    insert into shelf_place
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="placeId != null" >
+        place_id,
+      </if>
+      <if test="placeName != null" >
+        place_name,
+      </if>
+      <if test="placeNumber != null" >
+        place_number,
+      </if>
+      <if test="placeUse != null" >
+        place_use,
+      </if>
+      <if test="commodityId != null" >
+        commodity_id,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="placeId != null" >
+        #{placeId,jdbcType=INTEGER},
+      </if>
+      <if test="placeName != null" >
+        #{placeName,jdbcType=VARCHAR},
+      </if>
+      <if test="placeNumber != null" >
+        #{placeNumber,jdbcType=INTEGER},
+      </if>
+      <if test="placeUse != null" >
+        #{placeUse,jdbcType=INTEGER},
+      </if>
+      <if test="commodityId != null" >
+        #{commodityId,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.warehouse.ShelfPlace" >
+    update shelf_place
+    <set >
+      <if test="placeName != null" >
+        place_name = #{placeName,jdbcType=VARCHAR},
+      </if>
+      <if test="placeNumber != null" >
+        place_number = #{placeNumber,jdbcType=INTEGER},
+      </if>
+      <if test="placeUse != null" >
+        place_use = #{placeUse,jdbcType=INTEGER},
+      </if>
+      <if test="commodityId != null" >
+        commodity_id = #{commodityId,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where place_id = #{placeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.warehouse.ShelfPlace" >
+    update shelf_place
+    set place_name = #{placeName,jdbcType=VARCHAR},
+      place_number = #{placeNumber,jdbcType=INTEGER},
+      place_use = #{placeUse,jdbcType=INTEGER},
+      commodity_id = #{commodityId,jdbcType=INTEGER},
+      pid = #{pid,jdbcType=INTEGER}
+    where place_id = #{placeId,jdbcType=INTEGER}
+  </update>
+  <!--查询仓库管理-->
+  <select id="queryManagement" parameterType="map" resultType="com.jk.model.warehouse.ShelfPlace">
+   select * from
+   ( select
+    sp.place_id AS placeId, wr.region_name as regionName, wa.area_name as areaName,
+     ws.shelf_name as shelfName, sp.place_name as placeName, sp.place_use as placeUse
+    from
+    shelf_place sp,warehouse_region wr,warehouse_shelf ws,warehouse_area wa
+    where wa.pid = wr.region_id AND ws.pid = wa.area_id AND sp.pid = wa.area_id
+    GROUP BY sp.place_id order by sp.place_id) w
+  </select>
+  <!--查询仓库报表-->
+  <select id="queryReport" parameterType="map" resultType="com.jk.model.warehouse.ShelfPlace">
+   select * from
+   ( select
+    sp.place_id AS placeId, wr.region_name as regionName, wa.area_name as areaName,
+     ws.shelf_name as shelfName, sp.place_name as placeName, sp.place_use as placeUse,
+     sp.place_number as placeNumber, wr.region_place as regionPlace
+    from
+    shelf_place sp,warehouse_region wr,warehouse_shelf ws,warehouse_area wa
+    where wa.pid = wr.region_id AND ws.pid = wa.area_id AND sp.pid = wa.area_id
+    GROUP BY sp.place_id order by sp.place_id) w
+  </select>
+
+</mapper>

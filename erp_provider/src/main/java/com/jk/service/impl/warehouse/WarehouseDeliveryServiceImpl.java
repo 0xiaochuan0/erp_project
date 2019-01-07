@@ -37,21 +37,8 @@ public class WarehouseDeliveryServiceImpl implements IWarehouseDeliveryService {
     private WarehouseDeliveryMapper warehouseDeliveryMapper;
 
     @Override
-    public ResultPage queryDelivery(Integer page, Integer rows, WarehouseDelivery warehouseDelivery) {
-        ResultPage resultPage = new ResultPage();
-        Map<String,Object> map = new HashMap<String, Object>();
-        if(page != null && rows != null){
-            map.put("start",(page-1) * rows);
-            map.put("end",rows);
-        }else{
-            map.put("start",0);
-            map.put("end",3);
-        }
-        map.put("indents",warehouseDelivery);
-        List<WarehouseDelivery> list = warehouseDeliveryMapper.queryList(map);
-        resultPage.setRows(list);
-        resultPage.setTotal(warehouseDeliveryMapper.queryCount(map));
-        return resultPage;
+    public List<WarehouseDelivery> queryDelivery( WarehouseDelivery warehouseDelivery) {
+        return warehouseDeliveryMapper.queryDelivery(warehouseDelivery);
     }
 
     @Override

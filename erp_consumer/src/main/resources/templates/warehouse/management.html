@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css" />
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>
+
+    <!--表格-->
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <!--添加扇形叶-->
+    <link rel="stylesheet" href="../bootStrap-addTabs/bootstrap.addtabs.css"/>
+    <script src="../bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+</head>
+<body>
+<div class="table" id="myTable" style="width: 1000px;margin-left:10px"></div>
+</body>
+<script>
+    $(function(){
+        setMyTable();
+    })
+
+   /* function setMyTable(){
+        $('#myTable').bootstrapTable({
+            toolbar:'#search',
+            url:'../shelfplace/queryManagement',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[3, 5, 10, 15],//分页组件
+            pageNumber:1,
+            pageSize:5,//默认每页条数
+            //search:true,//是否显示搜索框
+            //searchText:'试试',//初始化搜索文字
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+            responseHandler: function(data){
+                return data.rows;
+            },
+            striped:true,
+            columns:[
+                {checkbox:true},
+                {field:'placeId',title:'编号',width:100},
+                {field:'regionName',title:'仓库区域',width:150},
+                {field:'areaName',title:'仓库编号',width:180},
+                {field:'shelfName',title:'货架名称',width:100},
+                {field:'placeName',title:'货架区域',width:100},
+                {field:'placeUse',title:'在库数量',width:100}
+            ]
+        });
+    }*/
+    function setMyTable(){
+        $('#myTable').bootstrapTable({
+            url:'../shelfplace/queryManagement',//获取数据地址
+            method: 'get',
+            //dataType: "json",
+            //dataField: "data",
+            classes:'table',//边框
+            undefinedText:'',//当数据为 undefined 时显示的字符
+            pagination:true,//启动分页
+            //paginationLoop:true,
+            sidePagination: "client",
+            pageNumber:1,
+            pageSize:5,
+            pageList:[ 5, 10, 15, 30 ],
+            //striped: true,
+            // showColumns: true,  //显示下拉框勾选要显示的列
+            showRefresh: true,  //显示刷新按钮
+            showToggle:true,//显示一行是否改成竖着
+            showPaginationSwitch:true,//是否显示 下面的分页框
+            search: true, //显示搜索框
+            detailView:true,
+            toolbal:'#toolbar',
+            columns: [
+                {field: "checked", checkbox:true},
+                {field:'placeId',title:'编号',switchable: true},
+                {field:'regionName',title:'仓库区域',switchable: true},
+                {field:'areaName',title:'仓库编号',switchable: true},
+                {field:'shelfName',title:'货架名称',switchable: true},
+                {field:'placeName',title:'货架区域',switchable: true},
+                {field:'placeUse',title:'在库数量',switchable: true}
+            ],
+        })
+    }
+
+</script>
+</html>

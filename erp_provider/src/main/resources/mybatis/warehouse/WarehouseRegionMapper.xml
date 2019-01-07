@@ -81,20 +81,12 @@
   </update>
 
   <!--查询所有-->
-  <select id="queryList" parameterType="map" resultType="com.jk.model.warehouse.WarehouseRegion">
+  <select id="queryDelivery" parameterType="map" resultType="com.jk.model.warehouse.WarehouseRegion">
     SELECT COUNT(wa.area_id)AS areaSum, b.shelfSum AS shelfSum, wr.region_id AS regionId, wr.region_name as regionName, wr.region_place as regionPlace, u.name AS userName
     FROM warehouse_region wr, warehouse_area wa, t_user u,
     (SELECT COUNT(ws.shelf_id) AS shelfSum,wa.pid pid FROM warehouse_shelf ws, warehouse_area wa where ws.pid = wa.area_id GROUP BY wa.pid) b
     WHERE b.pid = wr.region_id AND b.pid = wa.pid AND wr.user_id = u.id
     GROUP BY wr.region_id
-    limit #{start},#{end}
   </select>
-  <!--查询条数-->
-  <select id="queryCount" resultType="int" parameterType="map">
-    SELECT COUNT(1)
-    FROM warehouse_region wr, warehouse_area wa, t_user u,
-    (SELECT COUNT(ws.shelf_id) AS shelfSum,wa.pid pid FROM warehouse_shelf ws, warehouse_area wa where ws.pid = wa.area_id GROUP BY wa.pid) b
-    WHERE b.pid = wr.region_id AND b.pid = wa.pid AND wr.user_id = u.id
 
-  </select>
 </mapper>

@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br> 
  * 〈WarehouseDeliveryController〉
@@ -33,7 +35,7 @@ public class WarehouseDeliveryController {
     @Reference(version = "1.0.0")
     private IWarehouseDeliveryService warehouseDeliveryService;
 
-    @RequiresPermissions("indent:query")
+    @RequiresPermissions("delivery:query")
     @RequestMapping("toDelivery")
     public String  toDelivery(){
         return "warehouse/delivery";
@@ -41,9 +43,9 @@ public class WarehouseDeliveryController {
 
     @RequestMapping("queryDelivery")
     @ResponseBody
-    public ResultPage queryDelivery(Integer page, Integer rows, WarehouseDelivery warehouseDelivery){
-        ResultPage resultPage = warehouseDeliveryService.queryDelivery(page, rows,warehouseDelivery);
-        return resultPage;
+    public List<WarehouseDelivery> queryDelivery(WarehouseDelivery warehouseDelivery){
+        List<WarehouseDelivery> d = warehouseDeliveryService.queryDelivery(warehouseDelivery);
+        return d;
     }
     @RequestMapping("outStorage")
     @ResponseBody
