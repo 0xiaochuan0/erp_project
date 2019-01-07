@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.purchase.PurchaserequisitionMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="originate_time" property="originateTime" jdbcType="TIMESTAMP" />
+    <result column="purchase_requisition_identifier" property="purchaseRequisitionIdentifier" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="originate_man" property="originateMan" jdbcType="VARCHAR" />
+    <result column="person_in_charge" property="personInCharge" jdbcType="VARCHAR" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="arrival_address" property="arrivalAddress" jdbcType="VARCHAR" />
+    <result column="commodity_id" property="commodityId" jdbcType="INTEGER" />
+    <result column="purchase_requisition_number" property="purchaseRequisitionNumber" jdbcType="INTEGER" />
+    <result column="unit_price" property="unitPrice" jdbcType="DOUBLE" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, originate_time, purchase_requisition_identifier, status, originate_man, person_in_charge, 
+    auditor, comments, arrival_address, commodity_id, purchase_requisition_number, unit_price
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_purchaserequisition
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_purchaserequisition
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="addCai" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" >
+    insert into t_purchaserequisition (id, originate_time, purchase_requisition_identifier, 
+      status, originate_man, person_in_charge, 
+      auditor, comments, arrival_address, 
+      commodity_id, purchase_requisition_number, 
+      unit_price)
+    values (#{id,jdbcType=INTEGER}, #{originateTime,jdbcType=TIMESTAMP}, #{purchaseRequisitionIdentifier,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{originateMan,jdbcType=VARCHAR}, #{personInCharge,jdbcType=VARCHAR}, 
+      #{auditor,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, #{arrivalAddress,jdbcType=VARCHAR}, 
+      #{commodityId,jdbcType=INTEGER}, #{purchaseRequisitionNumber,jdbcType=INTEGER}, 
+      #{unitPrice,jdbcType=DOUBLE})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" >
+    update t_purchaserequisition
+    <set >
+      <if test="originateTime != null" >
+        originate_time = #{originateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseRequisitionIdentifier != null" >
+        purchase_requisition_identifier = #{purchaseRequisitionIdentifier,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="originateMan != null" >
+        originate_man = #{originateMan,jdbcType=VARCHAR},
+      </if>
+      <if test="personInCharge != null" >
+        person_in_charge = #{personInCharge,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null" >
+        auditor = #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="arrivalAddress != null" >
+        arrival_address = #{arrivalAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="commodityId != null" >
+        commodity_id = #{commodityId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseRequisitionNumber != null" >
+        purchase_requisition_number = #{purchaseRequisitionNumber,jdbcType=INTEGER},
+      </if>
+      <if test="unitPrice != null" >
+        unit_price = #{unitPrice,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean" >
+    update t_purchaserequisition
+    set originate_time = #{originateTime,jdbcType=TIMESTAMP},
+      purchase_requisition_identifier = #{purchaseRequisitionIdentifier,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      originate_man = #{originateMan,jdbcType=VARCHAR},
+      person_in_charge = #{personInCharge,jdbcType=VARCHAR},
+      auditor = #{auditor,jdbcType=VARCHAR},
+      comments = #{comments,jdbcType=VARCHAR},
+      arrival_address = #{arrivalAddress,jdbcType=VARCHAR},
+      commodity_id = #{commodityId,jdbcType=INTEGER},
+      purchase_requisition_number = #{purchaseRequisitionNumber,jdbcType=INTEGER},
+      unit_price = #{unitPrice,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="queryGood" parameterType="map"  resultType="com.jk.model.commodity.CommodityTableBean">
+      select b.number number,b.name name,b.sellingPrice sellingPrice,a.prn qinggoushu,k.type_value attribute_Value,k.type_key attribute_Key  from commodity_table b,commodity_typesumup k,(SELECT commodity_id c,purchase_requisition_number prn from t_purchaserequisition where purchase_requisition_identifier like '${qingNum}') a  where  a.c=b.id  and b.attribute_id = k.id
+</select>
+  <select id="countGood"  parameterType="map"  resultType="int">
+    select  count(*)  from  xzs_good b,(SELECT commodity_id c from t_purchaserequisition where purchase_requisition_identifier like  '${qingNum}') a  where  a.c=b.id
+  </select>
+
+</mapper>

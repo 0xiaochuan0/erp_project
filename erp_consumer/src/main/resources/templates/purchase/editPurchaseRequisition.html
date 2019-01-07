@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <link rel="stylesheet" href="../bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../bootstrap-bootbox/bootbox.js"></script>
+    <script src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script src="../bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+</head>
+<body>
+<form  id="myPurchase">
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-heart" style="color: rgb(247, 3, 94); font-size: 15px;"></span>基本信息
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-10">
+                    <div  class="form-inline" style="float:left;margin-top: 15px">
+                        <label>采购单创建日期:</label>
+                        <input type="text" class="form-control" id="creatDate" name="creatDate"   placeholder="采购单创建日期"/>
+                    </div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px;margin-left: 160px">
+                        <label>对应请购单号:</label>
+                        <select class="form-control" id="typeid"  name="duiYingQingGouNum"  onchange="addBiao()">
+
+                        </select>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px">
+                        <label>供应商编号:</label>
+                        <input type="text" class="form-control" id="gongYingShangNum" name="gongYingShangNum"   placeholder="供应商编号"/>
+                    </div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px;margin-left: 190px">
+                        <label>供应商名称:</label>
+                        <input type="text" class="form-control"   id="supplierNumber" name="gongYingShangName"  placeholder="供应商名称"/>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px">
+                        <label>到货地址:</label>
+                        <input type="text" class="form-control" id="adress" name="adress"   placeholder="到货地址"/>
+                    </div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px;margin-left: 220px">
+                        <label>采购单编号:</label>
+                        <input type="text" class="form-control"  id="orderNum" name="orderNum"   placeholder="采购单编号"/>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px">
+                        <label>编辑人员:</label>
+                        <input class="form-control"  id="editperson"  name="editperson" type="text"  />
+                    </div>
+                    <div  class="form-inline" style="float:left;margin-top: 15px;margin-left: 190px">
+                        <label>所在部门:</label>
+                        <input class="form-control" id="dept" name="dept" type="text" />
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-heart" style="color: rgb(247, 3, 94); font-size: 15px;"> </span>添加商品
+        </div>
+        <div class="panel-body">
+            <div class="table" id="confirmSelectCommodityTable"></div>
+        </div>
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-heart" style="color: rgb(247, 3, 94); font-size: 15px;"> </span> 备注信息
+        </div>
+        <div class="panel-body">
+            <textarea class="form-control" name="beizhu"   id="beizhu"  rows="3"></textarea>
+        </div>
+    </div>
+    <button type="button" class="btn btn-default" onclick="fanhui()"><span class="glyphicon glyphicon-remove" > </span>取消</button>
+    <shiro:hasPermission  name="savePurchase:save"><button type="button" class="btn btn-info"  onclick="save()"><span class="glyphicon glyphicon-ok" > </span>保存</button></shiro:hasPermission>
+</form>
+</body>
+<script>
+    $(function () {
+        typp();
+        fu();
+    })
+    /*<![CDATA[*/
+    $(function () {
+        $('.date').datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd',//显示格式 hh:ii:ss
+            minView: "month",//设置只显示到月份
+            initialDate: new Date(),//初始化当前日期
+            autoclose: true,//选中自动关闭
+            todayBtn: true//显示今日按钮
+        });
+        getNowFormatDate();
+    })
+    function  fu(){
+        var  num=Math.ceil(Math.random()*899+1000);
+        var  aa="NUM"
+        var bb=aa+num;
+        document.getElementById("orderNum").value=bb;
+    }
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = year + seperator1 + month + seperator1 + strDate;
+        $("input[name='creatDate']").val(currentdate);
+    }
+    function    typp(){
+        $.ajax({
+            url : "../cai/selectType",
+            async : true,
+            type: "POST",
+            dataType: "json",
+            success : function(data) {
+                var html="<option >请选择</option>";
+                for(var i  in data){
+                    html+= '<option value="'+data[i].purchaseRequisitionIdentifier+'">'+data[i].purchaseRequisitionIdentifier+'</option>'
+                }
+                $("#typeid").html(html);
+            }
+        });
+    }
+    function  addBiao(){
+    var   qing=$('#typeid').val();
+        $('#confirmSelectCommodityTable').bootstrapTable('destroy');
+        $('#confirmSelectCommodityTable').bootstrapTable({
+            url:'../cai/queryGood',//获取数据地址
+            pagination:false, //是否展示分页
+            showColumns:false,//是否显示 内容列下拉框
+            showToggle:false,//是否显示 切换试图（table/card）按钮
+            showPaginationSwitch:false,//是否显示 数据条数选择框
+            showRefresh:false,//是否显示刷新按钮
+            detailView:false,//设置为 true 可以显示详细页面模式。
+            showFooter:false,//是否显示列脚
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            striped:true,
+            queryParams:function(){
+                return {
+                    qingNum:qing
+                };
+            },
+            columns:[
+                {checkbox:true},
+                /*{field:'id',title:'主键',align:'center',width:150},*/
+                {field:'number',title:'商品编号',align:'center',width:150,
+                    formatter:function (value,row,index) {
+                        return row.number+'<input type="hidden" name="number"  value="'+value+'"  class="form-control"  />';
+                    }},
+                {field:'name',title:'商品名称',align:'center',width:150},
+                {field:'attribute_Value',title:'规格',align:'center',width:150},
+                {field:'attribute_Key',title:'单位',align:'center',width:150},
+                {field:'sellingPrice',title:'单价',align:'center',width:150,
+                    formatter:function (value,row,index) {
+                        return '<input type="text" class="form-control" name="unitPrice" value="'+value+'"/>';
+                    }
+                },
+                {field:'qinggoushu',title:'请购数量',align:'center',width:150,
+                    formatter:function (value, row, index) {
+                        return '<input type="text" class="form-control" name="numbers" value="'+value+'"/>'
+                    }
+                },
+                {field:'numbers1',title:'采购数量',align:'center',width:150,
+                    formatter:function (value, row, index) {
+                        return '<input type="text" class="form-control" name="caigoushu" />'
+                    }
+                },
+            ]
+        });
+    }
+    function  save(){
+        var creatDate =document.getElementById("creatDate");
+        var duiYingQingGouNum =document.getElementById("typeid");
+        var gongYingShangNum =document.getElementById("gongYingShangNum");
+        var gongYingShangName =document.getElementById("supplierNumber");
+        var adress =document.getElementById("adress");
+        var orderNum =document.getElementById("orderNum");
+        var editperson =document.getElementById("editperson");
+        var dept = document.getElementById("dept");
+        var beizhu = document.getElementById("beizhu");
+        var caigoushu = document.getElementsByName("caigoushu");
+        var goodNum = document.getElementsByName("number");
+        var   obj='';
+        for(var  i=0;i<goodNum.length;i++){
+            obj+= goodNum[i].value+','+caigoushu[i].value+','+creatDate.value+','+duiYingQingGouNum.value+','+gongYingShangNum.value+','+gongYingShangName.value+','+adress.value+','+orderNum.value+','+editperson.value+','+dept.value+','+beizhu.value+'=';
+        }
+        alert(obj);
+        $.ajax({
+           url : "../cai/addCai",
+            async : true,
+            type: "POST",
+            data:{'objss':obj},
+            dataType: "json",
+            success : function(data) {
+                if(data){
+                    alert("添加成功！");
+                    location.href="../purchase/showPurchase"
+                }
+            },
+            error : function(e){
+                alert("请打开F12或者跑debug");
+            }
+        });
+    }
+
+
+    /*]]> */
+</script>
+</html>

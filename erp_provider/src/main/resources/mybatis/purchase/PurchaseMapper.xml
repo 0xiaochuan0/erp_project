@@ -24,11 +24,12 @@
     <result column="area" property="area" jdbcType="VARCHAR" />
     <result column="adress" property="adress" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
+      <result column="status" property="status" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, supplier_Number, supplier_Source, company_Name, brand, business_Scope,
     charge_Person, create_Date, simple_Name, classification, contacts, profession, phone, 
-    telephone, fax, email, qq, weChat, province, area, adress, user_id
+    telephone, fax, email, qq, weChat, province, area, adress, user_id,status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -48,7 +49,7 @@
       phone, telephone, fax, 
       email, qq, weChat, 
       province, area, adress, 
-      user_id)
+      user_id,status)
     values ( #{supplierNumber,jdbcType=VARCHAR}, #{supplierSource,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR},
       #{chargePerson,jdbcType=VARCHAR},CURDATE(), #{simpleName,jdbcType=VARCHAR},
@@ -56,7 +57,7 @@
       #{phone,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{wechat,jdbcType=VARCHAR}, 
       #{province,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{adress,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=INTEGER})
+      #{userId,jdbcType=INTEGER},1)
   </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.purchase.Purchase" >
@@ -129,11 +130,10 @@ company_Name = #{companyName,jdbcType=VARCHAR},
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jk.model.purchase.Purchase" >
+  <update id="updatePurchase" parameterType="com.jk.model.purchase.Purchase" >
     update purchase
     set supplier_Number = #{supplierNumber,jdbcType=VARCHAR},
       supplier_Source = #{supplierSource,jdbcType=VARCHAR},
-      company_Name
       company_Name = #{companyName,jdbcType=VARCHAR},
       brand = #{brand,jdbcType=VARCHAR},
       business_Scope = #{businessScope,jdbcType=VARCHAR},
@@ -152,7 +152,8 @@ company_Name = #{companyName,jdbcType=VARCHAR},
       province = #{province,jdbcType=VARCHAR},
       area = #{area,jdbcType=VARCHAR},
       adress = #{adress,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER}
+      user_id = #{userId,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
     where id = #{id,jdbcType=INTEGER}
   </update>
     <!-- 查询供应商管理-->
@@ -165,8 +166,8 @@ company_Name = #{companyName,jdbcType=VARCHAR},
         <if test="puerchase.supplierNumber !=null and  puerchase.supplierNumber !=''">
             and  supplier_Number   like  '%${puerchase.supplierNumber}%'
         </if>
-        <if test="puerchase.createDate !=null and  puerchase.createDate !=''">
-            and  create_Date   like  '%${puerchase.createDate}%'
+        <if test="creatate !=null and  creatate !=''">
+            and  DATE_FORMAT(create_Date,'%Y-%m-%d') ='${creatate}'
         </if>
         <if test="puerchase.supplierSource !=null and  puerchase.supplierSource !=''">
             and  supplier_Source   like  '%${puerchase.supplierSource}%'
@@ -191,8 +192,38 @@ company_Name = #{companyName,jdbcType=VARCHAR},
         <include refid="purchaseWhere"></include>
     </select>
 
-    <select id="huiPurchase"  parameterType="int"  resultMap="BaseResultMap">
-        select  *  from  purchase  where   id  =#{id}
+    <select id="huiPurchase"  parameterType="map"  resultMap="BaseResultMap">
+        select  *  from  purchase  where  supplier_Number  like '${supplierNumber}'
     </select>
+
+    <insert id="addGood" >
+        insert  into   xzs_good(good_Supplier_Number,good_num,good_name,good_size,good_unit,user_Id)
+        values
+        <foreach collection="goods" item="item" index="index" separator=",">
+        (#{item.supplierNumber},#{item.goodNum},#{item.goodName},
+        #{item.goodSize},#{item.goodUnit},#{item.userId})
+       </foreach>
+    </insert>
+
+    <insert id="addGood1"  parameterType="com.jk.model.purchase.Good">
+        insert  into   xzs_good(good_Supplier_Number,good_num,good_name,good_size,good_unit,user_Id)
+        values(#{supplierNumber},#{goodNum},#{goodName},
+            #{goodSize},#{goodUnit},#{userId})
+
+    </insert>
+
+    <select id="huiGood" parameterType="map" resultType="com.jk.model.purchase.Good">
+        select id goodId, goodSupplierNumber supplierNumber,good_Num goodNum,good_Name goodName,good_Size goodSize,good_Unit goodUnit,user_id userId  from good  where  goodSupplierNumber  like '${supplierNumber}'
+    </select>
+
+    <insert id="addZheng"  parameterType="com.jk.model.purchase.Credential">
+        insert  into  xzs_creaden(yingYe,zheng1,zheng2,zheng3,userId,supplierNumberZheng)
+        values(#{yingYe},#{zheng1},#{zheng2},#{zheng3},#{userId},#{supplierNumberZheng})
+    </insert>
+
+    <update id="updatStatus"  parameterType="map">
+        update  purchase  set  status=#{status}  where   supplier_Number  like  '${num}'
+
+    </update>
 
 </mapper>

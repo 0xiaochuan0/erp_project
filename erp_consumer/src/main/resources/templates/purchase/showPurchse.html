@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Insert title here</title>
@@ -13,8 +16,8 @@
     <script type="text/javascript"  src="../bootstrap-table/bootstrap-table.js"></script>
     <script type="text/javascript" src="../bootstrap-bootbox/bootbox.js"></script>
     <script type="text/javascript" src="../bootstrap-datetimepicker/js/bootstarp/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
-    <script type="text/javascript"  src="../bootstrap-datetimepicker/js/bootstarp/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script type="text/javascript" src="../bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
 
 </head>
 <body>
@@ -26,7 +29,7 @@
         </div>
         <div style="float: left ;margin-left:10px" class="form-inline">
             <label>建档日期:</label>
-            <input type="text" class="form-control"  id="createDate" placeholder="建档日期"/>
+            <input type="text" class="form-control"  id="creatDate"   placeholder="建档日期"/>
         </div>
         <div style="float: left ;margin-left:10px" class="form-inline">
             <label>供应商来源:</label>
@@ -52,21 +55,34 @@
             <input type="text" class="form-control"  id="businessScope" placeholder="经营范围"/>
         </div>
         <div style="clear:both"></div>
-        <button type="button" class="btn btn-primary"  onclick="setMyTable()" >
+        <shiro:hasPermission  name=" showPurchse:query"><button type="button" class="btn btn-primary"  onclick="setMyTable()" >
             <span class="glyphicon glyphicon-search"></span>搜索
-        </button>
-        <button type="button" class="btn btn-info"  onclick="save()">
+        </button></shiro:hasPermission>
+        <shiro:hasPermission  name=" addPurchse:save"><button type="button" class="btn btn-info"  onclick="save()">
             <span class="glyphicon glyphicon-plus"></span> 添加
-        </button>
+        </button></shiro:hasPermission>
     </form>
 
 </div>
     <div class="table" id="myTable" ></div>
 </body>
 <script>
+    //日期.插件
+    $("#creatDate").datetimepicker({
+        format: 'yyyy-mm-dd',//显示格式
+        todayHighlight: 1,//今天高亮
+        minView: "month",//设置只显示到月份
+        startView:2,
+        forceParse: 0,
+        showMeridian: 1,
+        autoclose: 1//选择后自动关闭
+    });
    $(function(){
        setMyTable();
    })
+
+
+
    function save() {
        location.href="../purchase/savePurchase";
    }
@@ -95,7 +111,7 @@
                     page: this.pageNumber,
                     rows: this.pageSize,
                     supplierNumber:$('#supplierNumber').val(),
-                    createDate:$('#createDate').val(),
+                    creatate:$('#creatDate').val(),
                     supplierSource:$('#supplierSource').val(),
                     chargePerson:$('#chargePerson').val(),
                     companyName:$('#companyName').val(),
@@ -108,44 +124,45 @@
                     return  index+1;
                     }},
                 {field:'supplierNumber',title:'供应商编号',width:100},
+                {field:'status',title:'状态',width:100,visible:false},
                 {field:'supplierSource',title:'供应商来源',width:100},
                 {field:'companyName',title:'单位名称',width:100},
                 {field:'brand',title:'品牌',width:100},
                 {field:'businessScope',title:'经营范围',width:100},
                 {field:'chargePerson',title:'负责引进人',width:100},
                 {field:'createDate',title:'建档日期',width:100},
-                {field:'1111',title:'操作',width:150,formatter:function(value,row,index){
-                    return  '<button type="button" class="btn btn-warning"  onclick="hui('+row.id+')">编辑</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger"  onclick="savePay()">审核</button>'
+                {field:'1111',title:'操作',width:200,formatter:function(value,row,index){
+                    if(row.status==2){
+                        return  ' <shiro:hasPermission  name=" huiPurchase:huiPurchase"><button type="button" class="btn btn-warning"  onclick="hui(\''+row.supplierNumber+'\')">编辑</button></shiro:hasPermission>&nbsp;&nbsp;&nbsp;<shiro:hasPermission  name=" updatStatus:update"><button type="button" class="btn btn-danger"  onclick="shen(\''+row.supplierNumber+'\',1)">审核通过</button></shiro:hasPermission>'
+                    }
+                    if(row.status==1){
+                            return  '<shiro:hasPermission  name=" huiPurchase:huiPurchase"><button type="button" class="btn btn-warning"  onclick="hui(\''+row.supplierNumber+'\')">编辑</button></shiro:hasPermission>&nbsp;&nbsp;&nbsp;<shiro:hasPermission  name=" updatStatus:update"><button type="button" class="btn btn-default"  onclick="shen(\''+row.supplierNumber+'\',2)">审核不通过</button></shiro:hasPermission>'
+                        }
+
                 }}
 
             ]
         });
     }
-    function hui(id) {
-        $.ajax({
-            url:'../purchase/huiPurchase',
-            type:'post',
-            data:{
-                id:id
-            },
-            dataType:'json',
-            success:function (data) {
-                location.href="../purchase/updatePurchse"
-                $("input[name='id']").val(data.id);
-               $("input[name='supplierNumber']").val(data.supplierNumber);
-               /* $("input[name='pwd']").val(result.pwd);
-                $("input[name='name']").val(result.name);
-                $("input[name='account']").val(result.account);
-                $("input[type=radio][name=sex][value="+result.sex+"]").attr("checked",'checked');
-                $("input[name='phone']").val(result.phone);
-                $("input[name='email']").val(result.email);
-                alert($("#deptIdSelect").find("option[value='"+result.deptId+"']"));
-                $("#deptIdSelect").val(result.deptId);
-                $("#postSelect").val(result.post);*/
-                //$("#deptIdSelect").find("option[value='"+result.deptId+"']").attr('selected','selected');
-                /*$("select[name='post']").find("option[value='"+result.post+"']").prop("selected",true);*/
-            }
-        })
+    function hui(supplierNumber) {
+       location.href="../purchase/updatePurchse?supplierNumber="+supplierNumber;
     }
+
+   function  shen(num,status) {
+       alert("33");
+       alert(num);
+       alert(status);
+       $.ajax({
+           url:'../purchase/updatStatus',
+           type: "POST",
+           data: {"num":num,
+               "status":status
+           },
+           dataType: "json",
+           success : function(data){
+               location.href="../purchase/showPurchase";
+           }
+       })
+   }
 </script>
 </html>
