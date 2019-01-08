@@ -14,11 +14,13 @@ import com.alibaba.dubbo.config.annotation.Reference;
 
 import com.jk.model.warehouse.WarehouseManage;
 import com.jk.service.warehouse.IWarehouseManageService;
-import com.jk.utils.ResultPage;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -34,7 +36,7 @@ public class WarehouseManageController {
     @Reference(version = "1.0.0")
     private IWarehouseManageService warehouseManageService;
 
-    @RequiresPermissions("indent:query")
+    @RequiresPermissions("stock:query")
     @RequestMapping("toStock")
     public String  toStock(){
         return "warehouse/stock";
@@ -42,9 +44,9 @@ public class WarehouseManageController {
 
     @RequestMapping("queryStock")
     @ResponseBody
-    public ResultPage queryListStock(Integer page, Integer rows, WarehouseManage warehouseManage){
-        ResultPage resultPage = warehouseManageService.queryListStock(page, rows,warehouseManage);
-        return resultPage;
+    public List<WarehouseManage> queryListStock(WarehouseManage warehouseManage){
+        List<WarehouseManage> m = warehouseManageService.queryListStock(warehouseManage);
+        return m;
     }
     @RequestMapping("inStorage")
     @ResponseBody

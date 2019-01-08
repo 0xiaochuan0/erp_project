@@ -53,6 +53,8 @@ public class Purchase implements Serializable {
 
     private String adress;
 
+    private  Integer  status;
+
     private Integer userId;
 
     public Integer getId() {
@@ -231,10 +233,18 @@ public class Purchase implements Serializable {
         this.userId = userId;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Purchase() {
     }
 
-    public Purchase(Integer id, String supplierNumber, String supplierSource, String companyName, String brand, String businessScope, String chargePerson, Date createDate, String simpleName, String classification, String contacts, String profession, String phone, String telephone, String fax, String email, String qq, String wechat, String province, String area, String adress, Integer userId) {
+    public Purchase(Integer id, String supplierNumber, String supplierSource, String companyName, String brand, String businessScope, String chargePerson, Date createDate, String simpleName, String classification, String contacts, String profession, String phone, String telephone, String fax, String email, String qq, String wechat, String province, String area, String adress, Integer status, Integer userId) {
         this.id = id;
         this.supplierNumber = supplierNumber;
         this.supplierSource = supplierSource;
@@ -256,6 +266,7 @@ public class Purchase implements Serializable {
         this.province = province;
         this.area = area;
         this.adress = adress;
+        this.status = status;
         this.userId = userId;
     }
 
@@ -283,6 +294,7 @@ public class Purchase implements Serializable {
                 ", province='" + province + '\'' +
                 ", area='" + area + '\'' +
                 ", adress='" + adress + '\'' +
+                ", status=" + status +
                 ", userId=" + userId +
                 '}';
     }

@@ -34,7 +34,7 @@ public class PurchaseRequisitionServiceImpl implements PurchaseRequisitionServic
 
     @Override
     public ResultPage queryGoodPage(CommodityTableBean commodityTableBean) {
-        commodityTableBean.calculate();
+       // commodityTableBean.calculate();
         ResultPage resultPage = new ResultPage();
         int goodCount = purchaseRequisitionBeanMapper.queryGoodCount(commodityTableBean);
         resultPage.setTotal(goodCount);

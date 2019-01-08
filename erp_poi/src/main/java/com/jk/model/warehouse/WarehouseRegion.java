@@ -4,19 +4,19 @@ import java.io.Serializable;
 
 public class WarehouseRegion implements Serializable {
     private static final long serialVersionUID = 5318493119764598940L;
-    private Integer regionId;
+    private Integer regionId;//id
 
-    private String regionName;
+    private String regionName;//仓库名称
 
-    private String regionPlace;
+    private String regionPlace;//仓库地址
 
-    private Integer userId;
+    private Integer userId;//仓管员id
 
-    private String userName;
+    private String userName;//仓管员名称
 
-    private Integer areaSum;
+    private Integer areaSum;//仓库总数
 
-    private Integer shelfSum;
+    private Integer shelfSum;//货架总数
 
     public Integer getRegionId() {
         return regionId;

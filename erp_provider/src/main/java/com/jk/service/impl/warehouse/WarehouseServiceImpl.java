@@ -53,20 +53,10 @@ public class WarehouseServiceImpl implements IWarehouseService {
 
 
     @Override
-    public ResultPage queryDelivery(Integer page, Integer rows, WarehouseRegion warehouseRegion) {
-        ResultPage resultPage = new ResultPage();
-        Map<String,Object> map = new HashMap<String, Object>();
-        if(page != null && rows != null){
-            map.put("start",(page-1) * rows);
-            map.put("end",rows);
-        }else{
-            map.put("start",0);
-            map.put("end",3);
-        }
-        map.put("indents",warehouseRegion);
-        List<WarehouseRegion> list = warehouseRegionMapper.queryList(map);
-        resultPage.setRows(list);
-        resultPage.setTotal(warehouseRegionMapper.queryCount(map));
-        return resultPage;
+    public List<WarehouseRegion> queryDelivery(WarehouseRegion warehouseRegion) {
+
+        return warehouseRegionMapper.queryDelivery(warehouseRegion);
+
+
     }
 }

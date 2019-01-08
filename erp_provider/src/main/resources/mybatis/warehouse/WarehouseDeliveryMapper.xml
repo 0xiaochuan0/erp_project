@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="return_date" property="returnDate" jdbcType="DATE" />
-    <result column="sales_return_id" property="salesReturnId" jdbcType="INTEGER" />
+    <result column="sales_return_id" property="salesReturnId" jdbcType="VARCHAR" />
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -25,7 +25,7 @@
     insert into warehouse_delivery (id, type, return_date, 
       sales_return_id, warehouse_id)
     values (#{id,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{returnDate,jdbcType=DATE}, 
-      #{salesReturnId,jdbcType=INTEGER}, #{warehouseId,jdbcType=INTEGER})
+      #{salesReturnId,jdbcType=VARCHAR}, #{warehouseId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.jk.model.warehouse.WarehouseDelivery" >
     insert into warehouse_delivery
@@ -57,7 +57,7 @@
         #{returnDate,jdbcType=DATE},
       </if>
       <if test="salesReturnId != null" >
-        #{salesReturnId,jdbcType=INTEGER},
+        #{salesReturnId,jdbcType=VARCHAR},
       </if>
       <if test="warehouseId != null" >
         #{warehouseId,jdbcType=INTEGER},
@@ -74,7 +74,7 @@
         return_date = #{returnDate,jdbcType=DATE},
       </if>
       <if test="salesReturnId != null" >
-        sales_return_id = #{salesReturnId,jdbcType=INTEGER},
+        sales_return_id = #{salesReturnId,jdbcType=VARCHAR},
       </if>
       <if test="warehouseId != null" >
         warehouse_id = #{warehouseId,jdbcType=INTEGER},
@@ -86,21 +86,14 @@
     update warehouse_delivery
     set type = #{type,jdbcType=INTEGER},
       return_date = #{returnDate,jdbcType=DATE},
-      sales_return_id = #{salesReturnId,jdbcType=INTEGER},
+      sales_return_id = #{salesReturnId,jdbcType=VARCHAR},
       warehouse_id = #{warehouseId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
   <!--查询所有-->
-  <select id="queryList" parameterType="map" resultMap="BaseResultMap">
+  <select id="queryDelivery" parameterType="map" resultType="com.jk.model.warehouse.WarehouseDelivery" >
     select * from warehouse_delivery
     where 1 = 1 order by id
-    limit #{start},#{end}
-  </select>
-  <!--查询条数-->
-  <select id="queryCount" resultType="int" parameterType="map">
-    select count(1) from warehouse_delivery
-    where 1 = 1
   </select>
   <!--出库-->
   <update id="outStorage" parameterType="com.jk.model.warehouse.WarehouseDelivery" >

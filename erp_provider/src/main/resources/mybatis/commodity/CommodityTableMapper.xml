@@ -1,41 +1,79 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jk.mapper.commodity.CommodityTableMapper" >
+    <sql id="queryCommodityTableForm">
+        from Commodity_Table ct
+        left join commodity_typesumup sum on sum.id=ct.attribute_id
+        left join  commodity_type typ  on ct.typeId=typ.id
+        left join commodity_type typ2 on typ2.id=typ.pid
+        where 1=1
+        <include refid="queryCommodityTable"></include>
+    </sql>
     <select id="queryCommodityTableCount" parameterType="map" resultType="int">
-        select count(1)
-                from Commodity_Table ct
-                left join commodity_priceThis cp
-                on ct.priceThisId=cp.id
-                where 1=1
-                <include refid="queryCommodityTable"></include>
+        select  count(1) <include refid="queryCommodityTableForm"></include>
     </select>
     <select id="queryCommodityTableList" parameterType="map" resultType="com.jk.model.commodity.CommodityTableBean">
-        select ct.*,cp.name as name,cp.number as number ,cp.trademark as trademark ,cp.sellingPrice as sellingPrice
-                from Commodity_Table ct
-                left join commodity_priceThis cp
-                on ct.priceThisId=cp.id
-                where 1=1
-                <include refid="queryCommodityTable"></include>
+        select  ct.* , sum.type_key as attribute_Key ,sum.type_value as attribute_Value,typ.name as type_key ,typ2.name as type_value
+                <include refid="queryCommodityTableForm"></include>
         limit #{start},#{end}
     </select>
     <sql id="queryCommodityTable">
             <if test="commodityTable.number!=null and commodityTable.number!='' ">
-                and
-                cp.number
-                    like
-                    '%${commodityTable.number}%'
+                and  ct.number  like '%${commodityTable.number}%'
             </if>
             <if test="commodityTable.name!=null and commodityTable.name!='' ">
-                and cp.name like '%${commodityTable.name}%'
+                and ct.name like '%${commodityTable.name}%'
             </if>
             <if test="commodityTable.state!=null">
-                and state =#{commodityTable.state}
+                and ct.state =#{commodityTable.state}
             </if>
             <if test="commodityTable.trademark!=null and commodityTable.trademark!='' ">
-                and cp.trademark like '%${commodityTable.trademark}%'
+                and ct.trademark like '%${commodityTable.trademark}%'
             </if>
     </sql>
     <update id="upState" parameterType="com.jk.model.commodity.CommodityTableBean">
-        update Commodity_Table  set inventoryWarningValue=#{inventoryWarningValue},state=#{state} where id=#{id}
+        update Commodity_Table  set timeEnd=sysdate(),state=#{state} where id=#{id}
     </update>
+    <insert id="SaveCommodityTableBean" parameterType="com.jk.model.commodity.CommodityTableBean">
+        <!-- keyProperty返回值名 resultType返回值类型  order='AFTER' 表示这个selectKey语句的执行是在insert语句之后
+            keyColumn：插入数据以后，要返回的内容在数据表中对应的字段名称(这里返回的是插入记录的id(对应数据表中的名称为t_id)) -->
+        <!--<selectKey keyProperty='id' resultType='int' order='AFTER' keyColumn="t_id" >
+            select LAST_INSERT_ID();
+        </selectKey>-->
+        <!--<selectKey resultType="int" keyProperty="saveSId" order='AFTER'>
+            SELECT LAST_INSERT_ID() AS saveSId
+        </selectKey>-->
+        insert into Commodity_Table (typeId,name,number,inventoryWarningValue,trademark,timeStart,attribute_id,sellingPrice,<!--imgUrl,-->explains,state,color)
+        values(#{typeId},#{name},#{number},#{inventoryWarningValue},#{trademark},#{timeStart},#{attribute_id},#{sellingPrice},<!--#{imgUrl},-->#{explains},2,#{color})
+    </insert>
+    <!-- 添加部门 返回部门ID -->
+<!--    <insert id="addDept" parameterType="com.demo.model.Department" keyProperty="id">
+        <selectKey keyProperty='id' resultType='int' order='AFTER'  >
+            select LAST_INSERT_ID();
+        </selectKey>
+        insert into department(<include refid="departmentAllField"/>)
+        values(#{departmentId},#{departmentName},#{departmentManagerName},#{companyId});
+    </insert>-->
+
+    <update id="UpCommodityTableBean" parameterType="com.jk.model.commodity.CommodityTableBean">
+        update Commodity_Table
+        set typeId=#{typeId},name=#{name},number=#{number},inventoryWarningValue=#{inventoryWarningValue},trademark=#{trademark},
+        #{timeStart},#{attribute_id},#{sellingPrice},<!--#{imgUrl},-->explains=#{explains},2,#{color}
+        where id=#{id}
+    </update>
+    <select id="getCommodityTableBean" parameterType="int" resultType="com.jk.model.commodity.CommodityTableBean">
+        select * from Commodity_Table ct <!--left join commodity_typesumup sum on sum.id=ct.attribute_id-->
+<!--        left join  commodity_type typ  on ct.typeId=typ.id
+        left join commodity_type typ2 on typ2.id=typ.pid-->
+        where 1=1  and ct.id=#{id}
+    </select>
+    <select id="queryCommodityTrademar" resultType="com.jk.model.commodity.CommodityTableBean">
+        select trademark from Commodity_Table group by trademark
+    </select>
+    <select id="queryTypeWhereId" parameterType="int" resultType="com.jk.model.commodity.CommodityTypeBean">
+        select * from commodity_type where id=#{id}
+    </select>
+    <select id="queryTypeAttributeWhereid" parameterType="int" resultType="com.jk.model.commodity.CommodityTypeSumUpBean">
+        select * from commodity_TypeSumUp where id=#{id}
+    </select>
 </mapper>

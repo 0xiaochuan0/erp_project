@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bootstrap3/css/bootstrap.css" />
+    <script type="text/javascript" src="../bootstrap3/js/bootstrap.js"></script>
+
+    <!--表格-->
+    <link rel="stylesheet" href="../bootstrap-table/bootstrap-table.css"/>
+    <script src="../bootstrap-table/bootstrap-table.js"></script>
+    <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <!--添加扇形叶-->
+    <link rel="stylesheet" href="../bootStrap-addTabs/bootstrap.addtabs.css"/>
+    <script src="../bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+</head>
+<body>
+<div class="table" id="myTable" style="width: 1000px;margin-left:10px"></div>
+</body>
+<script>
+    $(function(){
+        setMyTable();
+    })
+    //日期插件
+    $("#inboundDate").datetimepicker({
+        format: 'yyyy-mm-dd',//显示格式
+        todayHighlight: 1,//今天高亮
+        minView: "month",//设置只显示到月份
+        startView:2,
+        forceParse: 0,
+        showMeridian: 1,
+        autoclose: 1//选择后自动关闭
+    });
+    function setMyTable(){
+        $('#myTable').bootstrapTable({
+            url:'../shelfplace/queryReport',//获取数据地址
+            method: 'get',
+            //dataType: "json",
+            //dataField: "data",
+            classes:'table',//边框
+            undefinedText:'',//当数据为 undefined 时显示的字符
+            pagination:true,//启动分页
+            //paginationLoop:true,
+            sidePagination: "client",
+            pageNumber:1,
+            pageSize:5,
+            pageList:[ 5, 10, 15, 30 ],
+            //striped: true,
+            // showColumns: true,  //显示下拉框勾选要显示的列
+            showRefresh: true,  //显示刷新按钮
+            showToggle:true,//显示一行是否改成竖着
+            showPaginationSwitch:true,//是否显示 下面的分页框
+            search: true, //显示搜索框
+
+            toolbal:'#toolbar',
+            columns: [
+                {field: "checked", checkbox:true},
+                {field:'placeId',title:'编号',switchable: true},
+                {field:'regionPlace',title:'仓库地区',switchable: true},
+                {field:'regionName',title:'仓库名称',switchable: true},
+                {field:'areaName',title:'仓库编号',switchable: true},
+                {field:'shelfName',title:'货架名称',switchable: true},
+                {field:'placeName',title:'货架区域',switchable: true},
+                {field:'placeUse',title:'在库数量',switchable: true},
+                {field:'placeNumber',title:'库位总数量',switchable: true},
+                {field:'123',title:'库位剩余数量',switchable: true,
+                    formatter:function(value,row,index){
+                        var i =  row.placeNumber;
+                        var n = row.placeUse;
+                        var x = i - n;
+                        return Number(x);
+                    }}
+            ],
+        })
+    }
+
+</script>
+</html>

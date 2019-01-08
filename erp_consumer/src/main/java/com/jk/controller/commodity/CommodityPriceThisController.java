@@ -2,16 +2,16 @@ package com.jk.controller.commodity;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.jk.model.commodity.CommodityPriceThisBean;
+import com.jk.model.commodity.Commodity_priceThis_log;
 import com.jk.service.commodity.CommodityPriceThisService;
 import com.jk.utils.ResultPage;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("commodityPriceThis")
@@ -20,6 +20,7 @@ public class CommodityPriceThisController {
     @Reference(version = "1.0.0")
     private CommodityPriceThisService commodityPriceThisService;
 
+    @RequiresPermissions("commodityPriceThis:query")
     @RequestMapping("CommodityPriceThis")
     public String CommodityTable(){
         return "commodity/commodityPriceThis";
@@ -33,17 +34,9 @@ public class CommodityPriceThisController {
     }
     @RequestMapping("queryCommodity_priceThis_log")
     @ResponseBody
-    public List<Map<String,Object>> queryCommodity_priceThis_log(Integer id){
-        List<Map<String,Object>> listMap=new ArrayList<Map<String,Object>>();
-        List<Map<String,Object>> queryBookList = commodityPriceThisService.queryCommodity_priceThis_log(id);
-        for (Map<String, Object> map : queryBookList) {
-            Map<String,Object> addMap=new HashMap<String,Object>();
-
-            addMap.put("data",map.get(""));
-            map.put("name",map.get(""));
-            listMap.add(addMap);
-        }
-        return listMap;
+    public List<Map<String, Object>> queryCommodity_priceThis_log(Integer id){
+        List<Map<String, Object>> queryBookList = commodityPriceThisService.queryCommodity_priceThis_log(id);
+        return queryBookList;
     }
 
     @RequestMapping("AddCommodityPriceThis")
@@ -61,6 +54,13 @@ public class CommodityPriceThisController {
     @ResponseBody
     public CommodityPriceThisBean getCommodity_priceThis(Integer id){
         CommodityPriceThisBean  bol =commodityPriceThisService.getCommodity_priceThis(id);
+        return bol;
+    }
+
+    @RequestMapping("SaveCommodity_priceThis_log")
+    @ResponseBody
+    public Boolean SaveCommodity_priceThis_log(Commodity_priceThis_log commodity_priceThis_log){
+        Boolean  bol =commodityPriceThisService.SaveCommodity_priceThis_log(commodity_priceThis_log);
         return bol;
     }
 

@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
@@ -14,26 +19,26 @@
     <script src="../bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
     <!-- 弹框 -->
     <script src="../bootstrap-bootbox/bootbox.js"></script>
+
+    <!--highCharts-->
+    <script type="text/javascript" src="../highCharts/code/highcharts.js"></script>
+    <script type="text/javascript" src="../highCharts/code/modules/exporting.js"></script>
+    <script type="text/javascript" src="../highCharts/code/modules/export-data.js"></script>
 </head>
-<body style="height:100% ;width:100%;">
-<div class="panel panel-default " style=" height:100% ; width:100%; position:absolute;">
-    <div class="panel-heading">
-        <h3 class="panel-title">商品管理 /添加商品</h3>
-    </div>
+<body >
     <div class="panel-body">
         <div id="toolbar">
             <form class="form-inline">
                 <div class="form-group">
                     <input type="text" class="form-control" id="name" placeholder="请输入属性组名称"/>
                     <button type="button" onclick="searchUser()" class="btn btn-info glyphicon glyphicon-search">搜索</button>
-                    <button type="button" onclick="add()" class="btn btn-info glyphicon glyphicon-plus">添加</button>
+                   <!-- <button type="button" onclick="add()" class="btn btn-info glyphicon glyphicon-plus">添加</button>-->
                 </div>
             </form>
         </div>
         <!-- 展示用户列表 -->
-        <table id="myTable"></table>
+        <shiro:hasPermission name="commodityPriceThis:query" href="#" ><table id="myTable"></table></shiro:hasPermission>
     </div>
-</div>
 <script>
     //页面加载
     $(function(){
@@ -103,11 +108,11 @@
                     title: '<div style="background-color:#F0F0F0 ">分类</div>',
                     align: 'center',
                     formatter:function(value,row,index){
-                        return value;
+                        return row.type_key+''+row.type_value;
                     }
                 },
                 {
-                    field:"specification",
+                    field:"attribute_Key",
                     title: '<div style="background-color:#F0F0F0 ">规格</div>',
                     align: 'center',
                     formatter:function(value,row,index){
@@ -115,7 +120,7 @@
                     }
                 },
                 {
-                    field:"unit",
+                    field:"attribute_Value",
                     title: '<div style="background-color:#F0F0F0 ">单位</div>',
                     align: 'center',
                     formatter:function(value,row,index){
@@ -123,7 +128,7 @@
                     }
                 },
                 {
-                    field:"pricePurchasing",
+                    field:"purchasingPrice",
                     title: '<div style="background-color:#F0F0F0 ">进价</div>',
                     align: 'center',
                     formatter:function(value,row,index){
@@ -137,19 +142,20 @@
                     formatter:function(value,row,index){
                         return '￥'+value;
                     }
-                },
+                }/*,
                 {
                     field:"123",
                     align: 'trademark',
                     title: '<div style="background-color:#F0F0F0 ">操作</div>',
                     formatter:function(value,row,index){
-                        return '<button type="button" onclick="get('+row.id+')" class="btn btn-warning">编辑</button><button type="button" onclick="queryCommodity_priceThis_Table('+row.id+')" class="btn btn-danger">查看走势</button>' ;
+                    /!*<button type="button" onclick="get('+row.id+')" class="btn btn-warning">编辑</button>*!/
+                        return '<shiro:hasPermission name="commodityTableUpState:update" ><button type="button" onclick="queryCommodity_priceThis_Table('+row.id+')" class="btn btn-danger">查看走势</button></shiro:hasPermission >' ;
                     }
-                }
+                }*/
             ]
         })
     }
-    function add() {
+/*    function add() {
         bootbox.dialog({
             title:"<center>添加商品价格</center>",
             message:createAddContent('../commodityPriceThis/AddCommodityPriceThis'),
@@ -159,7 +165,7 @@
                     "label" : '<i class="icon-ok"></i> 保存',
                     "className" : "btn-sm btn-success",
                     "callback":function(){
-
+                            //提交商品价格信息
                           $.ajax({
                             url:'../commodityPriceThis/SaveOrUpdateCommodityPriceThis',
                             type:'post',
@@ -193,9 +199,10 @@
         });
         return res;
     }
+    //打开弹框
     function get(id){
         bootbox.dialog({
-            title:"<center>添加商品价格</center>",
+            title:"<center>修改商品价格</center>",
             message:createAddContent('../commodityPriceThis/AddCommodityPriceThis'),
             closeButton:true,
             buttons:{
@@ -203,6 +210,7 @@
                     "label" : '<i class="icon-ok"></i> 保存',
                     "className" : "btn-sm btn-success",
                     "callback":function(){
+                    //提交修改内容
                         $.ajax({
                             url:'../commodityPriceThis/SaveOrUpdateCommodityPriceThis',
                             type:'post',
@@ -223,6 +231,7 @@
                 }
             }
         })
+        //修改回显
         $.ajax({
             url:'../commodityPriceThis/getCommodity_priceThis',
             type:'post',
@@ -234,28 +243,48 @@
                 $("input[name='sellingPrice']").val(data.sellingPrice);
                 $("input[name='pricePurchasing']").val(data.pricePurchasing);
                 $("input[name='id']").val(data.id);
-               /* bootbox.form('data',{data});*/
+               /!* bootbox.form('data',{data});*!/
             }
         })
+    }*/
+    //  createAddContent(url)  这个方法直接用--必需品
+    var res;
+    function createAddContent(url){
+        $.ajax({
+            url:url,
+            async:false,
+            success:function(data){
+                res = data;
+            }
+        });
+        return res;
     }
     function queryCommodity_priceThis_Table(id){
+
+            bootbox.dialog({
+                title:"<center>添加商品价格</center>",
+                message:createAddContent('../commodityPriceThis/AddCommodityPriceThis'),
+                closeButton:true,
+                buttons:{
+                    "cancel":{
+                        "label":'<i id="close" class="icon-info"></i> 取消',
+                        "className":"btn-sm btn-danger",
+                        "callback" :function(){}
+                    }
+                }})
         if(id!=null){
             $.ajax({
-                url:'../commodityPriceThis/queryCommodity_priceThis_log',
-                type:'post',
-                data:{id:id},
-                success:function(data){
-
+                url: '../commodityPriceThis/queryCommodity_priceThis_log',
+                type: 'post',
+                data: {id: id},
+                success: function (data) {
                     var chart = Highcharts.chart('container', {
                         title: {
-                            text: '2010 ~ 2016 年太阳能行业就业人员发展情况'
-                        },
-                        subtitle: {
-                            text: '数据来源：thesolarfoundation.com'
+                            text: '价格走向'
                         },
                         yAxis: {
                             title: {
-                                text: '就业人数'
+                                text: '价格/￥'
                             }
                         },
                         legend: {
@@ -264,23 +293,17 @@
                             verticalAlign: 'middle'
                         },
                         xAxis: {
-                            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                            title: {
+                                text: '月份'
+                            },
+                            categories: data[2].time,
                         },
                         series: [{
-                            name: '安装，实施人员',
-                            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+                            name: data[0].name,
+                            data: [data[0].data],
                         }, {
-                            name: '工人',
-                            data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
-                        }, {
-                            name: '销售',
-                            data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
-                        }, {
-                            name: '项目开发',
-                            data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
-                        }, {
-                            name: '其他',
-                            data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+                            name: data[1].name,
+                            data: data[1].data,
                         }],
                         responsive: {
                             rules: [{
@@ -298,15 +321,15 @@
                         }
                     });
 
-
-
-
                 }
             })
         }else{
             alert("你的操作有问题，被系统检测到了，我们将记录您的个人信息(*^v^*)")
         }
+
     }
+
+
 </script>
 </body>
 </html>
