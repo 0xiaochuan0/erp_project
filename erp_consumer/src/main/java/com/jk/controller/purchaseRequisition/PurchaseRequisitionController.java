@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.jk.model.commodity.CommodityTableBean;
 import com.jk.model.good.GoodBean;
 import com.jk.model.purchaseRequisition.PurchaseRequisitionBean;
+import com.jk.model.user.UserBean;
 import com.jk.service.purchaseRequisition.PurchaseRequisitionService;
 import com.jk.utils.ResultPage;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -54,6 +55,27 @@ public class PurchaseRequisitionController {
     public Boolean updatePurchaseRequisitionStatusById(PurchaseRequisitionBean purchaseRequisitionBean){
         try {
             purchaseRequisitionService.updatePurchaseRequisitionStatusById(purchaseRequisitionBean);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @RequestMapping("queryUserAll")
+    public List<UserBean> queryUserAll(){
+        return purchaseRequisitionService.queryUserAll();
+    }
+
+    @RequestMapping("queryStatusByPurchaseRequisitionIdentifier")
+    public Boolean queryStatusByPurchaseRequisitionIdentifier(String str){
+        return purchaseRequisitionService.queryStatusByPurchaseRequisitionIdentifier(str);
+    }
+
+    @RequestMapping("updatePersonInCharge")
+    public Boolean updatePersonInCharge(String str,String strs){
+        try {
+            purchaseRequisitionService.updatePersonInCharge(str,strs);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

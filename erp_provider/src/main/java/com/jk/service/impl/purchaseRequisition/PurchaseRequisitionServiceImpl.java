@@ -5,6 +5,7 @@ import com.jk.mapper.purchaseRequisition.PurchaseRequisitionBeanMapper;
 import com.jk.model.commodity.CommodityTableBean;
 import com.jk.model.good.GoodBean;
 import com.jk.model.purchaseRequisition.PurchaseRequisitionBean;
+import com.jk.model.user.UserBean;
 import com.jk.service.purchaseRequisition.PurchaseRequisitionService;
 import com.jk.utils.ResultPage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,5 +105,30 @@ public class PurchaseRequisitionServiceImpl implements PurchaseRequisitionServic
             purchaseRequisitionBean.setComments("审核未通过原因:"+purchaseRequisitionBean.getComments());
         }
         purchaseRequisitionBeanMapper.updatePurchaseRequisitionStatusById(purchaseRequisitionBean);
+    }
+
+    @Override
+    public List<UserBean> queryUserAll() {
+        return purchaseRequisitionBeanMapper.queryUserAll();
+    }
+
+    @Override
+    public Boolean queryStatusByPurchaseRequisitionIdentifier(String str) {
+        String[] split = str.split(",");
+        List<PurchaseRequisitionBean> list = purchaseRequisitionBeanMapper.queryStatusByPurchaseRequisitionIdentifier(split);
+        for (PurchaseRequisitionBean bean : list) {
+            if (bean.getStatus() != 2){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void updatePersonInCharge(String str, String strs) {
+        String[] split = str.split(",");
+        for (int i = 0; i < split.length; i++) {
+            purchaseRequisitionBeanMapper.updatePersonInCharge(split[i],strs);
+        }
     }
 }

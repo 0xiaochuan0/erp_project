@@ -3,6 +3,7 @@ package com.jk.mapper.purchaseRequisition;
 import com.jk.model.commodity.CommodityTableBean;
 import com.jk.model.good.GoodBean;
 import com.jk.model.purchaseRequisition.PurchaseRequisitionBean;
+import com.jk.model.user.UserBean;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
@@ -40,4 +41,10 @@ public interface PurchaseRequisitionBeanMapper {
     void updatePurchaseRequisitionStatusById(PurchaseRequisitionBean purchaseRequisitionBean);
 
     void updatePurchaseRequisitionById(PurchaseRequisitionBean bean);
+
+    List<UserBean> queryUserAll();
+
+    List<PurchaseRequisitionBean> queryStatusByPurchaseRequisitionIdentifier(@Param("split") String[] split);
+
+    void updatePersonInCharge(@Param("s") String s,@Param("strs") String strs);
 }

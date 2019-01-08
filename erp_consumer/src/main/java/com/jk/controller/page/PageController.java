@@ -118,4 +118,9 @@ public class PageController {
     String toAuditingPurchaseRequisition(){
         return "purchaseRequisition/auditingPurchaseRequisition";
     }
+
+    @RequestMapping("toAssign")
+    String toAssign(){
+        return "purchaseRequisition/assign";
+    }
 }

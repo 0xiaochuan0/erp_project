@@ -22,7 +22,8 @@
         <div class="col-md-12" style="text-align: center;">
             <center>
             <div id="showImgDiv" style="width: 81px;height: 81px;">
-                <img src="../images/u172.png" id="showImg" class="img-circle" style="width: 81px;height: 81px;"/>
+                <img src="" id="showImg" class="img-circle" style="width: 81px;height: 81px;"/>
+                <input type="hidden" id="hiddenShowImg" th:value="${user.headImg}"/>
             </div>
             <div style="margin-top: 10px">
                 <input type="file" id="userphoto" />
@@ -96,6 +97,7 @@
     </div>
     <script>
         $(function(){
+            $("#showImg").attr("src",$("#hiddenShowImg").val());
             $("#userphoto").uploadify({
                 //前台请求后台的url 不可忽略的参数
                 'uploader' :"../user/uploadImg",

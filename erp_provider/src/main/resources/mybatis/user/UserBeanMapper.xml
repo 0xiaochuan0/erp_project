@@ -23,7 +23,7 @@
 
   <!-- 登陆查询账号密码 -->
   <select id="queryUserInfoByLoginNumber" resultType="com.jk.model.user.UserBean" >
-    select id,account,pwd,phone,name from t_user where account = #{username}
+    select id,account,pwd,phone,name,head_img headImg from t_user where account = #{username}
   </select>
 
   <!-- 查询权限 -->

@@ -70,6 +70,8 @@
                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>添加
                 </div>
             </shiro:hasPermission>
+
+            <input type="button" class="btn btn-primary" value="指派"/>
         </div>
     </div>
     <div class="row" style="margin-top: 15px">
@@ -79,6 +81,7 @@
     </div>
     <input type="hidden" id="userNameId" th:value="${userName}"/>
     <script>
+        /*<![CDATA[*/
         $(function () {
             initPurchaseRequisitionTable();
             $('.date').datetimepicker({
@@ -100,6 +103,97 @@
             var purchaseRequisitionIdentifier = "-1";
             location.href="../page/toEditPurchaseRequisition?purchaseRequisitionIdentifier="+purchaseRequisitionIdentifier;
         })
+
+        $(".btn-primary").click(function () {
+            var arr = $('.table').bootstrapTable('getSelections');
+            if (arr.length > 0){
+                var str = "";
+                for (var i = 0; i < arr.length; i++) {
+                    str += arr[i].purchaseRequisitionIdentifier + ",";
+                }
+                $.ajax({
+                    url:'../purchaseRequisition/queryStatusByPurchaseRequisitionIdentifier',
+                    type:'post',
+                    data: {
+                        str:str
+                    },
+                    dataType: 'json',
+                    success:function (result) {
+                        if (result){
+                            bootbox.dialog({
+                                size:'big',
+                                title:'<center>指派负责人</center>',
+                                message: createAddContent("../page/toAssign"),
+                                closeButton: true,
+                                buttons : {
+                                    "success" : {
+                                        "label" : '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>&nbsp;&nbsp;保存',
+                                        "className" : "btn-lg btn-success",
+                                        "algin" : "center",
+                                        "callback" : function() {
+                                            $.ajax({
+                                                url:'../purchaseRequisition/updatePersonInCharge',
+                                                type:'post',
+                                                data:{
+                                                    str:str,
+                                                    strs:$("#assignPersonInCharge").val(),
+                                                },
+                                                dataType:'json',
+                                                success:function (result) {
+                                                    if (result) {
+                                                        location.reload();
+                                                    } else {
+                                                        bootbox.alert({
+                                                            size: "small",//small 小    big 中    large 大
+                                                            title: "<center>提示</center>",
+                                                            message: '<font size="4px" color="#ff6699">指派被驳回</font>',
+                                                        })
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    },
+                                    "cancel" : {
+                                        "label" : '<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>&nbsp;&nbsp;关闭',
+                                        "className" : "btn-lg btn-danger",
+                                        "callback" : function() {
+                                        }
+                                    }
+                                }
+                            });
+                            initAssignPersonInCharge()
+                        } else {
+                            bootbox.alert({
+                                size: "small",//small 小    big 中    large 大
+                                title: "<center>提示</center>",
+                                message: '<font size="4px" color="#ff6699">审核未通过或已完成的不能进行指派</font>',
+                            })
+                        }
+                    }
+                })
+            } else {
+                bootbox.alert({
+                    size: "small",//small 小    big 中    large 大
+                    title: "<center>提示</center>",
+                    message: '<font size="4px" color="#ff6699">请选择指派对象</font>',
+                })
+            }
+        })
+
+        function initAssignPersonInCharge() {
+            $.ajax({
+                url:'../purchaseRequisition/queryUserAll',
+                type:'post',
+                dataType:'json',
+                success:function (result) {
+                    var html = "";
+                    for (var i = 0; i < result.length; i++) {
+                        html += '<option value="'+result[i].name+'">'+result[i].name+'</option>';
+                    }
+                    $("#assignPersonInCharge").html(html);
+                }
+            })
+        }
 
         function initPurchaseRequisitionTable(){
             $('.table').bootstrapTable('destroy');
@@ -224,7 +318,7 @@
                 }
             });
         }
-
+        /*]]> */
     </script>
 </body>
 </html>

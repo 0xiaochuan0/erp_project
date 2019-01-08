@@ -159,4 +159,22 @@
       where id = #{item.id}
     </foreach>
   </update>
+
+  <!-- 查询用户 -->
+  <select id="queryUserAll" resultType="com.jk.model.user.UserBean">
+    select id,name from t_user
+  </select>
+
+  <select id="queryStatusByPurchaseRequisitionIdentifier" resultType="com.jk.model.purchaseRequisition.PurchaseRequisitionBean">
+    select status from t_purchaserequisition where purchase_requisition_identifier in
+    <foreach item="item" index="index" collection="split" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <update id="updatePersonInCharge">
+    update t_purchaserequisition set status = 3,
+                        person_in_charge = #{strs}
+              where purchase_requisition_identifier = #{s}
+  </update>
 </mapper>
