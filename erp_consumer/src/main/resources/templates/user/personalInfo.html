@@ -97,7 +97,14 @@
     </div>
     <script>
         $(function(){
-            $("#showImg").attr("src",$("#hiddenShowImg").val());
+            alert($("#hiddenShowImg").val());
+            /* <![CDATA[ */
+            if($("#hiddenShowImg").val() != null && $("#hiddenShowImg").val() != ''){
+                $(".img-circle").attr("src",$("#hiddenShowImg").val());
+            }else{
+                $(".img-circle").attr("src",'../images/u172.png');
+            }
+            /* ]]> */
             $("#userphoto").uploadify({
                 //前台请求后台的url 不可忽略的参数
                 'uploader' :"../user/uploadImg",

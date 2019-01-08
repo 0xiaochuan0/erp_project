@@ -67,11 +67,13 @@ public class PurchaseRequisitionController {
         return purchaseRequisitionService.queryUserAll();
     }
 
+    @RequiresPermissions("requestPurchase:assign")
     @RequestMapping("queryStatusByPurchaseRequisitionIdentifier")
     public Boolean queryStatusByPurchaseRequisitionIdentifier(String str){
         return purchaseRequisitionService.queryStatusByPurchaseRequisitionIdentifier(str);
     }
 
+    @RequiresPermissions("requestPurchase:assign")
     @RequestMapping("updatePersonInCharge")
     public Boolean updatePersonInCharge(String str,String strs){
         try {
